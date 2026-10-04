@@ -2,47 +2,4766 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PlaceTrack</title>
+
+    <title>PlaceTrack | Placement Management System</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/placement-bg.css') }}">
 
     <style>
+        /* =====================================================
+           RESET
+           ===================================================== */
+        
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
         body {
-            margin: 0;
             min-height: 100vh;
+            background: #050507;
+            color: #f8fafc;
+            font-family: Inter, Arial, Helvetica, sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        a {
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* =====================================================
+           PAGE
+           ===================================================== */
+        
+        .home-page {
+            position: relative;
+            z-index: 2;
+            background: transparent;
+        }
+        /* =====================================================
+           COMMON CONTAINERS
+           ===================================================== */
+        
+        .section-inner {
+            width: min(1120px, calc(100% - 60px));
+            margin: 0 auto;
+        }
+        
+        .content-container {
+            width: min(1120px, calc(100% - 60px));
+            margin: 0 auto;
+        }
+        /* =====================================================
+           COMMON NEW SECTION HEADER
+           ===================================================== */
+        
+        .section-heading {
+            width: min(820px, 100%);
+            margin: 0 auto 62px;
+            text-align: center;
+        }
+        
+        .section-label {
+            display: inline-block;
+            margin-bottom: 16px;
+            padding: 7px 11px;
+            border-radius: 999px;
+            border: 1px solid rgba(129, 140, 248, .16);
+            background: rgba(99, 102, 241, .055);
+            color: #9b9eff;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.15px;
+            text-transform: uppercase;
+        }
+        
+        .section-heading h2 {
+            max-width: 820px;
+            margin: 0 auto;
+            color: #f7f7fa;
+            font-size: clamp(38px, 4.4vw, 51px);
+            font-weight: 800;
+            line-height: 1.08;
+            letter-spacing: -1.9px;
+        }
+        
+        .section-heading p {
+            max-width: 680px;
+            margin: 19px auto 0;
+            color: #777a88;
+            font-size: 13px;
+            line-height: 1.9;
+        }
+        /* =====================================================
+           SCROLL REVEAL
+           ===================================================== */
+        
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity .75s cubic-bezier(.22, 1, .36, 1), transform .75s cubic-bezier(.22, 1, .36, 1);
+        }
+        
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .reveal-delay-1 {
+            transition-delay: .08s;
+        }
+        
+        .reveal-delay-2 {
+            transition-delay: .16s;
+        }
+        
+        .reveal-delay-3 {
+            transition-delay: .24s;
+        }
+        
+        .reveal-delay-4 {
+            transition-delay: .32s;
+        }
+        /* =====================================================
+           NAVBAR
+           ===================================================== */
+        
+        .navbar {
+            position: fixed;
+            top: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            width: min(1180px, calc(100% - 36px));
+            height: 62px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 14px 0 18px;
+            border: 1px solid rgba(255, 255, 255, .075);
+            border-radius: 16px;
+            background: rgba(7, 8, 13, .46);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 18px 50px rgba(0, 0, 0, .22);
+        }
+        
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 19px;
+            font-weight: 760;
+            letter-spacing: -.45px;
+        }
+        
+        .brand-box {
+            width: 34px;
+            height: 34px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: Arial, sans-serif;
-            background: #09090b;
-            color: white;
-        }
-        .container {
-            text-align: center;
-            padding: 40px;
-        }
-        
-        h1 {
-            font-size: 52px;
-            margin: 0 0 15px;
+            border-radius: 10px;
+            background: linear-gradient( 135deg, #6366f1, #8b5cf6);
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 800;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, .28);
+            transition: transform .25s ease, box-shadow .25s ease;
         }
         
-        p {
+        .brand:hover .brand-box {
+            transform: rotate(-5deg) scale(1.04);
+            box-shadow: 0 10px 28px rgba(99, 102, 241, .40);
+        }
+        
+        .brand span {
+            color: #9d9fff;
+        }
+        /* =====================================================
+           NAV CENTER
+           ===================================================== */
+        
+        .nav-center {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .nav-center a {
+            position: relative;
+            padding: 8px 12px;
+            color: #9b9dab;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            transition: color .2s ease, background .2s ease;
+        }
+        
+        .nav-center a::after {
+            content: "";
+            position: absolute;
+            left: 12px;
+            right: 12px;
+            bottom: 4px;
+            height: 1px;
+            background: #818cf8;
+            transform: scaleX(0);
+            transition: transform .2s ease;
+        }
+        
+        .nav-center a:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, .035);
+        }
+        
+        .nav-center a:hover::after {
+            transform: scaleX(1);
+        }
+        /* =====================================================
+           NAV BUTTONS
+           ===================================================== */
+        
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+        
+        .nav-btn {
+            min-height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 13px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 700;
+            transition: transform .2s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
+        }
+        
+        .nav-login {
+            color: #c0c1ca;
+            border: 1px solid rgba(255, 255, 255, .075);
+            background: rgba(255, 255, 255, .025);
+        }
+        
+        .nav-login:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, .05);
+        }
+        
+        .nav-register {
+            color: #ffffff;
+            background: linear-gradient( 135deg, #6366f1, #7c3aed);
+            box-shadow: 0 8px 22px rgba(99, 102, 241, .22);
+        }
+        
+        .nav-register:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 11px 27px rgba(99, 102, 241, .30);
+        }
+        
+        .nav-admin {
+            color: #b9bbff;
+            border: 1px solid rgba(129, 140, 248, .17);
+            background: rgba(99, 102, 241, .035);
+        }
+        
+        .nav-admin:hover {
+            color: #d5d6ff;
+            background: rgba(99, 102, 241, .075);
+            transform: translateY(-1px);
+        }
+        /* =====================================================
+           HERO
+           ===================================================== */
+        
+        .hero {
+            min-height: 100vh;
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 145px 38px 90px;
+            display: grid;
+            grid-template-columns: minmax(0, 1.12fr) minmax(430px, .88fr);
+            align-items: center;
+            gap: 50px;
+            background: transparent;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            max-width: 720px;
+        }
+        /* =====================================================
+           HERO BADGE
+           ===================================================== */
+        
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(129, 140, 248, .18);
+            background: rgba(99, 102, 241, .055);
+            color: #a9abff;
+            font-size: 10px;
+            font-weight: 750;
+            letter-spacing: .65px;
+            text-transform: uppercase;
+        }
+        
+        .hero-badge::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            background: #7c83ff;
+            box-shadow: 0 0 13px rgba(124, 131, 255, .65);
+        }
+        /* =====================================================
+           HERO TITLE
+           ===================================================== */
+        
+        .hero-title {
+            margin: 0;
+            color: #f8fafc;
+            font-size: clamp(48px, 5.15vw, 67px);
+            font-weight: 800;
+            line-height: 1.01;
+            letter-spacing: -3.15px;
+        }
+        
+        .hero-title-line {
+            display: block;
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateY(35px);
+            animation: crispTitleReveal .9s cubic-bezier(.16, 1, .3, 1) .16s forwards;
+        }
+        
+        .hero-title-gradient {
+            display: block;
+            white-space: nowrap;
+            background: linear-gradient( 100deg, #818cf8, #a78bfa, #d1c6ff);
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            opacity: 0;
+            transform: translateY(35px);
+            animation: crispGradientReveal 1s cubic-bezier(.16, 1, .3, 1) .28s forwards, titleShimmer 7s ease-in-out 1.5s infinite;
+        }
+        
+        @keyframes crispTitleReveal {
+            from {
+                opacity: 0;
+                transform: translateY(35px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes crispGradientReveal {
+            from {
+                opacity: 0;
+                transform: translateY(35px) scale(.985);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        @keyframes titleShimmer {
+            0% {
+                background-position: 100% 50%;
+            }
+            50% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 100% 50%;
+            }
+        }
+        /* =====================================================
+           HERO DESCRIPTION
+           ===================================================== */
+        
+        .hero-description {
+            max-width: 600px;
+            margin-top: 25px;
+            color: #a0a2af;
+            font-size: 15px;
+            line-height: 1.85;
+            opacity: 0;
+            transform: translateY(18px);
+            animation: contentReveal .8s cubic-bezier(.22, 1, .36, 1) .48s forwards;
+        }
+        /* =====================================================
+           HERO ACTIONS
+           ===================================================== */
+        
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 31px;
+            opacity: 0;
+            transform: translateY(18px);
+            animation: contentReveal .8s cubic-bezier(.22, 1, .36, 1) .61s forwards;
+        }
+        
+        @keyframes contentReveal {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .hero-primary,
+        .hero-secondary {
+            min-height: 46px;
+            padding: 0 19px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border-radius: 9px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            transition: transform .22s ease, box-shadow .22s ease, background .22s ease, color .22s ease;
+        }
+        
+        .hero-primary {
+            color: #ffffff;
+            background: linear-gradient( 135deg, #6366f1, #7c3aed);
+            box-shadow: 0 12px 30px rgba(99, 102, 241, .22);
+        }
+        
+        .hero-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 17px 37px rgba(99, 102, 241, .31);
+        }
+        
+        .hero-primary span {
+            display: inline-block;
+            transition: transform .22s ease;
+        }
+        
+        .hero-primary:hover span {
+            transform: translateX(4px);
+        }
+        
+        .hero-secondary {
+            color: #c2c3cc;
+            background: rgba(255, 255, 255, .026);
+            border: 1px solid rgba(255, 255, 255, .085);
+        }
+        
+        .hero-secondary:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, .055);
+            transform: translateY(-2px);
+        }
+        /* =====================================================
+           HERO CHECKS
+           ===================================================== */
+        
+        .hero-checks {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            margin-top: 26px;
+            opacity: 0;
+            transform: translateY(15px);
+            animation: contentReveal .8s cubic-bezier(.22, 1, .36, 1) .74s forwards;
+        }
+        
+        .hero-check {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: #8d8f9d;
+            font-size: 12px;
+            transition: transform .22s ease, color .22s ease;
+        }
+        
+        .hero-check:hover {
+            transform: translateX(3px);
+            color: #c3c5d1;
+        }
+        
+        .hero-check strong {
+            color: #818cf8;
+            font-size: 13px;
+        }
+        /* =====================================================
+           HERO PREVIEW
+           ===================================================== */
+        
+        .hero-preview {
+            position: relative;
+            width: 100%;
+            max-width: 560px;
+            margin-left: auto;
+            opacity: 0;
+            transform: translateY(20px) scale(.985);
+            animation: previewReveal 1s cubic-bezier(.22, 1, .36, 1) .36s forwards;
+        }
+        
+        @keyframes previewReveal {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(.985);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .preview-window {
+            position: relative;
+            padding: 11px;
+            border-radius: 21px;
+            background: linear-gradient( 145deg, rgba(255, 255, 255, .075), rgba(255, 255, 255, .018));
+            border: 1px solid rgba(255, 255, 255, .075);
+            box-shadow: 0 40px 95px rgba(0, 0, 0, .36);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transform: perspective(1300px) rotateY(-4deg) rotateX(2deg);
+            animation: previewFloat 6s ease-in-out infinite;
+        }
+        
+        @keyframes previewFloat {
+            0%,
+            100% {
+                transform: perspective(1300px) rotateY(-4deg) rotateX(2deg) translateY(0);
+            }
+            50% {
+                transform: perspective(1300px) rotateY(-4deg) rotateX(2deg) translateY(-8px);
+            }
+        }
+        
+        .preview-window::before {
+            content: "";
+            position: absolute;
+            width: 270px;
+            height: 270px;
+            right: -100px;
+            top: -100px;
+            border-radius: 50%;
+            background: radial-gradient( circle, rgba(99, 102, 241, .10), transparent 70%);
+            pointer-events: none;
+        }
+        /* =====================================================
+           BROWSER
+           ===================================================== */
+        
+        .browser-top {
+            height: 34px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0 8px;
+        }
+        
+        .browser-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .14);
+        }
+        
+        .browser-address {
+            flex: 1;
+            height: 20px;
+            margin-left: 8px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, .028);
+            border: 1px solid rgba(255, 255, 255, .045);
+        }
+        /* =====================================================
+           DASHBOARD PREVIEW
+           ===================================================== */
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 78px 1fr;
+            min-height: 390px;
+            overflow: hidden;
+            border-radius: 12px;
+            background: rgba(8, 9, 13, .82);
+            border: 1px solid rgba(255, 255, 255, .05);
+        }
+        
+        .dashboard-sidebar {
+            padding: 15px 10px;
+            border-right: 1px solid rgba(255, 255, 255, .05);
+        }
+        
+        .dashboard-logo {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background: linear-gradient( 135deg, #6366f1, #8b5cf6);
+            color: #ffffff;
+            font-size: 9px;
+            font-weight: 800;
+        }
+        
+        .dashboard-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+        
+        .dashboard-nav-item {
+            height: 27px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, .022);
+        }
+        
+        .dashboard-nav-item.active {
+            background: rgba(99, 102, 241, .13);
+            border: 1px solid rgba(129, 140, 248, .13);
+        }
+        
+        .dashboard-main {
+            padding: 17px;
+        }
+        
+        .dashboard-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .dashboard-heading strong {
+            color: #e9eaf0;
+            font-size: 11px;
+        }
+        
+        .dashboard-heading span {
+            width: 44px;
+            height: 17px;
+            border-radius: 5px;
+            background: linear-gradient( 90deg, rgba(99, 102, 241, .30), rgba(124, 58, 237, .15));
+        }
+        /* =====================================================
+           STATS
+           ===================================================== */
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 7px;
+        }
+        
+        .mini-stat {
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, .024);
+            border: 1px solid rgba(255, 255, 255, .05);
+        }
+        
+        .mini-stat small {
+            display: block;
+            color: #656774;
+            font-size: 7px;
+            text-transform: uppercase;
+        }
+        
+        .mini-stat strong {
+            display: block;
+            margin-top: 6px;
+            color: #eceef2;
+            font-size: 15px;
+        }
+        /* =====================================================
+           GRAPH
+           ===================================================== */
+        
+        .dashboard-graph {
+            height: 145px;
+            margin-top: 8px;
+            padding: 13px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, .016);
+            border: 1px solid rgba(255, 255, 255, .05);
+        }
+        
+        .graph-label {
+            width: 95px;
+            height: 5px;
+            margin-bottom: 18px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, .08);
+        }
+        
+        .bars {
+            height: 94px;
+            display: flex;
+            align-items: flex-end;
+            gap: 9px;
+        }
+        
+        .bar {
+            flex: 1;
+            border-radius: 5px 5px 2px 2px;
+            background: linear-gradient( 180deg, #818cf8, rgba(99, 102, 241, .14));
+            transform-origin: bottom;
+            animation: barMotion 3.2s ease-in-out infinite;
+        }
+        
+        .bar:nth-child(1) {
+            height: 35%;
+        }
+        
+        .bar:nth-child(2) {
+            height: 48%;
+            animation-delay: .15s;
+        }
+        
+        .bar:nth-child(3) {
+            height: 43%;
+            animation-delay: .30s;
+        }
+        
+        .bar:nth-child(4) {
+            height: 62%;
+            animation-delay: .45s;
+        }
+        
+        .bar:nth-child(5) {
+            height: 54%;
+            animation-delay: .60s;
+        }
+        
+        .bar:nth-child(6) {
+            height: 77%;
+            animation-delay: .75s;
+        }
+        
+        .bar:nth-child(7) {
+            height: 92%;
+            animation-delay: .90s;
+        }
+        
+        @keyframes barMotion {
+            0%,
+            100% {
+                opacity: .70;
+                transform: scaleY(.94);
+            }
+            50% {
+                opacity: 1;
+                transform: scaleY(1);
+            }
+        }
+        /* =====================================================
+           APPLICATION LIST
+           ===================================================== */
+        
+        .application-list {
+            margin-top: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .application-row {
+            min-height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 10px;
+            border-radius: 7px;
+            background: rgba(255, 255, 255, .016);
+            border: 1px solid rgba(255, 255, 255, .042);
+        }
+        
+        .application-company {
+            width: 92px;
+            height: 5px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, .075);
+        }
+        
+        .application-status {
+            width: 38px;
+            height: 11px;
+            border-radius: 99px;
+            background: rgba(99, 102, 241, .15);
+        }
+        /* =====================================================
+           FLOATING CARDS
+           ===================================================== */
+        
+        .floating {
+            position: absolute;
+            padding: 12px 14px;
+            border-radius: 11px;
+            background: rgba(11, 12, 18, .72);
+            border: 1px solid rgba(255, 255, 255, .07);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, .27);
+            animation: floatingMotion 5s ease-in-out infinite;
+        }
+        
+        .floating-update {
+            left: -34px;
+            bottom: 35px;
+            width: 180px;
+        }
+        
+        .floating-progress {
+            right: -28px;
+            top: 36px;
+            width: 150px;
+            animation-delay: .8s;
+        }
+        
+        @keyframes floatingMotion {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-7px);
+            }
+        }
+        
+        .floating-label {
+            color: #727482;
+            font-size: 8px;
+            font-weight: 750;
+            text-transform: uppercase;
+            letter-spacing: .6px;
+        }
+        
+        .floating-title {
+            margin-top: 6px;
+            color: #e4e5eb;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        
+        .floating-text {
+            margin-top: 4px;
+            color: #81838e;
+            font-size: 9px;
+            line-height: 1.5;
+        }
+        
+        .progress-line {
+            height: 5px;
+            margin-top: 10px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, .05);
+            overflow: hidden;
+        }
+        
+        .progress-line span {
+            display: block;
+            width: 78%;
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient( 90deg, #6366f1, #a78bfa);
+        }
+        /* =====================================================
+           TRANSPARENT SECTIONS
+           ===================================================== */
+        
+        .intro-strip,
+        .light-section,
+        .workflow-section,
+        .platform-section,
+        .roles-section,
+        .faq-section,
+        .final-cta,
+        footer {
+            background: transparent !important;
+        }
+        /* =====================================================
+           INTRO STRIP
+           ===================================================== */
+        
+        .intro-strip {
+            padding: 24px 30px;
+            border-top: 1px solid rgba(255, 255, 255, .035);
+            border-bottom: 1px solid rgba(255, 255, 255, .035);
+        }
+        
+        .intro-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+        
+        .intro-item {
+            padding: 16px;
+            border-radius: 11px;
+            background: rgba(255, 255, 255, .026);
+            border: 1px solid rgba(255, 255, 255, .06);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform .2s ease, background .2s ease, border-color .2s ease;
+        }
+        
+        .intro-item:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, .04);
+            border-color: rgba(129, 140, 248, .14);
+        }
+        
+        .intro-item strong {
+            color: #a8aaff;
             font-size: 20px;
-            color: #a1a1aa;
+        }
+        
+        .intro-item span {
+            color: #858794;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            text-align: right;
+        }
+        /* =====================================================
+           ORIGINAL SECTION HEADINGS
+           ===================================================== */
+        
+        .light-heading {
+            max-width: 700px;
+            margin: 0 auto 58px;
+            text-align: center;
+        }
+        
+        .light-label {
+            display: block;
+            margin-bottom: 13px;
+            color: #8d90ff;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        .light-heading h2 {
+            color: #f4f4f5;
+            font-size: clamp(32px, 4vw, 45px);
+            line-height: 1.12;
+            letter-spacing: -1.5px;
+        }
+        
+        .light-heading p {
+            margin-top: 15px;
+            color: #858794;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        /* =====================================================
+           FEATURES - SPACIOUS 3 + 2
+           ===================================================== */
+        
+        .light-section {
+            padding: 115px 30px;
+        }
+        
+        .feature-grid {
+            width: min(1120px, 100%);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 18px;
+        }
+        
+        .feature-card {
+            grid-column: span 2;
+            min-height: 230px;
+            padding: 27px;
+            background: linear-gradient( 145deg, rgba(255, 255, 255, .055), rgba(255, 255, 255, .018)) !important;
+            border: 1px solid rgba(255, 255, 255, .065);
+            border-radius: 16px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, .10);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            transition: transform .28s ease, background .28s ease, border-color .28s ease, box-shadow .28s ease;
+        }
+        
+        .feature-card:nth-child(4) {
+            grid-column: 2 / span 2;
+        }
+        
+        .feature-card:nth-child(5) {
+            grid-column: 4 / span 2;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-6px);
+            background: rgba(255, 255, 255, .06) !important;
+            border-color: rgba(129, 140, 248, .18);
+            box-shadow: 0 22px 45px rgba(0, 0, 0, .17);
+        }
+        
+        .feature-icon {
+            width: 46px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 18px;
+            border-radius: 12px;
+            background: rgba(99, 102, 241, .11);
+            color: #9da0ff;
+            border: 1px solid rgba(129, 140, 248, .08);
+            font-size: 18px;
+        }
+        
+        .feature-card:nth-child(2) .feature-icon {
+            background: rgba(16, 185, 129, .09);
+            color: #5ee0b0;
+        }
+        
+        .feature-card:nth-child(3) .feature-icon {
+            background: rgba(245, 158, 11, .09);
+            color: #fbbf24;
+        }
+        
+        .feature-card:nth-child(4) .feature-icon {
+            background: rgba(236, 72, 153, .09);
+            color: #f472b6;
+        }
+        
+        .feature-card:nth-child(5) .feature-icon {
+            background: rgba(147, 51, 234, .09);
+            color: #c084fc;
+        }
+        
+        .feature-card h3 {
+            margin-bottom: 10px;
+            color: #e5e7eb;
+            font-size: 16px;
+            line-height: 1.4;
+        }
+        
+        .feature-card p {
+            color: #898b97;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+        /* =====================================================
+           WORKFLOW
+           ===================================================== */
+        
+        .workflow-section {
+            padding: 115px 30px;
+            border-top: 1px solid rgba(255, 255, 255, .035);
+            border-bottom: 1px solid rgba(255, 255, 255, .035);
+        }
+        
+        .workflow {
+            max-width: 1080px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+        }
+        
+        .workflow-step {
+            position: relative;
+            text-align: center;
+        }
+        
+        .workflow-circle {
+            position: relative;
+            z-index: 2;
+            width: 54px;
+            height: 54px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .035);
+            border: 1px solid rgba(129, 140, 248, .40);
+            color: #9ea1ff;
+            font-size: 10px;
+            font-weight: 800;
+            box-shadow: 0 7px 24px rgba(0, 0, 0, .16);
+            transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+        }
+        
+        .workflow-step:hover .workflow-circle {
+            transform: translateY(-4px) scale(1.04);
+            background: rgba(99, 102, 241, .08);
+            box-shadow: 0 12px 28px rgba(99, 102, 241, .14);
+        }
+        
+        .workflow-step:not(:last-child) .workflow-circle::after {
+            content: "";
+            position: absolute;
+            left: 50px;
+            top: 50%;
+            width: 165px;
+            height: 1px;
+            background: rgba(129, 140, 248, .16);
+            z-index: -1;
+        }
+        
+        .workflow-step h3 {
+            color: #e7e8ed;
+            font-size: 14px;
+        }
+        
+        .workflow-step p {
+            max-width: 135px;
+            margin: 7px auto 0;
+            color: #858792;
+            font-size: 11px;
+            line-height: 1.65;
+        }
+        /* =====================================================
+           PLATFORM
+           ===================================================== */
+        
+        .platform-section {
+            padding: 120px 30px;
+        }
+        
+        .platform-grid {
+            max-width: 1120px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+        
+        .platform-copy h2 {
+            margin-top: 8px;
+            color: #f4f4f5;
+            font-size: clamp(32px, 4vw, 46px);
+            line-height: 1.08;
+            letter-spacing: -1.6px;
+        }
+        
+        .platform-copy p {
+            margin-top: 17px;
+            color: #858794;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        
+        .platform-points {
+            margin-top: 24px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .platform-point {
+            padding: 13px;
+            border: 1px solid rgba(255, 255, 255, .06);
+            border-radius: 9px;
+            color: #a2a4b0;
+            font-size: 11px;
+            background: rgba(255, 255, 255, .026);
+        }
+        
+        .platform-point strong {
+            color: #8f92ff;
+            margin-right: 5px;
+        }
+        
+        .platform-card {
+            padding: 11px;
+            border-radius: 17px;
+            background: linear-gradient( 145deg, rgba(255, 255, 255, .055), rgba(255, 255, 255, .018));
+            border: 1px solid rgba(255, 255, 255, .07);
+            box-shadow: 0 30px 70px rgba(0, 0, 0, .22);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            transition: transform .3s ease, box-shadow .3s ease;
+        }
+        
+        .platform-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 38px 80px rgba(0, 0, 0, .28);
+        }
+        
+        .platform-inner {
+            padding: 19px;
+            border-radius: 11px;
+            background: rgba(8, 10, 16, .72);
+        }
+        
+        .platform-top {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        
+        .platform-top strong {
+            color: #ffffff;
+            font-size: 12px;
+        }
+        
+        .platform-top span {
+            color: #8f92ff;
+            font-size: 9px;
+            font-weight: 700;
+        }
+        
+        .platform-stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        
+        .platform-stat {
+            padding: 13px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, .035);
+            border: 1px solid rgba(255, 255, 255, .05);
+        }
+        
+        .platform-stat small {
+            display: block;
+            color: #747783;
+            font-size: 8px;
+        }
+        
+        .platform-stat strong {
+            display: block;
+            margin-top: 5px;
+            color: #ffffff;
+            font-size: 20px;
+        }
+        
+        .platform-bottom {
+            margin-top: 8px;
+            display: grid;
+            grid-template-columns: 1.25fr .75fr;
+            gap: 8px;
+        }
+        
+        .platform-message,
+        .platform-chart {
+            min-height: 110px;
+            padding: 14px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, .028);
+            border: 1px solid rgba(255, 255, 255, .05);
+        }
+        
+        .platform-message strong {
+            color: #dbeafe;
+            font-size: 10px;
+        }
+        
+        .platform-message p {
+            margin-top: 7px;
+            color: #747783;
+            font-size: 9px;
+            line-height: 1.6;
+        }
+        
+        .platform-bars {
+            height: 80px;
+            display: flex;
+            align-items: flex-end;
+            gap: 5px;
+        }
+        
+        .platform-bars span {
+            flex: 1;
+            border-radius: 4px 4px 2px 2px;
+            background: linear-gradient( 180deg, #818cf8, rgba(99, 102, 241, .15));
+            animation: platformBars 3.5s ease-in-out infinite;
+        }
+        
+        .platform-bars span:nth-child(1) {
+            height: 35%;
+        }
+        
+        .platform-bars span:nth-child(2) {
+            height: 47%;
+            animation-delay: .15s;
+        }
+        
+        .platform-bars span:nth-child(3) {
+            height: 58%;
+            animation-delay: .30s;
+        }
+        
+        .platform-bars span:nth-child(4) {
+            height: 68%;
+            animation-delay: .45s;
+        }
+        
+        .platform-bars span:nth-child(5) {
+            height: 76%;
+            animation-delay: .60s;
+        }
+        
+        .platform-bars span:nth-child(6) {
+            height: 90%;
+            animation-delay: .75s;
+        }
+        
+        @keyframes platformBars {
+            0%,
+            100% {
+                opacity: .70;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+        /* =====================================================
+           ROLES
+           ===================================================== */
+        
+        .roles-section {
+            padding: 115px 30px;
+            border-top: 1px solid rgba(255, 255, 255, .035);
+            border-bottom: 1px solid rgba(255, 255, 255, .035);
+        }
+        
+        .roles-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+        
+        .role-card {
+            padding: 30px;
+            border-radius: 16px;
+            background: linear-gradient( 145deg, rgba(255, 255, 255, .055), rgba(255, 255, 255, .018));
+            border: 1px solid rgba(255, 255, 255, .065);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, .12);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+        }
+        
+        .role-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(129, 140, 248, .17);
+            box-shadow: 0 20px 42px rgba(0, 0, 0, .18);
+        }
+        
+        .role-head {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .role-icon {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 11px;
+            background: rgba(99, 102, 241, .10);
+            color: #a5a7ff;
+            font-size: 14px;
+            font-weight: 800;
+        }
+        
+        .role-head h3 {
+            color: #e8e9ed;
+            font-size: 17px;
+        }
+        
+        .role-card>p {
+            margin-top: 17px;
+            color: #8b8d99;
+            font-size: 13px;
+            line-height: 1.75;
+        }
+        
+        .role-list {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        
+        .role-list span {
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, .024);
+            border: 1px solid rgba(255, 255, 255, .045);
+            color: #9698a4;
+            font-size: 11px;
+        }
+        /* =====================================================
+           PROBLEM
+           ===================================================== */
+        
+        .problem-section {
+            padding: 125px 30px;
+            background: transparent;
+            border-top: 1px solid rgba(255, 255, 255, .035);
+        }
+        
+        .problem-grid {
+            width: min(1080px, 100%);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+        
+        .problem-card-new {
+            min-height: 220px;
+            padding: 30px;
+            border-radius: 17px;
+            background: linear-gradient( 145deg, rgba(255, 255, 255, .052), rgba(255, 255, 255, .014));
+            border: 1px solid rgba(255, 255, 255, .06);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            transition: transform .28s ease, background .28s ease, border-color .28s ease, box-shadow .28s ease;
+        }
+        
+        .problem-card-new:hover {
+            transform: translateY(-6px);
+            border-color: rgba(129, 140, 248, .18);
+            background: linear-gradient( 145deg, rgba(255, 255, 255, .065), rgba(255, 255, 255, .020));
+            box-shadow: 0 22px 50px rgba(0, 0, 0, .16);
+        }
+        
+        .problem-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 28px;
+            border-radius: 7px;
+            background: rgba(99, 102, 241, .10);
+            border: 1px solid rgba(129, 140, 248, .10);
+            color: #9699ff;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .7px;
+        }
+        
+        .problem-card-new h3 {
+            margin-top: 19px;
+            color: #ececf1;
+            font-size: 19px;
+            line-height: 1.4;
+            letter-spacing: -.3px;
+        }
+        
+        .problem-card-new p {
+            max-width: 470px;
+            margin-top: 11px;
+            color: #7e818e;
+            font-size: 12px;
+            line-height: 1.85;
+        }
+        /* =====================================================
+           SOLUTION
+           ===================================================== */
+        
+        .solution-section {
+            padding: 135px 30px;
+            background: transparent;
+        }
+        
+        .solution-grid {
+            width: min(1100px, 100%);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 85px;
+            align-items: center;
+        }
+        
+        .solution-copy {
+            padding-right: 15px;
+        }
+        
+        .solution-copy .section-label,
+        .notification-copy .section-label {
+            margin-bottom: 17px;
+        }
+        
+        .solution-copy h2,
+        .notification-copy h2 {
+            max-width: 540px;
+            margin: 0;
+            color: #f7f7fa;
+            font-size: clamp(39px, 4vw, 50px);
+            font-weight: 800;
+            line-height: 1.08;
+            letter-spacing: -1.9px;
+        }
+        
+        .solution-copy>p,
+        .notification-copy>p {
+            max-width: 530px;
+            margin-top: 20px;
+            color: #777a88;
+            font-size: 13px;
+            line-height: 1.9;
+        }
+        
+        .solution-points {
+            display: grid;
+            gap: 10px;
+            margin-top: 28px;
+        }
+        
+        .solution-points div {
+            display: flex;
+            align-items: center;
+            min-height: 42px;
+            padding: 0 13px;
+            border-radius: 9px;
+            background: rgba(255, 255, 255, .022);
+            border: 1px solid rgba(255, 255, 255, .045);
+            color: #9295a1;
+            font-size: 12px;
+        }
+        
+        .solution-points strong {
+            color: #8e92ff;
+            margin-right: 10px;
+            font-size: 13px;
+        }
+        
+        .solution-card {
+            width: 100%;
+            padding: 27px;
+            border-radius: 18px;
+            background: linear-gradient( 145deg, rgba(255, 255, 255, .058), rgba(255, 255, 255, .015));
+            border: 1px solid rgba(255, 255, 255, .065);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 30px 75px rgba(0, 0, 0, .20);
+        }
+        
+        .solution-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, .045);
+        }
+        
+        .solution-card-header span {
+            color: #656875;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+        
+        .solution-card-header strong {
+            color: #9b9fff;
+            font-size: 9px;
+            font-weight: 800;
+        }
+        
+        .lifecycle {
+            margin-top: 29px;
+        }
+        
+        .lifecycle-item {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+        }
+        
+        .lifecycle-dot {
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .035);
+            border: 1px solid rgba(255, 255, 255, .07);
+            color: #737682;
+            font-size: 9px;
+            font-weight: 800;
+        }
+        
+        .lifecycle-item.active .lifecycle-dot {
+            background: rgba(99, 102, 241, .13);
+            border-color: rgba(129, 140, 248, .24);
+            color: #9da0ff;
+            box-shadow: 0 0 18px rgba(99, 102, 241, .10);
+        }
+        
+        .lifecycle-item strong {
+            display: block;
+            color: #e4e5ea;
+            font-size: 13px;
+        }
+        
+        .lifecycle-item span {
+            display: block;
+            margin-top: 4px;
+            color: #6d707c;
+            font-size: 9px;
+        }
+        
+        .lifecycle-line {
+            width: 1px;
+            height: 25px;
+            margin-left: 18px;
+            background: linear-gradient( to bottom, rgba(129, 140, 248, .17), rgba(129, 140, 248, .04));
+        }
+        /* =====================================================
+           DAILY WORKSPACE
+           ===================================================== */
+        
+        .workspace-section {
+            padding: 125px 30px;
+            background: transparent;
+            border-top: 1px solid rgba(255, 255, 255, .035);
+        }
+        
+        .workspace-grid {
+            width: min(1080px, 100%);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 17px;
+        }
+        
+        .workspace-card {
+            min-height: 270px;
+            padding: 27px;
+            border-radius: 16px;
+            background: linear-gradient( 145deg, rgba(255, 255, 255, .048), rgba(255, 255, 255, .014));
+            border: 1px solid rgba(255, 255, 255, .06);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            transition: transform .28s ease, border-color .28s ease, background .28s ease, box-shadow .28s ease;
+        }
+        
+        .workspace-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(129, 140, 248, .17);
+            background: rgba(255, 255, 255, .055);
+            box-shadow: 0 20px 42px rgba(0, 0, 0, .16);
+        }
+        
+        .workspace-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 13px;
+            background: rgba(99, 102, 241, .10);
+            border: 1px solid rgba(129, 140, 248, .10);
+            color: #9ca0ff;
+            font-size: 18px;
+        }
+        
+        .workspace-card>span {
+            display: block;
+            margin-top: 22px;
+            color: #686b78;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+        
+        .workspace-card h3 {
+            margin-top: 9px;
+            color: #e9e9ee;
+            font-size: 17px;
+            line-height: 1.4;
+            letter-spacing: -.25px;
+        }
+        
+        .workspace-card p {
+            margin-top: 11px;
+            color: #7c7f8b;
+            font-size: 11px;
+            line-height: 1.8;
+        }
+        /* =====================================================
+           ADMIN + STUDENT FLOW
+           ===================================================== */
+        
+        .flow-section {
+            padding: 125px 30px;
+            background: transparent;
+        }
+        
+        .flow-grid {
+            width: min(1080px, 100%);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+        
+        .flow-panel {
+            padding: 30px;
+            border-radius: 17px;
+            background: linear-gradient( 145deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .015));
+            border: 1px solid rgba(255, 255, 255, .06);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            transition: transform .28s ease, border-color .28s ease, box-shadow .28s ease;
+        }
+        
+        .flow-panel:hover {
+            transform: translateY(-5px);
+            border-color: rgba(129, 140, 248, .16);
+            box-shadow: 0 22px 45px rgba(0, 0, 0, .16);
+        }
+        
+        .flow-panel-top {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, .045);
+        }
+        
+        .flow-panel-icon {
+            width: 46px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: rgba(99, 102, 241, .10);
+            color: #9ca0ff;
+            font-size: 14px;
+            font-weight: 800;
+        }
+        
+        .flow-panel-icon.admin {
+            background: rgba(139, 92, 246, .10);
+            color: #c1a7ff;
+        }
+        
+        .flow-panel-top span {
+            color: #666975;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+        
+        .flow-panel-top h3 {
+            margin-top: 5px;
+            color: #e9e9ee;
+            font-size: 17px;
+            line-height: 1.35;
+        }
+        
+        .flow-list {
+            display: grid;
+            gap: 9px;
+            margin-top: 24px;
+        }
+        
+        .flow-list div {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 43px;
+            padding: 0 13px;
+            border-radius: 9px;
+            background: rgba(255, 255, 255, .021);
+            border: 1px solid rgba(255, 255, 255, .04);
+            color: #858894;
+            font-size: 11px;
+        }
+        
+        .flow-list strong {
+            color: #9699ff;
+            font-size: 9px;
+            min-width: 18px;
+        }
+        /* =====================================================
+           NOTIFICATION SECTION
+           ===================================================== */
+        
+        .notification-section {
+            padding: 135px 30px;
+            background: transparent;
+            border-top: 1px solid rgba(255, 255, 255, .035);
+        }
+        
+        .notification-grid {
+            width: min(1100px, 100%);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 85px;
+            align-items: center;
+        }
+        
+        .notification-window {
+            padding: 15px;
+            border-radius: 17px;
+            background: rgba(10, 11, 16, .68);
+            border: 1px solid rgba(255, 255, 255, .065);
+            box-shadow: 0 30px 75px rgba(0, 0, 0, .20);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        
+        .notification-window-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 8px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, .045);
+        }
+        
+        .notification-window-top>span {
+            color: #656875;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+        
+        .notification-counter {
+            width: 27px;
+            height: 27px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: rgba(99, 102, 241, .12);
+            border: 1px solid rgba(129, 140, 248, .10);
+            color: #a0a3ff;
+            font-size: 9px;
+            font-weight: 800;
+        }
+        
+        .notification-item-new {
+            display: flex;
+            gap: 12px;
+            padding: 18px 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, .04);
+        }
+        
+        .notification-item-new:last-child {
+            border-bottom: 0;
+        }
+        
+        .notification-dot {
+            width: 7px;
+            height: 7px;
+            margin-top: 5px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            background: #818cf8;
+            box-shadow: 0 0 12px rgba(129, 140, 248, .45);
+        }
+        
+        .notification-item-new strong {
+            color: #e2e3e8;
+            font-size: 12px;
+        }
+        
+        .notification-item-new p {
+            margin-top: 6px;
+            color: #767984;
+            font-size: 10px;
+            line-height: 1.65;
+        }
+        
+        .notification-item-new span {
+            display: block;
+            margin-top: 7px;
+            color: #4f525e;
+            font-size: 8px;
+        }
+        
+        .notification-copy {
+            padding-left: 5px;
+        }
+        
+        .notification-benefits {
+            display: grid;
+            gap: 11px;
+            margin-top: 28px;
+        }
+        
+        .notification-benefits div {
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, .022);
+            border: 1px solid rgba(255, 255, 255, .045);
+        }
+        
+        .notification-benefits strong {
+            display: block;
+            color: #dedfe5;
+            font-size: 12px;
+        }
+        
+        .notification-benefits span {
+            display: block;
+            margin-top: 5px;
+            color: #70737f;
+            font-size: 10px;
+        }
+        /* =====================================================
+           TECHNOLOGY
+           ===================================================== */
+        
+        .technology-section {
+            padding: 125px 30px;
+            background: transparent;
+            border-top: 1px solid rgba(255, 255, 255, .035);
+        }
+        
+        .technology-grid {
+            width: min(1080px, 100%);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+        }
+        
+        .technology-card {
+            min-height: 225px;
+            padding: 25px;
+            border-radius: 15px;
+            background: linear-gradient( 145deg, rgba(255, 255, 255, .045), rgba(255, 255, 255, .014));
+            border: 1px solid rgba(255, 255, 255, .055);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            transition: transform .27s ease, border-color .27s ease, box-shadow .27s ease;
+        }
+        
+        .technology-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(129, 140, 248, .16);
+            box-shadow: 0 20px 42px rgba(0, 0, 0, .16);
+        }
+        
+        .technology-code {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 58px;
+            padding: 7px 10px;
+            border-radius: 7px;
+            background: rgba(99, 102, 241, .10);
+            border: 1px solid rgba(129, 140, 248, .08);
+            color: #999cff;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: .6px;
+        }
+        
+        .technology-card h3 {
+            margin-top: 20px;
+            color: #e7e8ed;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        
+        .technology-card p {
+            margin-top: 9px;
+            color: #777a86;
+            font-size: 11px;
+            line-height: 1.8;
+        }
+        /* =====================================================
+           FAQ
+           ===================================================== */
+        
+        .faq-section {
+            padding: 115px 30px;
+        }
+        
+        .faq-list {
+            max-width: 780px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+        
+        .faq-item {
+            border: 1px solid rgba(255, 255, 255, .06);
+            border-radius: 11px;
+            background: rgba(255, 255, 255, .025);
+            overflow: hidden;
+            transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
+        }
+        
+        .faq-item[open] {
+            border-color: rgba(129, 140, 248, .16);
+            background: rgba(255, 255, 255, .035);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, .13);
+        }
+        
+        .faq-item summary {
+            cursor: pointer;
+            list-style: none;
+            padding: 18px 20px;
+            color: #e4e5ea;
+            font-size: 13px;
+            font-weight: 700;
+        }
+        
+        .faq-item summary::-webkit-details-marker {
+            display: none;
+        }
+        
+        .faq-item p {
+            padding: 0 20px 19px;
+            color: #858792;
+            font-size: 12px;
+            line-height: 1.75;
+        }
+        /* =====================================================
+           FINAL CTA
+           ===================================================== */
+        
+        .final-cta {
+            position: relative;
+            overflow: hidden;
+            padding: 125px 30px;
+            text-align: center;
+            background: radial-gradient( ellipse at center, rgba(99, 102, 241, .045), transparent 58%) !important;
+            border-top: 1px solid rgba(255, 255, 255, .045);
+            border-bottom: 1px solid rgba(255, 255, 255, .045);
+        }
+        
+        .final-cta::before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 620px;
+            height: 360px;
+            border-radius: 50%;
+            background: radial-gradient( ellipse, rgba(99, 102, 241, .09), transparent 68%);
+            pointer-events: none;
+            animation: ctaGlow 6s ease-in-out infinite;
+        }
+        
+        @keyframes ctaGlow {
+            0%,
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.08);
+            }
+        }
+        
+        .final-cta-content {
+            position: relative;
+            z-index: 2;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+        
+        .final-cta h2 {
+            margin-top: 8px;
+            color: #ffffff;
+            font-size: clamp(33px, 4vw, 49px);
+            letter-spacing: -1.8px;
+            line-height: 1.08;
+        }
+        
+        .final-cta p {
+            max-width: 540px;
+            margin: 15px auto 27px;
+            color: #999ba7;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        
+        .final-actions {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 9px;
+        }
+        /* =====================================================
+           FOOTER
+           ===================================================== */
+        
+        footer {
+            min-height: 76px;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            background: rgba(4, 4, 7, .42) !important;
+            border-top: 1px solid rgba(255, 255, 255, .035);
+            color: #666875;
+            font-size: 11px;
+        }
+        
+        footer strong {
+            color: #b3b5c0;
+        }
+        /* =====================================================
+           AI MESH BACKGROUND
+           ===================================================== */
+        
+        body {
+            background: #050507 !important;
+        }
+        
+        .page-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+            background: #050507 !important;
+        }
+        
+        #placementCanvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            opacity: 1;
+        }
+        
+        .bg-grid {
+            opacity: .05;
+            background-size: 55px 55px;
+        }
+        /* =====================================================
+           RESPONSIVE - TABLET / LAPTOP
+           ===================================================== */
+        
+        @media (max-width: 1080px) {
+            .nav-center {
+                display: none;
+            }
+            .hero {
+                grid-template-columns: 1fr;
+                padding: 135px 30px 80px;
+                text-align: center;
+            }
+            .hero-content {
+                max-width: 820px;
+                margin: 0 auto;
+            }
+            .hero-description {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .hero-actions,
+            .hero-checks {
+                justify-content: center;
+            }
+            .hero-preview {
+                max-width: 650px;
+                margin: 0 auto;
+            }
+            /* FEATURES */
+            .feature-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .feature-card,
+            .feature-card:nth-child(4),
+            .feature-card:nth-child(5) {
+                grid-column: span 1;
+            }
+            /* PLATFORM */
+            .platform-grid {
+                grid-template-columns: 1fr;
+            }
+            .platform-card {
+                max-width: 650px;
+                margin: 0 auto;
+            }
+            /* EXTRA CONTENT */
+            .workspace-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .technology-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .solution-grid,
+            .notification-grid {
+                gap: 55px;
+            }
+        }
+        /* =====================================================
+           MOBILE
+           ===================================================== */
+        
+        @media (max-width: 760px) {
+            .section-inner,
+            .content-container {
+                width: calc(100% - 36px);
+            }
+            /* NAVBAR */
+            .navbar {
+                top: 10px;
+                width: calc(100% - 20px);
+                height: 58px;
+                padding: 0 10px 0 12px;
+            }
+            .brand {
+                font-size: 16px;
+            }
+            .brand-box {
+                width: 31px;
+                height: 31px;
+            }
+            .nav-center {
+                display: none;
+            }
+            .nav-right {
+                gap: 4px;
+            }
+            .nav-btn {
+                min-height: 33px;
+                padding: 0 9px;
+                font-size: 9px;
+            }
+            .nav-admin {
+                display: none;
+            }
+            /* HERO */
+            .hero {
+                min-height: auto;
+                padding: 115px 18px 60px;
+            }
+            .hero-title {
+                font-size: 43px;
+                letter-spacing: -2px;
+            }
+            .hero-title-line,
+            .hero-title-gradient {
+                white-space: normal;
+            }
+            .hero-description {
+                font-size: 13px;
+            }
+            .hero-actions {
+                flex-direction: column;
+            }
+            .hero-primary,
+            .hero-secondary {
+                width: 100%;
+            }
+            .hero-checks {
+                flex-direction: column;
+                align-items: center;
+                gap: 9px;
+            }
+            .preview-window {
+                transform: none;
+                animation: none;
+            }
+            .floating {
+                display: none;
+            }
+            .dashboard {
+                grid-template-columns: 60px 1fr;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            /* INTRO */
+            .intro-strip {
+                padding: 15px 18px;
+            }
+            .intro-inner {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            /* EXISTING SECTIONS */
+            .light-section,
+            .workflow-section,
+            .platform-section,
+            .roles-section,
+            .faq-section {
+                padding: 80px 18px;
+            }
+            /* FEATURES */
+            .feature-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+            .feature-card,
+            .feature-card:nth-child(4),
+            .feature-card:nth-child(5) {
+                grid-column: span 1;
+            }
+            .feature-card {
+                min-height: 215px;
+            }
+            /* WORKFLOW */
+            .workflow {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+            .workflow-step:not(:last-child) .workflow-circle::after {
+                display: none;
+            }
+            /* ROLES */
+            .roles-grid {
+                grid-template-columns: 1fr;
+            }
+            .role-list {
+                grid-template-columns: 1fr;
+            }
+            /* PLATFORM */
+            .platform-points {
+                grid-template-columns: 1fr;
+            }
+            .platform-bottom {
+                grid-template-columns: 1fr;
+            }
+            /* NEW CONTENT */
+            .section-heading {
+                margin-bottom: 44px;
+            }
+            .section-heading h2 {
+                font-size: 34px;
+                letter-spacing: -1.1px;
+            }
+            .section-heading p {
+                margin-top: 15px;
+                font-size: 12px;
+            }
+            .problem-section,
+            .solution-section,
+            .workspace-section,
+            .flow-section,
+            .notification-section,
+            .technology-section {
+                padding: 85px 18px;
+            }
+            .problem-grid,
+            .solution-grid,
+            .flow-grid,
+            .notification-grid {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+            .workspace-grid {
+                grid-template-columns: 1fr;
+            }
+            .technology-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .solution-copy,
+            .notification-copy {
+                padding: 0;
+            }
+            .solution-copy h2,
+            .notification-copy h2 {
+                font-size: 34px;
+                letter-spacing: -1.1px;
+            }
+            .solution-copy>p,
+            .notification-copy>p {
+                font-size: 12px;
+            }
+            .problem-card-new,
+            .workspace-card,
+            .flow-panel,
+            .technology-card {
+                padding: 23px;
+            }
+            /* CTA */
+            .final-cta {
+                padding: 85px 18px;
+            }
+            /* FOOTER */
+            footer {
+                min-height: auto;
+                padding: 25px 18px;
+                flex-direction: column;
+                justify-content: center;
+                text-align: center;
+            }
+        }
+        /* =====================================================
+           SMALL MOBILE
+           ===================================================== */
+        
+        @media (max-width: 430px) {
+            .hero-title {
+                font-size: 37px;
+            }
+            .intro-inner {
+                grid-template-columns: 1fr;
+            }
+            .dashboard-sidebar {
+                display: none;
+            }
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            .platform-stat-grid {
+                grid-template-columns: 1fr;
+            }
+            .technology-grid {
+                grid-template-columns: 1fr;
+            }
+            .section-heading h2 {
+                font-size: 30px;
+            }
+            .solution-copy h2,
+            .notification-copy h2 {
+                font-size: 30px;
+            }
+        }
+        /* =====================================================
+           ACCESSIBILITY
+           ===================================================== */
+        
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
-</head>
-<body>
-    <div class="container">
-        <h1>PlaceTrack</h1>
-        <p>Student Placement Management System</p>
-    </div>
-</body>
 
-</html>
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         LIVE AI MESH BACKGROUND
+         ===================================================== -->
+
+    <div class="page-bg">
+
+        <div class="bg-grid"></div>
+
+        <canvas id="placementCanvas"></canvas>
+
+    </div>
+
+
+    <div class="home-page">
+
+
+        <!-- =================================================
+             NAVBAR
+             ================================================= -->
+
+        <nav class="navbar">
+
+
+            <a href="/" class="brand">
+
+                <div class="brand-box">
+                    P
+                </div>
+
+                Place<span>Track</span>
+
+            </a>
+
+
+            <div class="nav-center">
+
+                <a href="#features">
+                    Features
+                </a>
+
+                <a href="#workflow">
+                    Workflow
+                </a>
+
+                <a href="#platform">
+                    Platform
+                </a>
+
+                <a href="#faq">
+                    FAQ
+                </a>
+
+            </div>
+
+
+            <div class="nav-right">
+
+                <a href="/login" class="nav-btn nav-login">
+                    Login
+                </a>
+
+                <a href="/register" class="nav-btn nav-register">
+                    Get Started
+                </a>
+
+                <a href="{{ url_for('admin_login') }}" class="nav-btn nav-admin">
+                    Admin
+                </a>
+
+            </div>
+
+
+        </nav>
+
+
+        <!-- =================================================
+             HERO
+             ================================================= -->
+
+        <section class="hero">
+
+
+            <div class="hero-content">
+
+
+                <div class="hero-badge">
+                    Student Placement Management Platform
+                </div>
+
+
+                <h1 class="hero-title">
+
+                    <span class="hero-title-line">
+                        Your placement journey,
+                    </span>
+
+                    <span class="hero-title-gradient">
+                        finally organized.
+                    </span>
+
+                </h1>
+
+
+                <p class="hero-description">
+
+                    Manage applications, discover opportunities, monitor interview progress, receive status updates and understand your placement activity from one centralized workspace.
+
+                </p>
+
+
+                <div class="hero-actions">
+
+
+                    <a href="/register" class="hero-primary">
+
+                        Create Free Account
+
+                        <span>
+                            →
+                        </span>
+
+                    </a>
+
+
+                    <a href="/login" class="hero-secondary">
+
+                        Explore Dashboard
+
+                    </a>
+
+
+                </div>
+
+
+                <div class="hero-checks">
+
+
+                    <div class="hero-check">
+
+                        <strong>✓</strong> Application Tracking
+
+                    </div>
+
+
+                    <div class="hero-check">
+
+                        <strong>✓</strong> Live Notifications
+
+                    </div>
+
+
+                    <div class="hero-check">
+
+                        <strong>✓</strong> Placement Analytics
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+            <!-- =================================================
+                 DASHBOARD PREVIEW
+                 ================================================= -->
+
+            <div class="hero-preview">
+
+
+                <div class="preview-window">
+
+
+                    <div class="browser-top">
+
+                        <span class="browser-dot"></span>
+
+                        <span class="browser-dot"></span>
+
+                        <span class="browser-dot"></span>
+
+                        <div class="browser-address"></div>
+
+                    </div>
+
+
+                    <div class="dashboard">
+
+
+                        <aside class="dashboard-sidebar">
+
+
+                            <div class="dashboard-logo">
+                                P
+                            </div>
+
+
+                            <div class="dashboard-nav">
+
+                                <div class="dashboard-nav-item active"></div>
+
+                                <div class="dashboard-nav-item"></div>
+
+                                <div class="dashboard-nav-item"></div>
+
+                                <div class="dashboard-nav-item"></div>
+
+                                <div class="dashboard-nav-item"></div>
+
+                                <div class="dashboard-nav-item"></div>
+
+                            </div>
+
+
+                        </aside>
+
+
+                        <div class="dashboard-main">
+
+
+                            <div class="dashboard-heading">
+
+                                <strong>
+                                    Placement Dashboard
+                                </strong>
+
+                                <span></span>
+
+                            </div>
+
+
+                            <div class="stats-grid">
+
+
+                                <div class="mini-stat">
+
+                                    <small>
+                                        Applications
+                                    </small>
+
+                                    <strong>
+                                        24
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="mini-stat">
+
+                                    <small>
+                                        Interviews
+                                    </small>
+
+                                    <strong>
+                                        08
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="mini-stat">
+
+                                    <small>
+                                        Selected
+                                    </small>
+
+                                    <strong>
+                                        03
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="mini-stat">
+
+                                    <small>
+                                        Pending
+                                    </small>
+
+                                    <strong>
+                                        13
+                                    </strong>
+
+                                </div>
+
+
+                            </div>
+
+
+                            <div class="dashboard-graph">
+
+                                <div class="graph-label"></div>
+
+
+                                <div class="bars">
+
+                                    <span class="bar"></span>
+
+                                    <span class="bar"></span>
+
+                                    <span class="bar"></span>
+
+                                    <span class="bar"></span>
+
+                                    <span class="bar"></span>
+
+                                    <span class="bar"></span>
+
+                                    <span class="bar"></span>
+
+                                </div>
+
+
+                            </div>
+
+
+                            <div class="application-list">
+
+
+                                <div class="application-row">
+
+                                    <div class="application-company"></div>
+
+                                    <div class="application-status"></div>
+
+                                </div>
+
+
+                                <div class="application-row">
+
+                                    <div class="application-company"></div>
+
+                                    <div class="application-status"></div>
+
+                                </div>
+
+
+                                <div class="application-row">
+
+                                    <div class="application-company"></div>
+
+                                    <div class="application-status"></div>
+
+                                </div>
+
+
+                                <div class="application-row">
+
+                                    <div class="application-company"></div>
+
+                                    <div class="application-status"></div>
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- FLOATING UPDATE -->
+
+                <div class="floating floating-update">
+
+                    <div class="floating-label">
+                        Application Update
+                    </div>
+
+                    <div class="floating-title">
+                        Interview Stage
+                    </div>
+
+                    <div class="floating-text">
+                        Your application status has been updated.
+                    </div>
+
+                </div>
+
+
+                <!-- FLOATING PROGRESS -->
+
+                <div class="floating floating-progress">
+
+                    <div class="floating-label">
+                        Progress
+                    </div>
+
+                    <div class="floating-title">
+                        Placement Activity
+                    </div>
+
+                    <div class="progress-line">
+                        <span></span>
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             INTRO
+             ================================================= -->
+
+        <section class="intro-strip">
+
+
+            <div class="intro-inner">
+
+
+                <div class="intro-item">
+
+                    <strong>
+                        01
+                    </strong>
+
+                    <span>
+                        Centralized Workspace
+                    </span>
+
+                </div>
+
+
+                <div class="intro-item">
+
+                    <strong>
+                        05
+                    </strong>
+
+                    <span>
+                        Application Stages
+                    </span>
+
+                </div>
+
+
+                <div class="intro-item">
+
+                    <strong>
+                        24/7
+                    </strong>
+
+                    <span>
+                        Application Visibility
+                    </span>
+
+                </div>
+
+
+                <div class="intro-item">
+
+                    <strong>
+                        02
+                    </strong>
+
+                    <span>
+                        Platform Roles
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             FEATURES
+             ================================================= -->
+
+        <section class="light-section" id="features">
+
+
+            <div class="section-inner">
+
+
+                <div class="light-heading reveal">
+
+                    <span class="light-label">
+                        Everything in one place
+                    </span>
+
+                    <h2>
+                        Everything you need to manage placements
+                    </h2>
+
+                    <p>
+                        Keep your placement activities organized through one connected workspace.
+                    </p>
+
+                </div>
+
+
+                <div class="feature-grid">
+
+
+                    <div class="feature-card reveal reveal-delay-1">
+
+                        <div class="feature-icon">
+                            ◫
+                        </div>
+
+                        <h3>
+                            Application Tracking
+                        </h3>
+
+                        <p>
+                            Keep company, role, date, package, notes and status organized in one structured place.
+                        </p>
+
+                    </div>
+
+
+                    <div class="feature-card reveal reveal-delay-2">
+
+                        <div class="feature-icon">
+                            ⌁
+                        </div>
+
+                        <h3>
+                            Opportunities
+                        </h3>
+
+                        <p>
+                            Discover and organize internship and placement opportunities with important details.
+                        </p>
+
+                    </div>
+
+
+                    <div class="feature-card reveal reveal-delay-3">
+
+                        <div class="feature-icon">
+                            ◒
+                        </div>
+
+                        <h3>
+                            Analytics
+                        </h3>
+
+                        <p>
+                            Understand application, interview, selection and rejection activity through your dashboard.
+                        </p>
+
+                    </div>
+
+
+                    <div class="feature-card reveal reveal-delay-4">
+
+                        <div class="feature-icon">
+                            ♢
+                        </div>
+
+                        <h3>
+                            Notifications
+                        </h3>
+
+                        <p>
+                            Stay updated whenever your application status changes and quickly open the related application.
+                        </p>
+
+                    </div>
+
+
+                    <div class="feature-card reveal reveal-delay-4">
+
+                        <div class="feature-icon">
+                            ◎
+                        </div>
+
+                        <h3>
+                            Profile Management
+                        </h3>
+
+                        <p>
+                            Maintain your personal and college information from one simple profile workspace.
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             WORKFLOW
+             ================================================= -->
+
+        <section class="workflow-section" id="workflow">
+
+
+            <div class="section-inner">
+
+
+                <div class="light-heading reveal">
+
+                    <span class="light-label">
+                        Simple workflow
+                    </span>
+
+                    <h2>
+                        Follow every application from start to finish
+                    </h2>
+
+                    <p>
+                        Track each important stage through a simple application lifecycle.
+                    </p>
+
+                </div>
+
+
+                <div class="workflow">
+
+
+                    <div class="workflow-step reveal">
+
+                        <div class="workflow-circle">
+                            01
+                        </div>
+
+                        <h3>
+                            Apply
+                        </h3>
+
+                        <p>
+                            Record a new opportunity.
+                        </p>
+
+                    </div>
+
+
+                    <div class="workflow-step reveal reveal-delay-1">
+
+                        <div class="workflow-circle">
+                            02
+                        </div>
+
+                        <h3>
+                            Assessment
+                        </h3>
+
+                        <p>
+                            Track evaluation progress.
+                        </p>
+
+                    </div>
+
+
+                    <div class="workflow-step reveal reveal-delay-2">
+
+                        <div class="workflow-circle">
+                            03
+                        </div>
+
+                        <h3>
+                            Interview
+                        </h3>
+
+                        <p>
+                            Monitor interview stage.
+                        </p>
+
+                    </div>
+
+
+                    <div class="workflow-step reveal reveal-delay-3">
+
+                        <div class="workflow-circle">
+                            04
+                        </div>
+
+                        <h3>
+                            Update
+                        </h3>
+
+                        <p>
+                            Receive status notifications.
+                        </p>
+
+                    </div>
+
+
+                    <div class="workflow-step reveal reveal-delay-4">
+
+                        <div class="workflow-circle">
+                            05
+                        </div>
+
+                        <h3>
+                            Result
+                        </h3>
+
+                        <p>
+                            View the final status.
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             PLATFORM
+             ================================================= -->
+
+        <section class="platform-section" id="platform">
+
+
+            <div class="platform-grid">
+
+
+                <div class="platform-copy reveal">
+
+
+                    <span class="light-label">
+                        One connected platform
+                    </span>
+
+
+                    <h2>
+                        Your dashboard tells the whole story.
+                    </h2>
+
+
+                    <p>
+                        Keep application history, status tracking, analytics and notifications together instead of managing placement information across different places.
+                    </p>
+
+
+                    <div class="platform-points">
+
+
+                        <div class="platform-point">
+                            <strong>✓</strong> Application history
+                        </div>
+
+
+                        <div class="platform-point">
+                            <strong>✓</strong> Status tracking
+                        </div>
+
+
+                        <div class="platform-point">
+                            <strong>✓</strong> Progress analytics
+                        </div>
+
+
+                        <div class="platform-point">
+                            <strong>✓</strong> Status notifications
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="platform-card reveal reveal-delay-2">
+
+
+                    <div class="platform-inner">
+
+
+                        <div class="platform-top">
+
+                            <strong>
+                                Placement Overview
+                            </strong>
+
+                            <span>
+                                LIVE VIEW
+                            </span>
+
+                        </div>
+
+
+                        <div class="platform-stat-grid">
+
+
+                            <div class="platform-stat">
+
+                                <small>
+                                    APPLICATIONS
+                                </small>
+
+                                <strong>
+                                    24
+                                </strong>
+
+                            </div>
+
+
+                            <div class="platform-stat">
+
+                                <small>
+                                    INTERVIEWS
+                                </small>
+
+                                <strong>
+                                    08
+                                </strong>
+
+                            </div>
+
+
+                            <div class="platform-stat">
+
+                                <small>
+                                    SELECTED
+                                </small>
+
+                                <strong>
+                                    03
+                                </strong>
+
+                            </div>
+
+
+                        </div>
+
+
+                        <div class="platform-bottom">
+
+
+                            <div class="platform-message">
+
+                                <strong>
+                                    Application Status Updated
+                                </strong>
+
+                                <p>
+                                    An application has moved to the Interview stage.
+                                </p>
+
+                            </div>
+
+
+                            <div class="platform-chart">
+
+
+                                <div class="platform-bars">
+
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             ROLES
+             ================================================= -->
+
+        <section class="roles-section">
+
+
+            <div class="section-inner">
+
+
+                <div class="light-heading reveal">
+
+                    <span class="light-label">
+                        Two focused experiences
+                    </span>
+
+                    <h2>
+                        Built for students and administrators
+                    </h2>
+
+                    <p>
+                        Each role gets a focused workspace designed around its responsibilities.
+                    </p>
+
+                </div>
+
+
+                <div class="roles-grid">
+
+
+                    <div class="role-card reveal">
+
+
+                        <div class="role-head">
+
+                            <div class="role-icon">
+                                S
+                            </div>
+
+                            <h3>
+                                Student Workspace
+                            </h3>
+
+                        </div>
+
+
+                        <p>
+                            Manage applications, discover opportunities, review analytics, maintain your profile and receive application updates.
+                        </p>
+
+
+                        <div class="role-list">
+
+                            <span>
+                                ✓ Applications
+                            </span>
+
+                            <span>
+                                ✓ Opportunities
+                            </span>
+
+                            <span>
+                                ✓ Analytics
+                            </span>
+
+                            <span>
+                                ✓ Notifications
+                            </span>
+
+                            <span>
+                                ✓ Profile
+                            </span>
+
+                            <span>
+                                ✓ Status Tracking
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="role-card reveal reveal-delay-2">
+
+
+                        <div class="role-head">
+
+                            <div class="role-icon">
+                                A
+                            </div>
+
+                            <h3>
+                                Admin Workspace
+                            </h3>
+
+                        </div>
+
+
+                        <p>
+                            Manage opportunities, review student applications and update application status from one administration panel.
+                        </p>
+
+
+                        <div class="role-list">
+
+                            <span>
+                                ✓ Add Opportunities
+                            </span>
+
+                            <span>
+                                ✓ Edit Opportunities
+                            </span>
+
+                            <span>
+                                ✓ Delete Opportunities
+                            </span>
+
+                            <span>
+                                ✓ Review Applications
+                            </span>
+
+                            <span>
+                                ✓ Status Updates
+                            </span>
+
+                            <span>
+                                ✓ Notifications
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =========================================================
+             PROBLEM SECTION
+             ========================================================= -->
+
+        <section class="problem-section">
+
+
+            <div class="content-container">
+
+
+                <div class="section-heading reveal">
+
+
+                    <span class="section-label">
+                        THE CHALLENGE
+                    </span>
+
+
+                    <h2>
+                        Placement preparation becomes difficult when everything is scattered.
+                    </h2>
+
+
+                    <p>
+                        Students often manage applications, interview updates, company information and placement progress across different places. PlaceTrack brings these activities together into one organized workspace.
+                    </p>
+
+
+                </div>
+
+
+                <div class="problem-grid">
+
+
+                    <div class="problem-card-new reveal">
+
+                        <div class="problem-number">
+                            01
+                        </div>
+
+                        <h3>
+                            Too many applications
+                        </h3>
+
+                        <p>
+                            When multiple companies and roles are involved, it becomes difficult to remember where each application stands.
+                        </p>
+
+                    </div>
+
+
+                    <div class="problem-card-new reveal reveal-delay-1">
+
+                        <div class="problem-number">
+                            02
+                        </div>
+
+                        <h3>
+                            Status updates get missed
+                        </h3>
+
+                        <p>
+                            Applications can move from Applied to Assessment or Interview without having a clear place to track those changes.
+                        </p>
+
+                    </div>
+
+
+                    <div class="problem-card-new reveal reveal-delay-2">
+
+                        <div class="problem-number">
+                            03
+                        </div>
+
+                        <h3>
+                            Opportunities are difficult to organize
+                        </h3>
+
+                        <p>
+                            Internship and placement opportunities contain important details such as eligibility, skills, location and deadlines.
+                        </p>
+
+                    </div>
+
+
+                    <div class="problem-card-new reveal reveal-delay-3">
+
+                        <div class="problem-number">
+                            04
+                        </div>
+
+                        <h3>
+                            Progress is difficult to understand
+                        </h3>
+
+                        <p>
+                            Without a central view, it is harder to understand application activity, interview progress and final outcomes.
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =========================================================
+             SOLUTION SECTION
+             ========================================================= -->
+
+        <section class="solution-section">
+
+
+            <div class="content-container">
+
+
+                <div class="solution-grid">
+
+
+                    <div class="solution-copy reveal">
+
+
+                        <span class="section-label">
+                            THE PLACETRACK APPROACH
+                        </span>
+
+
+                        <h2>
+                            One workspace for the complete placement lifecycle.
+                        </h2>
+
+
+                        <p>
+                            PlaceTrack connects the most important parts of a student's placement journey. Instead of treating applications, opportunities, notifications and analytics as separate tasks, the platform brings them together.
+                        </p>
+
+
+                        <div class="solution-points">
+
+
+                            <div>
+                                <strong>✓</strong> Track every application
+                            </div>
+
+
+                            <div>
+                                <strong>✓</strong> Monitor application stages
+                            </div>
+
+
+                            <div>
+                                <strong>✓</strong> Discover opportunities
+                            </div>
+
+
+                            <div>
+                                <strong>✓</strong> Receive status notifications
+                            </div>
+
+
+                            <div>
+                                <strong>✓</strong> Understand placement activity
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="solution-visual reveal reveal-delay-2">
+
+
+                        <div class="solution-card">
+
+
+                            <div class="solution-card-header">
+
+                                <span>
+                                    PLACEMENT LIFECYCLE
+                                </span>
+
+                                <strong>
+                                    LIVE
+                                </strong>
+
+                            </div>
+
+
+                            <div class="lifecycle">
+
+
+                                <div class="lifecycle-item active">
+
+
+                                    <div class="lifecycle-dot">
+                                        01
+                                    </div>
+
+
+                                    <div>
+
+                                        <strong>
+                                            Applied
+                                        </strong>
+
+                                        <span>
+                                            Application recorded
+                                        </span>
+
+                                    </div>
+
+
+                                </div>
+
+
+                                <div class="lifecycle-line"></div>
+
+
+                                <div class="lifecycle-item">
+
+
+                                    <div class="lifecycle-dot">
+                                        02
+                                    </div>
+
+
+                                    <div>
+
+                                        <strong>
+                                            Assessment
+                                        </strong>
+
+                                        <span>
+                                            Evaluation stage
+                                        </span>
+
+                                    </div>
+
+
+                                </div>
+
+
+                                <div class="lifecycle-line"></div>
+
+
+                                <div class="lifecycle-item">
+
+
+                                    <div class="lifecycle-dot">
+                                        03
+                                    </div>
+
+
+                                    <div>
+
+                                        <strong>
+                                            Interview
+                                        </strong>
+
+                                        <span>
+                                            Interview progress
+                                        </span>
+
+                                    </div>
+
+
+                                </div>
+
+
+                                <div class="lifecycle-line"></div>
+
+
+                                <div class="lifecycle-item">
+
+
+                                    <div class="lifecycle-dot">
+                                        04
+                                    </div>
+
+
+                                    <div>
+
+                                        <strong>
+                                            Selected
+                                        </strong>
+
+                                        <span>
+                                            Final outcome
+                                        </span>
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =========================================================
+             DAILY WORKSPACE
+             ========================================================= -->
+
+        <section class="workspace-section">
+
+
+            <div class="content-container">
+
+
+                <div class="section-heading reveal">
+
+
+                    <span class="section-label">
+                        YOUR DAILY WORKSPACE
+                    </span>
+
+
+                    <h2>
+                        Everything important is visible when you need it.
+                    </h2>
+
+
+                    <p>
+                        A focused workspace helps you quickly understand what has happened, what needs attention and where your applications currently stand.
+                    </p>
+
+
+                </div>
+
+
+                <div class="workspace-grid">
+
+
+                    <div class="workspace-card reveal">
+
+
+                        <div class="workspace-icon">
+                            ◫
+                        </div>
+
+
+                        <span>
+                            APPLICATIONS
+                        </span>
+
+
+                        <h3>
+                            Keep every application organized.
+                        </h3>
+
+
+                        <p>
+                            Store company name, role, application date, package information, status and notes in one structured record.
+                        </p>
+
+
+                    </div>
+
+
+                    <div class="workspace-card reveal reveal-delay-1">
+
+
+                        <div class="workspace-icon">
+                            ⌁
+                        </div>
+
+
+                        <span>
+                            OPPORTUNITIES
+                        </span>
+
+
+                        <h3>
+                            Discover useful opportunities.
+                        </h3>
+
+
+                        <p>
+                            Review available opportunities with information such as location, work mode, stipend, eligibility, skills and application deadlines.
+                        </p>
+
+
+                    </div>
+
+
+                    <div class="workspace-card reveal reveal-delay-2">
+
+
+                        <div class="workspace-icon">
+                            ◒
+                        </div>
+
+
+                        <span>
+                            ANALYTICS
+                        </span>
+
+
+                        <h3>
+                            Understand your placement activity.
+                        </h3>
+
+
+                        <p>
+                            Use placement analytics to see application activity and understand how your placement progress is developing.
+                        </p>
+
+
+                    </div>
+
+
+                    <div class="workspace-card reveal reveal-delay-3">
+
+
+                        <div class="workspace-icon">
+                            ♢
+                        </div>
+
+
+                        <span>
+                            NOTIFICATIONS
+                        </span>
+
+
+                        <h3>
+                            Know when something changes.
+                        </h3>
+
+
+                        <p>
+                            When an administrator updates an application status, the related student receives a clear notification.
+                        </p>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =========================================================
+             ADMIN + STUDENT FLOW
+             ========================================================= -->
+
+        <section class="flow-section">
+
+
+            <div class="content-container">
+
+
+                <div class="section-heading reveal">
+
+
+                    <span class="section-label">
+                        CONNECTED EXPERIENCES
+                    </span>
+
+
+                    <h2>
+                        Students and administrators work through the same platform.
+                    </h2>
+
+
+                    <p>
+                        Each side of PlaceTrack has a focused workflow, while application information and status changes remain connected.
+                    </p>
+
+
+                </div>
+
+
+                <div class="flow-grid">
+
+
+                    <div class="flow-panel reveal">
+
+
+                        <div class="flow-panel-top">
+
+
+                            <div class="flow-panel-icon">
+                                S
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    STUDENT
+                                </span>
+
+                                <h3>
+                                    Manage your placement journey
+                                </h3>
+
+                            </div>
+
+
+                        </div>
+
+
+                        <div class="flow-list">
+
+
+                            <div>
+                                <strong>01</strong> Create an application record
+                            </div>
+
+
+                            <div>
+                                <strong>02</strong> Track the application status
+                            </div>
+
+
+                            <div>
+                                <strong>03</strong> Review opportunities
+                            </div>
+
+
+                            <div>
+                                <strong>04</strong> Monitor analytics
+                            </div>
+
+
+                            <div>
+                                <strong>05</strong> Receive notifications
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="flow-panel reveal reveal-delay-2">
+
+
+                        <div class="flow-panel-top">
+
+
+                            <div class="flow-panel-icon admin">
+                                A
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    ADMIN
+                                </span>
+
+                                <h3>
+                                    Manage placement activity
+                                </h3>
+
+                            </div>
+
+
+                        </div>
+
+
+                        <div class="flow-list">
+
+
+                            <div>
+                                <strong>01</strong> Add new opportunities
+                            </div>
+
+
+                            <div>
+                                <strong>02</strong> Edit opportunity details
+                            </div>
+
+
+                            <div>
+                                <strong>03</strong> Review student applications
+                            </div>
+
+
+                            <div>
+                                <strong>04</strong> Update application status
+                            </div>
+
+
+                            <div>
+                                <strong>05</strong> Trigger student notifications
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =========================================================
+             NOTIFICATION SECTION
+             ========================================================= -->
+
+        <section class="notification-section">
+
+
+            <div class="content-container">
+
+
+                <div class="notification-grid">
+
+
+                    <div class="notification-visual reveal">
+
+
+                        <div class="notification-window">
+
+
+                            <div class="notification-window-top">
+
+                                <span>
+                                    NOTIFICATIONS
+                                </span>
+
+                                <div class="notification-counter">
+                                    03
+                                </div>
+
+                            </div>
+
+
+                            <div class="notification-item-new">
+
+
+                                <div class="notification-dot"></div>
+
+
+                                <div>
+
+                                    <strong>
+                                        Application Status Updated
+                                    </strong>
+
+                                    <p>
+                                        Your application has moved to the Interview stage.
+                                    </p>
+
+                                    <span>
+                                        Just now
+                                    </span>
+
+                                </div>
+
+
+                            </div>
+
+
+                            <div class="notification-item-new">
+
+
+                                <div class="notification-dot"></div>
+
+
+                                <div>
+
+                                    <strong>
+                                        New Opportunity
+                                    </strong>
+
+                                    <p>
+                                        A new placement opportunity is available.
+                                    </p>
+
+                                    <span>
+                                        15 minutes ago
+                                    </span>
+
+                                </div>
+
+
+                            </div>
+
+
+                            <div class="notification-item-new">
+
+
+                                <div class="notification-dot"></div>
+
+
+                                <div>
+
+                                    <strong>
+                                        Application Updated
+                                    </strong>
+
+                                    <p>
+                                        Your application information has been updated.
+                                    </p>
+
+                                    <span>
+                                        1 hour ago
+                                    </span>
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="notification-copy reveal reveal-delay-2">
+
+
+                        <span class="section-label">
+                            LIVE UPDATES
+                        </span>
+
+
+                        <h2>
+                            Important changes stay visible.
+                        </h2>
+
+
+                        <p>
+                            PlaceTrack keeps communication connected to application activity. When an application's status changes, the student can see what changed and open the related application.
+                        </p>
+
+
+                        <div class="notification-benefits">
+
+
+                            <div>
+
+                                <strong>
+                                    Clear status changes
+                                </strong>
+
+                                <span>
+                                    See the previous and new stage.
+                                </span>
+
+                            </div>
+
+
+                            <div>
+
+                                <strong>
+                                    Connected applications
+                                </strong>
+
+                                <span>
+                                    Open the related application directly.
+                                </span>
+
+                            </div>
+
+
+                            <div>
+
+                                <strong>
+                                    Centralized notifications
+                                </strong>
+
+                                <span>
+                                    Keep updates in one place.
+                                </span>
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =========================================================
+             TECH STACK
+             ========================================================= -->
+
+        <section class="technology-section">
+
+
+            <div class="content-container">
+
+
+                <div class="section-heading reveal">
+
+
+                    <span class="section-label">
+                        TECHNOLOGY
+                    </span>
+
+
+                    <h2>
+                        Built as a complete web application.
+                    </h2>
+
+
+                    <p>
+                        PlaceTrack combines a modern frontend with a Flask backend and MySQL database to create a connected placement management system.
+                    </p>
+
+
+                </div>
+
+
+                <div class="technology-grid">
+
+
+                    <div class="technology-card reveal">
+
+
+                        <div class="technology-code">
+                            HTML
+                        </div>
+
+
+                        <h3>
+                            Structured Interface
+                        </h3>
+
+
+                        <p>
+                            Responsive page structure for the student and administrator experiences.
+                        </p>
+
+
+                    </div>
+
+
+                    <div class="technology-card reveal reveal-delay-1">
+
+
+                        <div class="technology-code">
+                            CSS
+                        </div>
+
+
+                        <h3>
+                            Modern Visual Design
+                        </h3>
+
+
+                        <p>
+                            Glass effects, responsive layouts, animation and the interactive AI mesh background.
+                        </p>
+
+
+                    </div>
+
+
+                    <div class="technology-card reveal reveal-delay-2">
+
+
+                        <div class="technology-code">
+                            JS
+                        </div>
+
+
+                        <h3>
+                            Interactive Experience
+                        </h3>
+
+
+                        <p>
+                            Background animation, UI interactions and dynamic visual behaviour.
+                        </p>
+
+
+                    </div>
+
+
+                    <div class="technology-card reveal reveal-delay-3">
+
+
+                        <div class="technology-code">
+                            FLASK
+                        </div>
+
+
+                        <h3>
+                            Application Backend
+                        </h3>
+
+
+                        <p>
+                            Handles routes, authentication, application management and student/admin workflows.
+                        </p>
+
+
+                    </div>
+
+
+                    <div class="technology-card reveal reveal-delay-4">
+
+
+                        <div class="technology-code">
+                            MYSQL
+                        </div>
+
+
+                        <h3>
+                            Data Management
+                        </h3>
+
+
+                        <p>
+                            Stores users, applications, opportunities, administrators and notifications.
+                        </p>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             FAQ
+             ================================================= -->
+
+        <section class="faq-section" id="faq">
+
+
+            <div class="section-inner">
+
+
+                <div class="light-heading reveal">
+
+                    <span class="light-label">
+                        FAQ
+                    </span>
+
+                    <h2>
+                        Frequently asked questions
+                    </h2>
+
+                    <p>
+                        Common questions about the PlaceTrack platform and how its student and admin workflows work.
+                    </p>
+
+                </div>
+
+
+                <div class="faq-list">
+
+
+                    <details class="faq-item reveal">
+
+
+                        <summary>
+                            What is PlaceTrack?
+                        </summary>
+
+
+                        <p>
+                            PlaceTrack is a student placement management system for organizing applications, opportunities, analytics and notifications.
+                        </p>
+
+
+                    </details>
+
+
+                    <details class="faq-item reveal reveal-delay-1">
+
+
+                        <summary>
+                            Can students manage multiple applications?
+                        </summary>
+
+
+                        <p>
+                            Yes. Students can maintain multiple application records and monitor the status of each one.
+                        </p>
+
+
+                    </details>
+
+
+                    <details class="faq-item reveal reveal-delay-2">
+
+
+                        <summary>
+                            What can administrators manage?
+                        </summary>
+
+
+                        <p>
+                            Administrators can manage opportunities, review applications and update application statuses.
+                        </p>
+
+
+                    </details>
+
+
+                    <details class="faq-item reveal reveal-delay-3">
+
+
+                        <summary>
+                            How do application notifications work?
+                        </summary>
+
+
+                        <p>
+                            When an administrator changes an application's status, PlaceTrack creates a notification for the related student.
+                        </p>
+
+
+                    </details>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             FINAL CTA
+             ================================================= -->
+
+        <section class="final-cta">
+
+
+            <div class="final-cta-content reveal">
+
+
+                <span class="light-label">
+                    START YOUR WORKSPACE
+                </span>
+
+
+                <h2>
+                    Make every application easier to manage.
+                </h2>
+
+
+                <p>
+                    Create your PlaceTrack account and bring your placement activity into one organized workspace.
+                </p>
+
+
+                <div class="final-actions">
+
+
+                    <a href="/register" class="hero-primary">
+
+                        Create Free Account
+
+                        <span>
+                            →
+                        </span>
+
+                    </a>
+
+
+                    <a href="/login" class="hero-secondary">
+
+                        Student Login
+
+                    </a>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             FOOTER
+             ================================================= -->
+
+        <footer>
+
+
+            <div>
+                © 2026 <strong>PlaceTrack</strong>
+            </div>
+
+
+            <div>
+                Student Placement Management System
+            </div>
+
+
+        </footer>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         SCROLL REVEAL
+         ===================================================== -->
+
+    <script>
+        document.addEventListener(
+            "DOMContentLoaded",
+            () => {
+
+                const elements =
+                    document.querySelectorAll(".reveal");
+
+
+                if (!("IntersectionObserver" in window)) {
+
+                    elements.forEach(
+                        element => {
+
+                            element.classList.add(
+                                "visible"
+                            );
+
+                        }
+                    );
+
+                    return;
+                }
+
+
+                const observer =
+                    new IntersectionObserver(
+
+                        entries => {
+
+                            entries.forEach(
+                                entry => {
+
+                                    if (
+                                        entry.isIntersecting
+                                    ) {
+
+                                        entry.target.classList.add(
+                                            "visible"
+                                        );
+
+                                        observer.unobserve(
+                                            entry.target
+                                        );
+
+                                    }
+
+                                }
+                            );
+
+                        }, {
+                            threshold: 0.14,
+
+                            rootMargin: "0px 0px -35px 0px"
+                        }
+                    );
+
+
+                elements.forEach(
+                    element => {
+
+                        observer.observe(
+                            element
+                        );
+
+                    }
+                );
+
+            }
+        );
+    </script>
+
+
+    <!-- =====================================================
+         LIVE AI MESH BACKGROUND
+         ===================================================== -->
+
+    <script src="{{ url_for('static', filename='js/index-bg.js') }}"></script>
+
+
+</body>
 
 </html>

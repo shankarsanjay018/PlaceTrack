@@ -1,0 +1,1115 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f8fafc;
+    color: #0f172a;
+}
+
+
+/* ================= NAVBAR ================= */
+
+.navbar {
+    height: 75px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8%;
+    background: white;
+    border-bottom: 1px solid #e2e8f0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 25px;
+    font-weight: 700;
+}
+
+.logo span {
+    color: #2563eb;
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #475569;
+    font-size: 15px;
+}
+
+.nav-links a:hover {
+    color: #2563eb;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 8px;
+}
+
+.btn-login {
+    background: transparent;
+    padding: 10px 18px;
+    color: #2563eb;
+}
+
+.btn-register {
+    background: #2563eb;
+    color: white;
+    padding: 10px 18px;
+}
+
+
+/* ================= HERO ================= */
+
+.hero {
+    min-height: 650px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 60px;
+    padding: 80px 8%;
+    background: linear-gradient( 135deg, #eff6ff, #ffffff);
+}
+
+.hero-content {
+    max-width: 600px;
+}
+
+.hero-tag {
+    color: #2563eb;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin-bottom: 20px;
+}
+
+.hero h1 {
+    font-size: 55px;
+    line-height: 1.1;
+    margin-bottom: 25px;
+}
+
+.hero h1 span {
+    color: #2563eb;
+}
+
+.hero-description {
+    font-size: 18px;
+    line-height: 1.7;
+    color: #64748b;
+    margin-bottom: 30px;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-primary {
+    background: #2563eb;
+    color: white;
+    padding: 14px 25px;
+}
+
+.btn-secondary {
+    background: white;
+    color: #2563eb;
+    padding: 14px 25px;
+    border: 1px solid #cbd5e1;
+}
+
+
+/* ================= DASHBOARD ================= */
+
+.dashboard-card {
+    width: 430px;
+    background: white;
+    padding: 25px;
+    border-radius: 18px;
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.12);
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.dashboard-header p {
+    color: #64748b;
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+.dashboard-header h3 {
+    font-size: 20px;
+}
+
+.profile-circle {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #dbeafe;
+    color: #2563eb;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.stat-box {
+    padding: 15px;
+    background: #f8fafc;
+    border-radius: 10px;
+}
+
+.stat-box h2 {
+    color: #2563eb;
+    margin-bottom: 5px;
+}
+
+.stat-box p {
+    color: #64748b;
+    font-size: 12px;
+}
+
+.application {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.application strong {
+    font-size: 14px;
+}
+
+.application p {
+    color: #64748b;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.status {
+    background: #dbeafe;
+    color: #2563eb;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+}
+
+.status.interview {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+
+/* ================= FEATURES ================= */
+
+.features {
+    padding: 100px 8%;
+    background: white;
+}
+
+.section-title {
+    text-align: center;
+    max-width: 650px;
+    margin: 0 auto 50px;
+}
+
+.section-title p,
+.section-label {
+    color: #2563eb;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+}
+
+.section-title h2 {
+    font-size: 38px;
+}
+
+.section-title span,
+.about span {
+    color: #2563eb;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.feature-card {
+    padding: 30px;
+    border: 1px solid #e2e8f0;
+    border-radius: 15px;
+    transition: 0.3s;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(15, 23, 42, 0.08);
+}
+
+.feature-icon {
+    font-size: 30px;
+    margin-bottom: 20px;
+}
+
+.feature-card h3 {
+    margin-bottom: 12px;
+}
+
+.feature-card p {
+    color: #64748b;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+
+/* ================= ABOUT ================= */
+
+.about {
+    padding: 100px 8%;
+    background: #f1f5f9;
+}
+
+.about-content {
+    max-width: 700px;
+}
+
+.about h2 {
+    font-size: 40px;
+    margin-bottom: 25px;
+}
+
+.about p {
+    color: #64748b;
+    line-height: 1.7;
+    margin-bottom: 15px;
+}
+
+
+/* ================= FOOTER ================= */
+
+footer {
+    background: #0f172a;
+    color: white;
+    padding: 50px 8%;
+    text-align: center;
+}
+
+footer p {
+    color: #94a3b8;
+    margin-top: 10px;
+}
+
+.copyright {
+    font-size: 12px;
+    margin-top: 25px;
+}
+
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 900px) {
+    .nav-links {
+        display: none;
+    }
+    .hero {
+        flex-direction: column;
+        text-align: center;
+    }
+    .hero-buttons {
+        justify-content: center;
+    }
+    .dashboard-card {
+        width: 100%;
+        max-width: 430px;
+    }
+    .feature-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .hero h1 {
+        font-size: 40px;
+    }
+    .feature-grid {
+        grid-template-columns: 1fr;
+    }
+    .nav-buttons {
+        display: none;
+    }
+}
+
+
+/* =========================================================
+   GLASS / TRANSPARENT WHITE SECTIONS
+   ========================================================= */
+
+body {
+    background: transparent;
+}
+
+
+/* Main white sections */
+
+.hero,
+.features-section,
+.workflow-section,
+.platform-section,
+.roles-section,
+.faq-section,
+.final-cta,
+.stats-strip {
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+
+/* Cards */
+
+.feature-card,
+.workflow-card,
+.role-card,
+.faq-item,
+.showcase-card {
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+
+/* Navigation */
+
+.navbar {
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+
+/* Dashboard preview */
+
+.dashboard-preview {
+    background: rgba(255, 255, 255, 0.80);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+
+/* Keep borders subtle */
+
+.feature-card,
+.workflow-card,
+.role-card,
+.faq-item,
+.showcase-card,
+.dashboard-preview,
+.navbar {
+    border: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+
+/* =========================================================
+   PLACETRACK LANDING PAGE
+   FULL TRANSPARENT BACKGROUND + SOFT GLASS
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   PAGE
+   --------------------------------------------------------- */
+
+html,
+body {
+    background: transparent !important;
+}
+
+.index-page {
+    background: transparent !important;
+}
+
+
+/* ---------------------------------------------------------
+   ALL MAIN SECTIONS
+   REMOVE SOLID BACKGROUNDS
+   --------------------------------------------------------- */
+
+.hero,
+.platform-stats,
+.features,
+.how-it-works,
+.placement-journey,
+.opportunities-section,
+.tracking-section,
+.smart-features,
+.why-placetrack,
+.about-section,
+.roles-section,
+.workflow-section,
+.problems-section,
+.showcase-section,
+.faq-section,
+.final-cta,
+.cta,
+footer {
+    background: transparent !important;
+}
+
+
+/* ---------------------------------------------------------
+   SECTION DIVIDERS
+   --------------------------------------------------------- */
+
+.platform-stats,
+.roles-section,
+.problems-section,
+.faq-section,
+.final-cta,
+.opportunities-section,
+.why-placetrack {
+    border-color: rgba(255, 255, 255, 0.035) !important;
+}
+
+
+/* =========================================================
+   NAVBAR
+   DARK GLASS — NOT WHITE
+   ========================================================= */
+
+.navbar {
+    background: rgba(8, 8, 12, 0.48) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.055) !important;
+}
+
+
+/* =========================================================
+   WHITE / LIGHT LOOKING CARDS
+   CHANGE THEM TO SOFT GLASS
+   ========================================================= */
+
+.dashboard-preview,
+.feature,
+.step-card,
+.journey-card,
+.opportunity-demo-card,
+.tracking-window,
+.smart-feature-card,
+.why-item,
+.platform-stat,
+.role-card,
+.workflow-item,
+.problem-card,
+.about-card,
+.about-card-item,
+.faq-item,
+.showcase-window,
+.showcase-sidebar {
+    background: linear-gradient( 135deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018)) !important;
+    border-color: rgba(255, 255, 255, 0.065) !important;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+
+/* =========================================================
+   SMALL INNER CARDS
+   EVEN MORE TRANSPARENT
+   ========================================================= */
+
+.preview-card,
+.preview-table,
+.journey-mini-grid div,
+.notification-preview,
+.analytics-preview,
+.showcase-stat-row div,
+.showcase-large-panel,
+.showcase-small-row div,
+.opportunity-meta span,
+.workflow-item,
+.problem-card {
+    background: rgba(255, 255, 255, 0.028) !important;
+    border-color: rgba(255, 255, 255, 0.045) !important;
+}
+
+
+/* =========================================================
+   ABOUT CARD
+   ========================================================= */
+
+.about-card {
+    background: rgba(255, 255, 255, 0.018) !important;
+}
+
+.about-card-item {
+    background: rgba(255, 255, 255, 0.035) !important;
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.secondary-btn {
+    background: rgba(255, 255, 255, 0.025) !important;
+}
+
+.secondary-btn:hover {
+    background: rgba(255, 255, 255, 0.055) !important;
+}
+
+
+/* =========================================================
+   BADGE
+   ========================================================= */
+
+.badge {
+    background: rgba(99, 102, 241, 0.055) !important;
+}
+
+
+/* =========================================================
+   CTA
+   KEEP IT SLIGHTLY DIFFERENT
+   ========================================================= */
+
+.cta,
+.final-cta {
+    background: radial-gradient( ellipse at center, rgba(99, 102, 241, 0.035), transparent 60%) !important;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+footer {
+    background: rgba(5, 5, 8, 0.38) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.035);
+}
+
+
+/* =========================================================
+   PREVIEW WINDOW
+   ========================================================= */
+
+.preview-body {
+    background: rgba(5, 5, 9, 0.62) !important;
+}
+
+
+/* =========================================================
+   SHOWCASE WINDOW
+   ========================================================= */
+
+.showcase-window {
+    background: rgba(10, 10, 14, 0.48) !important;
+}
+
+
+/* =========================================================
+   TRACKING WINDOW
+   ========================================================= */
+
+.tracking-window {
+    background: rgba(14, 14, 18, 0.46) !important;
+}
+
+
+/* =========================================================
+   SMOOTH BORDERS
+   ========================================================= */
+
+.dashboard-preview,
+.feature,
+.step-card,
+.journey-card,
+.opportunity-demo-card,
+.tracking-window,
+.smart-feature-card,
+.why-item,
+.platform-stat,
+.role-card,
+.workflow-item,
+.problem-card,
+.about-card,
+.about-card-item,
+.faq-item,
+.showcase-window {
+    box-shadow: 0 18px 55px rgba(0, 0, 0, 0.12);
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+    .dashboard-preview,
+    .feature,
+    .step-card,
+    .journey-card,
+    .opportunity-demo-card,
+    .tracking-window,
+    .smart-feature-card,
+    .why-item,
+    .platform-stat,
+    .role-card,
+    .workflow-item,
+    .problem-card,
+    .about-card,
+    .about-card-item,
+    .faq-item,
+    .showcase-window {
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+}
+
+
+/* =========================================================
+   PLACETRACK — LARGER LANDING PAGE TYPOGRAPHY
+   ========================================================= */
+
+
+/* NAVBAR */
+
+.logo {
+    font-size: 23px !important;
+}
+
+.nav-links a {
+    font-size: 14px !important;
+}
+
+
+/* HERO */
+
+.badge,
+.section-label {
+    font-size: 12px !important;
+}
+
+.hero h1 {
+    font-size: clamp(48px, 5.4vw, 76px) !important;
+}
+
+.hero>.hero-content>p {
+    font-size: 17px !important;
+    line-height: 1.8 !important;
+}
+
+.primary-btn,
+.secondary-btn {
+    font-size: 14px !important;
+}
+
+
+/* PLATFORM STATS */
+
+.platform-stat strong {
+    font-size: 24px !important;
+}
+
+.platform-stat span {
+    font-size: 11px !important;
+}
+
+
+/* SECTION HEADINGS */
+
+.section-heading h2 {
+    font-size: clamp(33px, 4vw, 46px) !important;
+}
+
+.section-heading p {
+    font-size: 15px !important;
+    line-height: 1.8 !important;
+}
+
+
+/* FEATURE CARDS */
+
+.feature h3,
+.step-card h3 {
+    font-size: 17px !important;
+}
+
+.feature p,
+.step-card p {
+    font-size: 14px !important;
+    line-height: 1.8 !important;
+}
+
+
+/* PLACEMENT JOURNEY */
+
+.journey-content h2,
+.tracking-content h2 {
+    font-size: 42px !important;
+}
+
+.journey-content>p,
+.tracking-content>p {
+    font-size: 15px !important;
+    line-height: 1.8 !important;
+}
+
+.journey-step strong {
+    font-size: 14px !important;
+}
+
+.journey-step span {
+    font-size: 12px !important;
+}
+
+.journey-card-header span,
+.tracking-header small {
+    font-size: 10px !important;
+}
+
+.journey-card-header strong {
+    font-size: 15px !important;
+}
+
+
+/* OPPORTUNITIES */
+
+.opportunity-type {
+    font-size: 10px !important;
+}
+
+.opportunity-demo-content h3 {
+    font-size: 17px !important;
+}
+
+.opportunity-demo-content p {
+    font-size: 13px !important;
+}
+
+.opportunity-meta span {
+    font-size: 11px !important;
+}
+
+
+/* TRACKING */
+
+.tracking-header h3 {
+    font-size: 17px !important;
+}
+
+.tracking-row strong {
+    font-size: 13px !important;
+}
+
+.tracking-row span {
+    font-size: 11px !important;
+}
+
+.tracking-status {
+    font-size: 10px !important;
+}
+
+.tracking-points div {
+    font-size: 14px !important;
+}
+
+
+/* SMART FEATURES */
+
+.smart-feature-card h3 {
+    font-size: 19px !important;
+}
+
+.smart-feature-card>p {
+    font-size: 14px !important;
+    line-height: 1.8 !important;
+}
+
+.notification-preview-title {
+    font-size: 13px !important;
+}
+
+.notification-preview-text {
+    font-size: 12px !important;
+}
+
+
+/* ABOUT */
+
+.about-content h2 {
+    font-size: 42px !important;
+}
+
+.about-content p {
+    font-size: 15px !important;
+    line-height: 1.8 !important;
+}
+
+.about-card-item strong {
+    font-size: 14px !important;
+}
+
+.about-card-item span {
+    font-size: 12px !important;
+}
+
+
+/* STUDENT + ADMIN / ROLES */
+
+.role-card h3 {
+    font-size: 19px !important;
+}
+
+.role-card>p {
+    font-size: 14px !important;
+    line-height: 1.8 !important;
+}
+
+.role-list span {
+    font-size: 12px !important;
+}
+
+
+/* WORKFLOW */
+
+.workflow-item>span {
+    font-size: 11px !important;
+}
+
+.workflow-item strong {
+    font-size: 15px !important;
+}
+
+.workflow-item p {
+    font-size: 12px !important;
+    line-height: 1.7 !important;
+}
+
+
+/* PROBLEM CARDS */
+
+.problem-card strong {
+    font-size: 14px !important;
+}
+
+.problem-card p {
+    font-size: 12px !important;
+    line-height: 1.7 !important;
+}
+
+
+/* DASHBOARD SHOWCASE */
+
+.showcase-content h2 {
+    font-size: 42px !important;
+}
+
+.showcase-content p {
+    font-size: 14px !important;
+    line-height: 1.8 !important;
+}
+
+.showcase-points span {
+    font-size: 13px !important;
+}
+
+
+/* FAQ */
+
+.faq-item summary {
+    font-size: 14px !important;
+}
+
+.faq-item p {
+    font-size: 12px !important;
+    line-height: 1.8 !important;
+}
+
+
+/* CTA */
+
+.cta h2 {
+    font-size: clamp(33px, 4vw, 46px) !important;
+}
+
+.cta p {
+    font-size: 15px !important;
+    line-height: 1.8 !important;
+}
+
+
+/* FOOTER */
+
+footer {
+    font-size: 12px !important;
+}
+
+
+/* =========================================================
+   MOBILE — KEEP TEXT COMFORTABLY SIZED
+   ========================================================= */
+
+@media (max-width: 700px) {
+    .hero h1 {
+        font-size: 44px !important;
+    }
+    .hero>.hero-content>p {
+        font-size: 15px !important;
+    }
+    .section-heading h2 {
+        font-size: 32px !important;
+    }
+    .journey-content h2,
+    .tracking-content h2,
+    .about-content h2,
+    .showcase-content h2 {
+        font-size: 32px !important;
+    }
+    .feature h3,
+    .step-card h3,
+    .role-card h3 {
+        font-size: 17px !important;
+    }
+    .feature p,
+    .step-card p,
+    .role-card>p {
+        font-size: 13px !important;
+    }
+    /* =========================================================
+   INDEX LIVE BACKGROUND
+   ========================================================= */
+    .index-page {
+        position: relative;
+        z-index: 2;
+    }
+    .page-bg {
+        background: #050507 !important;
+        z-index: 0;
+    }
+    #placementCanvas {
+        opacity: 1 !important;
+    }
+    .bg-grid {
+        opacity: 0.12 !important;
+        background-size: 52px 52px !important;
+    }
+    /* =========================================================
+   REMOVE WHITE BACKGROUND FROM INDEX PAGE
+   ========================================================= */
+    html,
+    body {
+        background: transparent !important;
+        background-color: transparent !important;
+    }
+    .index-page {
+        background: transparent !important;
+        background-color: transparent !important;
+    }
+    /* All major landing-page sections */
+    .hero,
+    .platform-stats,
+    .features,
+    .how-it-works,
+    .placement-journey,
+    .opportunities-section,
+    .tracking-section,
+    .smart-features,
+    .why-placetrack,
+    .about-section,
+    .roles-section,
+    .workflow-section,
+    .problems-section,
+    .showcase-section,
+    .faq-section,
+    .final-cta,
+    .cta,
+    footer {
+        background: transparent !important;
+        background-color: transparent !important;
+    }
+    /* Remove possible white fills from wrappers */
+    .section-shell {
+        background: transparent !important;
+    }
+    /* Keep cards slightly visible, but NOT white */
+    .dashboard-preview,
+    .feature,
+    .step-card,
+    .journey-card,
+    .opportunity-demo-card,
+    .tracking-window,
+    .smart-feature-card,
+    .why-item,
+    .platform-stat,
+    .role-card,
+    .workflow-item,
+    .problem-card,
+    .about-card,
+    .about-card-item,
+    .faq-item,
+    .showcase-window {
+        background: rgba(255, 255, 255, 0.035) !important;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-color: rgba(255, 255, 255, 0.06) !important;
+    }
+    /* Inner elements */
+    .preview-card,
+    .preview-table,
+    .journey-mini-grid div,
+    .notification-preview,
+    .analytics-preview,
+    .showcase-stat-row div,
+    .showcase-large-panel,
+    .showcase-small-row div {
+        background: rgba(255, 255, 255, 0.02) !important;
+    }
+    /* Navbar */
+    .navbar {
+        background: rgba(5, 5, 8, 0.38) !important;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+    }
+    /* Footer */
+    footer {
+        background: rgba(5, 5, 8, 0.25) !important;
+    }
+}

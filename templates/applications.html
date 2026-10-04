@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Applications | PlaceTrack</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/placetrack.css') }}">
+
+    <script src="{{ url_for('static', filename='js/placetrack.js') }}" defer></script>
+
+
+    <style>
+        /* =====================================================
+           PAGE
+        ===================================================== */
+        
+        .applications-page {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .pt-main {
+            padding-top: 16px !important;
+        }
+        /* =====================================================
+           HEADER
+        ===================================================== */
+        
+        .applications-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 22px;
+        }
+        
+        .applications-header h1 {
+            margin: 0 0 7px 0;
+            color: #f4f4f5;
+            font-size: 30px;
+            font-weight: 760;
+            letter-spacing: -0.8px;
+        }
+        
+        .applications-header p {
+            margin: 0;
+            color: #858591;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        
+        .applications-add-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            min-height: 43px;
+            padding: 0 16px;
+            border-radius: 9px;
+            background: linear-gradient( 135deg, #6366f1, #8b5cf6);
+            color: white;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.18);
+        }
+        /* =====================================================
+           METRICS
+        ===================================================== */
+        
+        .applications-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .application-metric {
+            position: relative;
+            overflow: hidden;
+            padding: 18px;
+            background: rgba(255, 255, 255, 0.045);
+            border: 1px solid rgba(255, 255, 255, 0.075);
+            border-radius: 14px;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+        
+        .application-metric-label {
+            color: #6f707a;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            margin-bottom: 10px;
+        }
+        
+        .application-metric-number {
+            color: #f4f4f5;
+            font-size: 27px;
+            font-weight: 700;
+        }
+        
+        .metric-total {
+            color: #a78bfa;
+        }
+        
+        .metric-interview {
+            color: #fbbf24;
+        }
+        
+        .metric-selected {
+            color: #34d399;
+        }
+        
+        .metric-rejected {
+            color: #f87171;
+        }
+        /* =====================================================
+           FILTER BAR
+        ===================================================== */
+        
+        .applications-filter-panel {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px;
+            margin-bottom: 18px;
+            background: rgba(255, 255, 255, 0.035);
+            border: 1px solid rgba(255, 255, 255, 0.075);
+            border-radius: 14px;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+        
+        .applications-search {
+            position: relative;
+            flex: 1;
+        }
+        
+        .applications-search-icon {
+            position: absolute;
+            left: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #62626b;
+            font-size: 14px;
+            pointer-events: none;
+        }
+        
+        .applications-search input {
+            width: 100%;
+            height: 42px;
+            padding: 0 14px 0 37px;
+            border-radius: 9px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.028);
+            color: #e4e4e7;
+            outline: none;
+            font-size: 12px;
+        }
+        
+        .applications-search input:focus {
+            border-color: rgba(139, 92, 246, 0.50);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.07);
+        }
+        
+        .applications-search input::placeholder {
+            color: #52525b;
+        }
+        
+        .applications-status {
+            width: 160px;
+            height: 42px;
+            padding: 0 12px;
+            border-radius: 9px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.028);
+            color: #a1a1aa;
+            outline: none;
+            font-size: 12px;
+        }
+        
+        .applications-status option {
+            background: #18181b;
+            color: white;
+        }
+        
+        .applications-filter-btn {
+            height: 42px;
+            padding: 0 16px;
+            border: none;
+            border-radius: 9px;
+            background: linear-gradient( 135deg, #6366f1, #8b5cf6);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        
+        .applications-clear-btn {
+            height: 42px;
+            padding: 0 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.025);
+            color: #8b8b94;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .applications-clear-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        /* =====================================================
+           TABLE PANEL
+        ===================================================== */
+        
+        .applications-panel {
+            background: linear-gradient( 145deg, rgba(255, 255, 255, 0.050), rgba(255, 255, 255, 0.022));
+            border: 1px solid rgba(255, 255, 255, 0.075);
+            border-radius: 15px;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            overflow: hidden;
+            box-shadow: 0 18px 55px rgba(0, 0, 0, 0.14);
+        }
+        
+        .applications-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 20px 22px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+        }
+        
+        .applications-panel-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .applications-panel-icon {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: rgba(139, 92, 246, 0.10);
+            color: #a78bfa;
+            font-size: 13px;
+        }
+        
+        .applications-panel-title h2 {
+            color: #e4e4e7;
+            font-size: 15px;
+            margin: 0;
+        }
+        
+        .applications-panel-count {
+            color: #62626b;
+            font-size: 10px;
+        }
+        /* =====================================================
+           TABLE
+        ===================================================== */
+        
+        .applications-table-wrap {
+            overflow-x: auto;
+        }
+        
+        .applications-table {
+            width: 100%;
+            min-width: 850px;
+            border-collapse: collapse;
+        }
+        
+        .applications-table th {
+            padding: 13px 20px;
+            text-align: left;
+            color: #52525b;
+            font-size: 9px;
+            font-weight: 750;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            background: rgba(255, 255, 255, 0.018);
+        }
+        
+        .applications-table td {
+            padding: 15px 20px;
+            color: #9b9ba4;
+            font-size: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .applications-table tbody tr {
+            transition: background 0.2s ease;
+        }
+        
+        .applications-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .applications-table tbody tr.highlighted {
+            background: rgba(139, 92, 246, 0.07);
+        }
+        
+        .application-company-name {
+            color: #f4f4f5;
+            font-weight: 650;
+        }
+        
+        .application-job-role {
+            color: #858591;
+        }
+        /* =====================================================
+           STATUS
+        ===================================================== */
+        
+        .application-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 9px;
+            border-radius: 7px;
+            font-size: 9px;
+            font-weight: 700;
+        }
+        
+        .application-status::before {
+            content: "";
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+        
+        .application-status.applied {
+            color: #a78bfa;
+            background: rgba(139, 92, 246, 0.11);
+        }
+        
+        .application-status.assessment {
+            color: #22d3ee;
+            background: rgba(34, 211, 238, 0.10);
+        }
+        
+        .application-status.interview {
+            color: #fbbf24;
+            background: rgba(251, 191, 36, 0.10);
+        }
+        
+        .application-status.selected {
+            color: #34d399;
+            background: rgba(52, 211, 153, 0.10);
+        }
+        
+        .application-status.rejected {
+            color: #f87171;
+            background: rgba(248, 113, 113, 0.10);
+        }
+        /* =====================================================
+           ACTIONS
+        ===================================================== */
+        
+        .application-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .application-edit-btn,
+        .application-delete-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 7px 10px;
+            border-radius: 7px;
+            text-decoration: none;
+            font-size: 9px;
+            font-weight: 700;
+        }
+        
+        .application-edit-btn {
+            color: #c4b5fd;
+            background: rgba(139, 92, 246, 0.11);
+        }
+        
+        .application-edit-btn:hover {
+            background: rgba(139, 92, 246, 0.20);
+        }
+        
+        .application-delete-form {
+            display: inline;
+        }
+        
+        .application-delete-btn {
+            border: none;
+            cursor: pointer;
+            color: #fca5a5;
+            background: rgba(248, 113, 113, 0.10);
+        }
+        
+        .application-delete-btn:hover {
+            background: rgba(248, 113, 113, 0.17);
+        }
+        /* =====================================================
+           EMPTY
+        ===================================================== */
+        
+        .applications-empty {
+            padding: 70px 20px;
+            text-align: center;
+        }
+        
+        .applications-empty-icon {
+            font-size: 34px;
+            opacity: 0.6;
+            margin-bottom: 12px;
+        }
+        
+        .applications-empty h2 {
+            color: #e4e4e7;
+            font-size: 18px;
+            margin-bottom: 7px;
+        }
+        
+        .applications-empty p {
+            color: #62626b;
+            font-size: 11px;
+            margin-bottom: 16px;
+        }
+        
+        .applications-empty a {
+            display: inline-flex;
+            padding: 10px 14px;
+            border-radius: 8px;
+            background: linear-gradient( 135deg, #6366f1, #8b5cf6);
+            color: white;
+            text-decoration: none;
+            font-size: 10px;
+            font-weight: 700;
+        }
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+        
+        @media (max-width: 1050px) {
+            .applications-metrics {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 750px) {
+            .pt-main {
+                padding: 16px 18px 40px !important;
+            }
+            .applications-header {
+                flex-direction: column;
+            }
+            .applications-filter-panel {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .applications-status {
+                width: 100%;
+            }
+            .applications-filter-btn,
+            .applications-clear-btn {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .pt-main {
+                padding: 16px 15px 35px !important;
+            }
+            .applications-metrics {
+                grid-template-columns: 1fr 1fr;
+                gap: 9px;
+            }
+            .application-metric {
+                padding: 15px;
+            }
+            .application-metric-number {
+                font-size: 23px;
+            }
+        }
+        /* =====================================================
+   PLACETRACK BRAND
+===================================================== */
+        
+        .pt-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+        }
+        
+        .pt-brand:hover {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .pt-logo-box {
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            flex: 0 0 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .pt-logo-svg {
+            width: 48px;
+            height: 48px;
+            display: block;
+        }
+        
+        .pt-brand-name {
+            display: flex;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            color: #f4f4f5;
+            font-size: 17px;
+            font-weight: 750;
+            line-height: 1;
+            white-space: nowrap;
+        }
+        
+        .pt-brand-name span {
+            color: #f4f4f5;
+        }
+        /* =====================================================
+           PLACETRACK BRAND — SHARED ACROSS ALL STUDENT PAGES
+        ===================================================== */
+        
+        .pt-sidebar {
+            padding: 24px 16px !important;
+        }
+        
+        .pt-brand {
+            display: flex !important;
+            align-items: center !important;
+            gap: 11px !important;
+            width: 100%;
+            padding: 8px 10px !important;
+            margin: 0 0 32px 0 !important;
+            text-decoration: none !important;
+            color: inherit !important;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+        
+        .pt-brand:hover {
+            text-decoration: none !important;
+            color: inherit !important;
+        }
+        
+        .pt-logo-box {
+            width: 40px !important;
+            height: 40px !important;
+            min-width: 40px !important;
+            min-height: 40px !important;
+            flex: 0 0 40px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        .pt-logo-svg {
+            width: 40px !important;
+            height: 40px !important;
+            display: block !important;
+        }
+        
+        .pt-brand-name {
+            display: flex !important;
+            align-items: center !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            color: #f4f4f5 !important;
+            font-size: 19px !important;
+            font-weight: 750 !important;
+            line-height: 1 !important;
+            letter-spacing: -0.45px;
+            white-space: nowrap;
+        }
+        
+        .pt-brand-name span {
+            color: #a78bfa !important;
+        }
+        
+        .pt-nav-title {
+            margin: 0 0 10px 0 !important;
+            padding: 0 12px !important;
+        }
+        
+        .pt-nav {
+            gap: 5px !important;
+        }
+        
+        .pt-nav a {
+            min-height: 43px !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            padding: 0 13px !important;
+        }
+        /* Keep the dashboard's existing visual spacing while using the shared brand. */
+        
+        .dashboard-brand {
+            align-items: center !important;
+            gap: 11px !important;
+            padding: 8px 10px !important;
+            margin-bottom: 32px !important;
+        }
+    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/placetrack-sidebar.css') }}">
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         LIVE BACKGROUND
+    ===================================================== -->
+
+    <div class="page-bg">
+
+        <div class="bg-grid"></div>
+
+        <canvas id="placement-bg"></canvas>
+
+    </div>
+
+
+    <!-- =====================================================
+         LAYOUT
+    ===================================================== -->
+
+    <div class="pt-layout">
+
+
+        <!-- =================================================
+             SIDEBAR
+        ================================================= -->
+
+        <aside class="pt-sidebar">
+
+
+            <a href="{{ url_for('dashboard') }}" class="pt-brand">
+
+                <div class="pt-logo-box">
+
+                    <svg class="pt-logo-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    
+                        <defs>
+                            <linearGradient id="ptLogoGradient" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#4c1d95"/>
+                                <stop offset="52%" stop-color="#7c3aed"/>
+                                <stop offset="100%" stop-color="#c026d3"/>
+                            </linearGradient>
+                        </defs>
+                    
+                        <!-- App tile -->
+                        <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#ptLogoGradient)"/>
+                    
+                        <!-- Graduation cap -->
+                        <path d="M12 18.5L32 10L52 18.5L32 27L12 18.5Z" fill="#f8f7ff"/>
+                        <path d="M18 22V27.5C22.5 31.5 27.1 33.5 32 33.5C36.9 33.5 41.5 31.5 46 27.5V22L32 27.8L18 22Z" fill="#e9d5ff"/>
+                        <path d="M49 19V29" stroke="#f8f7ff" stroke-width="3" stroke-linecap="round"/>
+                        <circle cx="49" cy="31.5" r="2.2" fill="#f8f7ff"/>
+                    
+                        <!-- Resume / profile card -->
+                        <rect x="13" y="35" width="31" height="19" rx="4" fill="#faf9ff"/>
+                        <circle cx="21" cy="42" r="3.2" fill="#c4b5fd"/>
+                        <rect x="27" y="39.5" width="12" height="2.4" rx="1.2" fill="#8b5cf6"/>
+                        <rect x="27" y="44" width="9" height="2.4" rx="1.2" fill="#c4b5fd"/>
+                        <rect x="17.5" y="48" width="18.5" height="2.2" rx="1.1" fill="#ddd6fe"/>
+                    
+                        <!-- Career growth arrow -->
+                        <path d="M12 53C20 53 27 52 32 49C39 45 43 39.5 50 34" fill="none" stroke="#f5eaff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M45.5 34H50V38.5" fill="none" stroke="#f5eaff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    
+                    </svg>
+
+                </div>
+
+                <div class="pt-brand-name">
+                    Place<span>Track</span>
+                </div>
+
+            </a>
+
+            <div class="pt-nav-title">
+                Workspace
+            </div>
+
+
+            <nav class="pt-nav">
+
+
+                <a href="/dashboard">
+
+                    <span class="pt-nav-icon">
+                        ▦
+                    </span> Dashboard
+
+                </a>
+
+
+                <a href="/applications" class="active">
+
+                    <span class="pt-nav-icon">
+                        ◫
+                    </span> Applications
+
+                </a>
+
+
+                <a href="/opportunities">
+
+                    <span class="pt-nav-icon">
+                        ⌁
+                    </span> Opportunities
+
+                </a>
+
+
+                <a href="/analytics">
+
+                    <span class="pt-nav-icon">
+                        ◒
+                    </span> Analytics
+
+                </a>
+
+
+                <a href="/profile">
+
+                    <span class="pt-nav-icon">
+                        ◎
+                    </span> Profile
+
+                </a>
+
+
+            </nav>
+
+
+            <!-- USER -->
+
+            <div class="pt-sidebar-bottom">
+
+                <div class="pt-user-mini">
+
+                    <div class="pt-avatar">
+                        {{ session["user_name"][0]|upper }}
+                    </div>
+
+                    <div class="pt-user-info">
+
+                        <div class="pt-user-name">
+                            {{ session["user_name"] }}
+                        </div>
+
+                        <div class="pt-user-role">
+                            Placement Candidate
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <a href="/logout" class="pt-logout">
+                    ↪ Logout
+                </a>
+
+            </div>
+
+
+        </aside>
+
+
+        <!-- =================================================
+             MAIN
+        ================================================= -->
+
+        <main class="pt-main">
+
+
+            <div class="applications-page">
+
+
+                <!-- =================================================
+                     HEADER
+                ================================================= -->
+
+                <div class="applications-header">
+
+                    <div>
+
+                        <h1>
+                            Applications
+                        </h1>
+
+                        <p>
+                            Track and manage your placement applications.
+                        </p>
+
+                    </div>
+
+
+                    <a href="/add-application" class="applications-add-btn">
+
+                        <span>
+                            +
+                        </span> Add Application
+
+                    </a>
+
+                </div>
+
+
+                <!-- =================================================
+                     CALCULATE METRICS FROM CURRENT RESULTS
+                ================================================= -->
+
+                {% set ns = namespace( interviews=0, selected=0, rejected=0 ) %} {% for application in applications %} {% if application.status|lower == "interview" %} {% set ns.interviews = ns.interviews + 1 %} {% endif %} {% if application.status|lower == "selected"
+                %} {% set ns.selected = ns.selected + 1 %} {% endif %} {% if application.status|lower == "rejected" %} {% set ns.rejected = ns.rejected + 1 %} {% endif %} {% endfor %}
+
+
+                <!-- =================================================
+                     METRICS
+                ================================================= -->
+
+                <div class="applications-metrics">
+
+
+                    <div class="application-metric">
+
+                        <div class="application-metric-label">
+                            Visible Applications
+                        </div>
+
+                        <div class="application-metric-number metric-total">
+                            {{ applications|length }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="application-metric">
+
+                        <div class="application-metric-label">
+                            Interviews
+                        </div>
+
+                        <div class="application-metric-number metric-interview">
+                            {{ ns.interviews }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="application-metric">
+
+                        <div class="application-metric-label">
+                            Selected
+                        </div>
+
+                        <div class="application-metric-number metric-selected">
+                            {{ ns.selected }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="application-metric">
+
+                        <div class="application-metric-label">
+                            Rejected
+                        </div>
+
+                        <div class="application-metric-number metric-rejected">
+                            {{ ns.rejected }}
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- =================================================
+                     FILTER
+                ================================================= -->
+
+                <form method="GET" action="/applications" class="applications-filter-panel">
+
+
+                    <div class="applications-search">
+
+                        <span class="applications-search-icon">
+                            ⌕
+                        </span>
+
+                        <input type="text" name="search" value="{{ search }}" placeholder="Search applications, companies or roles...">
+
+                    </div>
+
+
+                    <select name="status" class="applications-status">
+
+                        <option value="">
+                            All statuses
+                        </option>
+
+                        <option
+                            value="Applied"
+                            {% if selected_status == "Applied" %}
+                            selected
+                            {% endif %}
+                        >
+                            Applied
+                        </option>
+
+                        <option
+                            value="Assessment"
+                            {% if selected_status == "Assessment" %}
+                            selected
+                            {% endif %}
+                        >
+                            Assessment
+                        </option>
+
+                        <option
+                            value="Interview"
+                            {% if selected_status == "Interview" %}
+                            selected
+                            {% endif %}
+                        >
+                            Interview
+                        </option>
+
+                        <option
+                            value="Selected"
+                            {% if selected_status == "Selected" %}
+                            selected
+                            {% endif %}
+                        >
+                            Selected
+                        </option>
+
+                        <option
+                            value="Rejected"
+                            {% if selected_status == "Rejected" %}
+                            selected
+                            {% endif %}
+                        >
+                            Rejected
+                        </option>
+
+                    </select>
+
+
+                    <button type="submit" class="applications-filter-btn">
+                        Filter
+                    </button>
+
+
+                    <a href="/applications" class="applications-clear-btn">
+                        Clear
+                    </a>
+
+
+                </form>
+
+
+                <!-- =================================================
+                     APPLICATIONS PANEL
+                ================================================= -->
+
+                <section class="applications-panel">
+
+
+                    <div class="applications-panel-header">
+
+
+                        <div class="applications-panel-title">
+
+                            <div class="applications-panel-icon">
+                                ◫
+                            </div>
+
+                            <h2>
+                                All Applications
+                            </h2>
+
+                        </div>
+
+
+                        <div class="applications-panel-count">
+
+                            {{ applications|length }} applications found
+
+                        </div>
+
+
+                    </div>
+
+
+                    {% if applications %}
+
+
+                    <div class="applications-table-wrap">
+
+
+                        <table class="applications-table">
+
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Company
+                                    </th>
+
+                                    <th>
+                                        Job Role
+                                    </th>
+
+                                    <th>
+                                        Date
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                    <th>
+                                        Package
+                                    </th>
+
+                                    <th>
+                                        Actions
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+
+                                {% for application in applications %}
+
+
+                                <tr class="
+                                    {% if selected_application_id
+                                       and selected_application_id|string
+                                       == application.id|string %}
+                                        highlighted
+                                    {% endif %}
+                                    ">
+
+
+                                    <td>
+
+                                        <div class="application-company-name">
+
+                                            {{ application.company_name }}
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <div class="application-job-role">
+
+                                            {{ application.job_role }}
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        {{ application.application_date }}
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <span class="application-status
+                                            {{ application.status|lower }}">
+                                            {{ application.status }}
+                                        </span>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        {{ application.package or "-" }}
+
+                                    </td>
+
+
+                                    <td>
+
+
+                                        <div class="application-actions">
+
+
+                                            <a href="/edit-application/{{ application.id }}" class="application-edit-btn">
+                                                Edit
+                                            </a>
+
+
+                                            <form action="/delete-application/{{ application.id }}" method="POST" class="application-delete-form" onsubmit="
+                                                    return confirm(
+                                                        'Are you sure you want to delete this application?'
+                                                    );
+                                                ">
+
+                                                <button type="submit" class="application-delete-btn">
+                                                    Delete
+                                                </button>
+
+                                            </form>
+
+
+                                        </div>
+
+
+                                    </td>
+
+
+                                </tr>
+
+
+                                {% endfor %}
+
+
+                            </tbody>
+
+
+                        </table>
+
+
+                    </div>
+
+
+                    {% else %}
+
+
+                    <!-- EMPTY -->
+
+                    <div class="applications-empty">
+
+                        <div class="applications-empty-icon">
+                            ◫
+                        </div>
+
+                        <h2>
+                            No applications found
+                        </h2>
+
+                        <p>
+                            Start tracking your placement applications.
+                        </p>
+
+                        <a href="/add-application">
+                            + Add your first application
+                        </a>
+
+                    </div>
+
+
+                    {% endif %}
+
+
+                </section>
+
+
+            </div>
+
+
+        </main>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         LIVE BACKGROUND
+    ===================================================== -->
+
+    <script src="{{ url_for('static', filename='js/placement-bg.js') }}"></script>
+
+
+</body>
+
+</html>

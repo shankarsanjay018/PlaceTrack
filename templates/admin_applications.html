@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Applications | PlaceTrack Admin</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/placetrack.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/placement-bg.css') }}">
+
+    <style>
+        /* =========================================
+           PAGE HEADER
+        ========================================= */
+        
+        .admin-app-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 26px;
+        }
+        
+        .admin-app-header h1 {
+            margin: 0;
+            color: #f4f4f5;
+            font-size: 30px;
+            letter-spacing: -0.7px;
+        }
+        
+        .admin-app-header p {
+            margin: 7px 0 0;
+            color: #71717a;
+            font-size: 13px;
+        }
+        /* =========================================
+           FILTER PANEL
+        ========================================= */
+        
+        .admin-filter-panel {
+            margin-bottom: 24px;
+        }
+        
+        .admin-filter-form {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
+        
+        .admin-search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .admin-search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #71717a;
+            font-size: 17px;
+            pointer-events: none;
+        }
+        
+        .admin-search-input {
+            width: 100%;
+            height: 46px;
+            box-sizing: border-box;
+            padding: 0 15px 0 42px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            background: rgba(255, 255, 255, 0.035);
+            color: #f4f4f5;
+            outline: none;
+            font-family: inherit;
+            font-size: 13px;
+        }
+        
+        .admin-search-input::placeholder {
+            color: #71717a;
+        }
+        
+        .admin-search-input:focus {
+            border-color: rgba(99, 102, 241, 0.55);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
+        }
+        
+        .admin-status-filter {
+            width: 180px;
+            height: 46px;
+            flex-shrink: 0;
+        }
+        /* =========================================
+           TABLE PANEL
+        ========================================= */
+        
+        .admin-app-table-panel {
+            overflow: hidden;
+        }
+        
+        .admin-table-scroll {
+            width: 100%;
+            overflow-x: auto;
+        }
+        /* =========================================
+           APPLICATION TABLE
+        ========================================= */
+        
+        .admin-app-table {
+            width: 100%;
+            min-width: 1080px;
+            border-collapse: collapse;
+        }
+        
+        .admin-app-table th {
+            text-align: left;
+            padding: 15px 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            color: #71717a;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+        
+        .admin-app-table td {
+            padding: 17px 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            color: #a1a1aa;
+            font-size: 13px;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+        
+        .admin-app-table tbody tr {
+            transition: 0.2s ease;
+        }
+        
+        .admin-app-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.018);
+        }
+        
+        .admin-app-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        /* =========================================
+           STUDENT
+        ========================================= */
+        
+        .admin-student-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .admin-student-avatar {
+            width: 34px;
+            height: 34px;
+            min-width: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9px;
+            background: linear-gradient( 135deg, #6366f1, #7c3aed);
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 800;
+        }
+        
+        .admin-student-name {
+            color: #f4f4f5;
+            font-weight: 650;
+        }
+        /* =========================================
+           COMPANY
+        ========================================= */
+        
+        .admin-company-cell {
+            color: #f4f4f5;
+            font-weight: 650;
+        }
+        
+        .admin-job-role {
+            color: #a1a1aa;
+        }
+        /* =========================================
+           STATUS
+        ========================================= */
+        
+        .admin-app-status {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 9px;
+            border-radius: 7px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+        
+        .admin-app-status.applied {
+            color: #93c5fd;
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.14);
+        }
+        
+        .admin-app-status.assessment {
+            color: #c4b5fd;
+            background: rgba(139, 92, 246, 0.08);
+            border: 1px solid rgba(139, 92, 246, 0.14);
+        }
+        
+        .admin-app-status.interview {
+            color: #fde68a;
+            background: rgba(234, 179, 8, 0.08);
+            border: 1px solid rgba(234, 179, 8, 0.14);
+        }
+        
+        .admin-app-status.selected {
+            color: #86efac;
+            background: rgba(34, 197, 94, 0.08);
+            border: 1px solid rgba(34, 197, 94, 0.14);
+        }
+        
+        .admin-app-status.rejected {
+            color: #fca5a5;
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.14);
+        }
+        /* =========================================
+           VIEW BUTTON
+        ========================================= */
+        
+        .admin-view-btn {
+            display: inline-flex !important;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 32px;
+            box-sizing: border-box;
+            border-radius: 8px;
+            background: rgba(99, 102, 241, 0.10);
+            border: 1px solid rgba(99, 102, 241, 0.22);
+            color: #a5a7ff !important;
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 700;
+            text-decoration: none !important;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+        
+        .admin-view-btn:hover {
+            background: rgba(99, 102, 241, 0.18);
+            border-color: rgba(99, 102, 241, 0.35);
+            transform: translateY(-1px);
+        }
+        /* =========================================
+           EMPTY STATE
+        ========================================= */
+        
+        .admin-app-empty {
+            text-align: center;
+            padding: 65px 20px;
+        }
+        
+        .admin-app-empty-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 13px;
+            background: rgba(99, 102, 241, 0.08);
+            border: 1px solid rgba(99, 102, 241, 0.12);
+            color: #8b8dfc;
+            font-size: 20px;
+        }
+        
+        .admin-app-empty h2 {
+            margin: 0;
+            color: #f4f4f5;
+            font-size: 18px;
+        }
+        
+        .admin-app-empty p {
+            margin: 8px auto 20px;
+            max-width: 420px;
+            color: #71717a;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+        
+        @media (max-width: 800px) {
+            .admin-filter-form {
+                flex-wrap: wrap;
+            }
+            .admin-search-wrap {
+                flex-basis: 100%;
+            }
+            .admin-status-filter {
+                flex: 1;
+                width: auto;
+            }
+        }
+        
+        @media (max-width: 550px) {
+            .admin-app-header {
+                flex-direction: column;
+            }
+            .admin-status-filter {
+                width: 100%;
+                flex-basis: 100%;
+            }
+            .admin-filter-form .pt-primary-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        /* =====================================================
+   ADMIN LIVE BACKGROUND
+===================================================== */
+        
+        .admin-page-bg {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #05080a;
+            z-index: -10;
+            pointer-events: none;
+        }
+        
+        .admin-page-bg canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            pointer-events: none;
+        }
+        /* =====================================================
+   KEEP ADMIN CONTENT ABOVE BACKGROUND
+===================================================== */
+        
+        .pt-layout,
+        .layout,
+        .admin-layout {
+            position: relative;
+            z-index: 2;
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================================
+         LIVE BACKGROUND
+    ========================================== -->
+
+    <div class="admin-page-bg">
+
+        <canvas id="admin-bg"></canvas>
+
+    </div>
+
+
+
+    <!-- =========================================
+         MAIN LAYOUT
+    ========================================== -->
+
+    <div class="pt-layout">
+
+
+        <!-- =========================================
+             SIDEBAR
+        ========================================== -->
+
+        <aside class="pt-sidebar">
+
+
+            <!-- BRAND -->
+
+            <div class="pt-brand">
+
+                <div class="pt-brand-icon">
+                    P
+                </div>
+
+                <div class="pt-brand-name">
+                    Place<span>Track</span>
+                </div>
+
+            </div>
+
+
+            <!-- NAV TITLE -->
+
+            <div class="pt-nav-title">
+                Admin
+            </div>
+
+
+            <!-- NAVIGATION -->
+
+            <nav class="pt-nav">
+
+
+                <a href="/admin">
+
+                    <span class="pt-nav-icon">
+                        ▦
+                    </span> Dashboard
+
+                </a>
+
+
+                <a href="/admin/add-opportunity">
+
+                    <span class="pt-nav-icon">
+                        +
+                    </span> Add Opportunity
+
+                </a>
+
+
+                <a href="/admin/applications" class="active">
+
+                    <span class="pt-nav-icon">
+                        ◫
+                    </span> Applications
+
+                </a>
+
+
+            </nav>
+
+
+            <!-- SIDEBAR BOTTOM -->
+
+            <div class="pt-sidebar-bottom">
+
+
+                <div class="pt-user-mini">
+
+                    <div class="pt-avatar">
+
+                        {{ session["admin_name"][0]|upper }}
+
+                    </div>
+
+
+                    <div class="pt-user-info">
+
+                        <div class="pt-user-name">
+
+                            {{ session["admin_name"] }}
+
+                        </div>
+
+
+                        <div class="pt-user-role">
+
+                            Administrator
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <a href="/admin/logout" class="pt-logout">
+                    ↪ Logout
+                </a>
+
+
+            </div>
+
+        </aside>
+
+
+
+        <!-- =========================================
+             MAIN CONTENT
+        ========================================== -->
+
+        <main class="pt-main">
+
+
+            <!-- HEADER -->
+
+            <div class="admin-app-header">
+
+                <div>
+
+                    <h1>
+                        Student Applications
+                    </h1>
+
+                    <p>
+                        View and monitor applications submitted by PlaceTrack users.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =========================================
+                 SEARCH & FILTER
+            ========================================== -->
+
+            <section class="pt-panel admin-filter-panel">
+
+                <form method="GET" action="/admin/applications" class="admin-filter-form">
+
+
+                    <!-- SEARCH -->
+
+                    <div class="admin-search-wrap">
+
+                        <span class="admin-search-icon">
+                            ⌕
+                        </span>
+
+
+                        <input type="text" name="search" class="admin-search-input" placeholder="Search student, company or job role..." value="{{ search or '' }}">
+
+                    </div>
+
+
+
+                    <!-- STATUS -->
+
+                    <select name="status" class="pt-select admin-status-filter">
+
+                        <option value="">
+                            All Statuses
+                        </option>
+
+
+                        <option
+                            value="Applied"
+                            {% if status == "Applied" %}
+                            selected
+                            {% endif %}
+                        >
+                            Applied
+                        </option>
+
+
+                        <option
+                            value="Assessment"
+                            {% if status == "Assessment" %}
+                            selected
+                            {% endif %}
+                        >
+                            Assessment
+                        </option>
+
+
+                        <option
+                            value="Interview"
+                            {% if status == "Interview" %}
+                            selected
+                            {% endif %}
+                        >
+                            Interview
+                        </option>
+
+
+                        <option
+                            value="Selected"
+                            {% if status == "Selected" %}
+                            selected
+                            {% endif %}
+                        >
+                            Selected
+                        </option>
+
+
+                        <option
+                            value="Rejected"
+                            {% if status == "Rejected" %}
+                            selected
+                            {% endif %}
+                        >
+                            Rejected
+                        </option>
+
+
+                    </select>
+
+
+
+                    <!-- SEARCH -->
+
+                    <button type="submit" class="pt-primary-btn">
+                        Search
+                    </button>
+
+
+                </form>
+
+            </section>
+
+
+
+            <!-- =========================================
+                 APPLICATIONS
+            ========================================== -->
+
+            <section class="pt-panel admin-app-table-panel">
+
+
+                <!-- PANEL HEADER -->
+
+                <div class="pt-panel-header">
+
+                    <div>
+
+                        <h2>
+                            Applications
+                        </h2>
+
+                        <p>
+                            Student placement applications across the platform.
+                        </p>
+
+                    </div>
+
+
+                    {% if applications %}
+
+                    <div class="admin-application-count">
+
+                        {{ applications|length }} {% if applications|length == 1 %} application {% else %} applications {% endif %}
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+
+
+                {% if applications %}
+
+
+                <!-- TABLE -->
+
+                <div class="admin-table-scroll">
+
+                    <table class="admin-app-table">
+
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Student
+                                </th>
+
+                                <th>
+                                    Company
+                                </th>
+
+                                <th>
+                                    Job Role
+                                </th>
+
+                                <th>
+                                    Date
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Package
+                                </th>
+
+                                <th>
+                                    Action
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+
+                        <tbody>
+
+
+                            {% for application in applications %}
+
+
+                            <tr>
+
+
+                                <!-- STUDENT -->
+
+                                <td>
+
+                                    <div class="admin-student-cell">
+
+                                        <div class="admin-student-avatar">
+
+                                            {{ application.student_name[0]|upper }}
+
+                                        </div>
+
+
+                                        <div class="admin-student-name">
+
+                                            {{ application.student_name }}
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+
+
+                                <!-- COMPANY -->
+
+                                <td class="admin-company-cell">
+
+                                    {{ application.company_name }}
+
+                                </td>
+
+
+
+                                <!-- JOB ROLE -->
+
+                                <td class="admin-job-role">
+
+                                    {{ application.job_role }}
+
+                                </td>
+
+
+
+                                <!-- DATE -->
+
+                                <td>
+
+                                    {{ application.application_date }}
+
+                                </td>
+
+
+
+                                <!-- STATUS -->
+
+                                <td>
+
+                                    {% set status_class = application.status|lower|replace(" ", "-") %}
+
+                                    <span class="admin-app-status {{ status_class }}">
+                                        {{ application.status }}
+                                    </span>
+
+                                </td>
+
+
+
+                                <!-- PACKAGE -->
+
+                                <td>
+
+                                    {{ application.package or "-" }}
+
+                                </td>
+
+
+
+                                <!-- ACTION -->
+
+                                <td>
+
+                                    <a href="{{ url_for('admin_application_details', id=application.id) }}" class="admin-view-btn">
+                                        View
+                                    </a>
+
+                                </td>
+
+
+                            </tr>
+
+
+                            {% endfor %}
+
+
+                        </tbody>
+
+
+                    </table>
+
+                </div>
+
+
+                {% else %}
+
+
+                <!-- EMPTY -->
+
+                <div class="admin-app-empty">
+
+                    <div class="admin-app-empty-icon">
+                        ◫
+                    </div>
+
+
+                    <h2>
+                        No Applications Found
+                    </h2>
+
+
+                    <p>
+                        No student applications match your current search or status filter.
+                    </p>
+
+
+                    <a href="/admin/applications" class="pt-secondary-btn">
+                        View All Applications
+                    </a>
+
+                </div>
+
+
+                {% endif %}
+
+
+            </section>
+
+
+        </main>
+
+    </div>
+
+
+
+    <!-- LIVE BACKGROUND -->
+
+    <script src="{{ url_for('static', filename='js/admin-bg.js') }}"></script>
+
+</body>
+
+</html>

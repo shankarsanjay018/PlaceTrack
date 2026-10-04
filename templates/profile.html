@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Profile | PlaceTrack</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/placetrack.css') }}">
+
+    <script src="{{ url_for('static', filename='js/placetrack.js') }}" defer></script>
+
+
+    <style>
+        /* =====================================================
+           PAGE
+        ===================================================== */
+        
+        .profile-page {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .pt-main {
+            padding-top: 16px !important;
+        }
+        /* =====================================================
+           HEADER
+        ===================================================== */
+        
+        .profile-page-header {
+            margin-bottom: 22px;
+        }
+        
+        .profile-page-label {
+            color: #c084fc;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        
+        .profile-page-header h1 {
+            margin: 0 0 7px 0;
+            color: #f4f4f5;
+            font-size: 30px;
+            font-weight: 760;
+            letter-spacing: -0.8px;
+        }
+        
+        .profile-page-header p {
+            margin: 0;
+            color: #858591;
+            font-size: 13px;
+        }
+        /* =====================================================
+           MAIN PROFILE GRID
+        ===================================================== */
+        
+        .profile-content-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.75fr);
+            gap: 20px;
+            align-items: start;
+        }
+        /* =====================================================
+           PROFILE MAIN CARD
+        ===================================================== */
+        
+        .profile-main-card {
+            background: linear-gradient( 145deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.022));
+            border: 1px solid rgba(255, 255, 255, 0.075);
+            border-radius: 16px;
+            overflow: hidden;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            box-shadow: 0 18px 55px rgba(0, 0, 0, 0.14);
+        }
+        /* =====================================================
+           PROFILE HERO
+        ===================================================== */
+        
+        .profile-hero {
+            position: relative;
+            padding: 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+            overflow: hidden;
+        }
+        
+        .profile-hero::before {
+            content: "";
+            position: absolute;
+            width: 280px;
+            height: 180px;
+            left: -90px;
+            top: -110px;
+            border-radius: 50%;
+            background: radial-gradient( circle, rgba(139, 92, 246, 0.15), transparent 70%);
+            pointer-events: none;
+        }
+        
+        .profile-hero::after {
+            content: "";
+            position: absolute;
+            width: 220px;
+            height: 170px;
+            right: -100px;
+            bottom: -90px;
+            border-radius: 50%;
+            background: radial-gradient( circle, rgba(236, 72, 153, 0.12), transparent 70%);
+            pointer-events: none;
+        }
+        
+        .profile-identity {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 17px;
+        }
+        
+        .profile-large-avatar {
+            width: 74px;
+            height: 74px;
+            min-width: 74px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px;
+            background: linear-gradient( 135deg, #7c3aed, #8b5cf6, #ec4899);
+            color: white;
+            font-size: 27px;
+            font-weight: 750;
+            box-shadow: 0 12px 30px rgba(139, 92, 246, 0.22);
+        }
+        
+        .profile-identity h2 {
+            margin: 0 0 5px 0;
+            color: #f4f4f5;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.4px;
+        }
+        
+        .profile-identity p {
+            margin: 0;
+            color: #747580;
+            font-size: 11px;
+        }
+        /* =====================================================
+           PROFILE INFORMATION
+        ===================================================== */
+        
+        .profile-info-section {
+            padding: 24px 28px 28px;
+        }
+        
+        .profile-section-title {
+            margin-bottom: 15px;
+            color: #e4e4e7;
+            font-size: 14px;
+            font-weight: 700;
+        }
+        
+        .profile-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+        
+        .profile-info-item {
+            padding: 16px;
+            border-radius: 11px;
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid rgba(255, 255, 255, 0.055);
+        }
+        
+        .profile-info-label {
+            display: block;
+            color: #555661;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 7px;
+        }
+        
+        .profile-info-value {
+            color: #d4d4d8;
+            font-size: 13px;
+            font-weight: 600;
+            word-break: break-word;
+            line-height: 1.5;
+        }
+        /* =====================================================
+           EMAIL ROW
+        ===================================================== */
+        
+        .profile-email-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        
+        .profile-copy-button {
+            flex-shrink: 0;
+            padding: 7px 10px;
+            border: 1px solid rgba(139, 92, 246, 0.13);
+            border-radius: 7px;
+            background: rgba(139, 92, 246, 0.08);
+            color: #c4b5fd;
+            font-size: 9px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        
+        .profile-copy-button:hover {
+            background: rgba(139, 92, 246, 0.15);
+        }
+        /* =====================================================
+           PROFILE ACTIONS
+        ===================================================== */
+        
+        .profile-actions {
+            display: flex;
+            gap: 9px;
+            margin-top: 20px;
+        }
+        
+        .profile-edit-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 42px;
+            padding: 0 16px;
+            border-radius: 9px;
+            background: linear-gradient( 135deg, #6366f1, #8b5cf6);
+            color: white;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        
+        .profile-secondary-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 42px;
+            padding: 0 15px;
+            border-radius: 9px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.025);
+            color: #a1a1aa;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .profile-secondary-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        /* =====================================================
+           RIGHT COLUMN
+        ===================================================== */
+        
+        .profile-side-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        /* =====================================================
+           COMPLETION CARD
+        ===================================================== */
+        
+        .profile-completion-card {
+            padding: 21px;
+            background: linear-gradient( 145deg, rgba(139, 92, 246, 0.10), rgba(236, 72, 153, 0.04));
+            border: 1px solid rgba(139, 92, 246, 0.15);
+            border-radius: 15px;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+        
+        .profile-completion-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 13px;
+        }
+        
+        .profile-completion-top strong {
+            color: #e4e4e7;
+            font-size: 13px;
+        }
+        
+        .profile-completion-percent {
+            color: #c4b5fd;
+            font-size: 14px;
+            font-weight: 800;
+        }
+        
+        .profile-completion-track {
+            width: 100%;
+            height: 8px;
+            border-radius: 20px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.07);
+        }
+        
+        .profile-completion-fill {
+            height: 100%;
+            border-radius: 20px;
+            background: linear-gradient( 90deg, #6366f1, #8b5cf6, #ec4899);
+            transition: width 0.7s ease;
+        }
+        
+        .profile-completion-note {
+            margin-top: 10px;
+            color: #666773;
+            font-size: 10px;
+            line-height: 1.55;
+        }
+        /* =====================================================
+           QUICK LINKS
+        ===================================================== */
+        
+        .profile-quick-card {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.035);
+            border: 1px solid rgba(255, 255, 255, 0.075);
+            border-radius: 15px;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+        
+        .profile-quick-card h2 {
+            margin: 0 0 13px 0;
+            color: #e4e4e7;
+            font-size: 14px;
+        }
+        
+        .profile-quick-links {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .profile-quick-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px;
+            border-radius: 9px;
+            text-decoration: none;
+            color: #b0b0b8;
+            transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+        }
+        
+        .profile-quick-link:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.04);
+            transform: translateX(2px);
+        }
+        
+        .profile-quick-icon {
+            width: 32px;
+            height: 32px;
+            min-width: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: rgba(139, 92, 246, 0.10);
+            color: #a78bfa;
+            font-size: 13px;
+        }
+        
+        .profile-quick-text strong {
+            display: block;
+            color: inherit;
+            font-size: 11px;
+            margin-bottom: 2px;
+        }
+        
+        .profile-quick-text span {
+            color: #555661;
+            font-size: 9px;
+        }
+        /* =====================================================
+           ACCOUNT STATUS
+        ===================================================== */
+        
+        .profile-status-card {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.035);
+            border: 1px solid rgba(255, 255, 255, 0.075);
+            border-radius: 15px;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+        
+        .profile-status-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 13px;
+        }
+        
+        .profile-status-header h2 {
+            margin: 0;
+            color: #e4e4e7;
+            font-size: 14px;
+        }
+        
+        .profile-active-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            background: rgba(52, 211, 153, 0.08);
+            color: #6ee7b7;
+            font-size: 8px;
+            font-weight: 700;
+        }
+        
+        .profile-active-badge::before {
+            content: "";
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #34d399;
+        }
+        
+        .profile-status-note {
+            color: #666773;
+            font-size: 10px;
+            line-height: 1.65;
+        }
+        /* =====================================================
+           COPY FEEDBACK
+        ===================================================== */
+        
+        .profile-copy-feedback {
+            position: fixed;
+            left: 50%;
+            bottom: 25px;
+            transform: translate(-50%, 20px);
+            padding: 10px 14px;
+            border-radius: 9px;
+            background: rgba(15, 14, 21, 0.96);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            color: #d4d4d8;
+            font-size: 10px;
+            font-weight: 700;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+            z-index: 2000;
+        }
+        
+        .profile-copy-feedback.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, 0);
+        }
+        /* =====================================================
+           PLACETRACK BRAND
+           MATCHES DASHBOARD
+        ===================================================== */
+        
+        .pt-sidebar {
+            padding: 24px 16px !important;
+        }
+        
+        .pt-brand {
+            display: flex !important;
+            align-items: center !important;
+            gap: 11px !important;
+            width: 100%;
+            padding: 8px 10px !important;
+            margin: 0 0 32px 0 !important;
+            box-sizing: border-box;
+            text-decoration: none !important;
+            color: inherit !important;
+            cursor: pointer;
+        }
+        
+        .pt-brand:hover {
+            text-decoration: none !important;
+            color: inherit !important;
+        }
+        /* LOGO */
+        
+        .pt-logo-box {
+            width: 40px !important;
+            height: 40px !important;
+            min-width: 40px !important;
+            min-height: 40px !important;
+            flex: 0 0 40px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        .pt-logo-svg {
+            width: 40px !important;
+            height: 40px !important;
+            display: block !important;
+        }
+        /* BRAND NAME */
+        
+        .pt-brand-name {
+            display: flex !important;
+            align-items: center !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            color: #f4f4f5 !important;
+            font-size: 19px !important;
+            font-weight: 750 !important;
+            line-height: 1 !important;
+            letter-spacing: -0.45px;
+            white-space: nowrap;
+        }
+        
+        .pt-brand-name span {
+            color: #a78bfa !important;
+        }
+        /* NAVIGATION */
+        
+        .pt-nav-title {
+            margin: 0 0 10px 0 !important;
+            padding: 0 12px !important;
+        }
+        
+        .pt-nav {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 5px !important;
+        }
+        
+        .pt-nav a {
+            min-height: 43px !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            padding: 0 13px !important;
+        }
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+        
+        @media (max-width: 900px) {
+            .profile-content-grid {
+                grid-template-columns: 1fr;
+            }
+            .profile-side-stack {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
+            .profile-status-card {
+                grid-column: 1 / -1;
+            }
+        }
+        
+        @media (max-width: 700px) {
+            .pt-main {
+                padding: 16px 18px 40px !important;
+            }
+            .profile-info-grid {
+                grid-template-columns: 1fr;
+            }
+            .profile-identity {
+                align-items: flex-start;
+            }
+            .profile-side-stack {
+                grid-template-columns: 1fr;
+            }
+            .profile-status-card {
+                grid-column: auto;
+            }
+        }
+        
+        @media (max-width: 500px) {
+            .pt-main {
+                padding: 16px 15px 35px !important;
+            }
+            .profile-hero {
+                padding: 22px;
+            }
+            .profile-info-section {
+                padding: 21px 22px 23px;
+            }
+            .profile-large-avatar {
+                width: 62px;
+                height: 62px;
+                min-width: 62px;
+                border-radius: 17px;
+                font-size: 23px;
+            }
+            .profile-identity h2 {
+                font-size: 18px;
+            }
+            .profile-actions {
+                flex-direction: column;
+            }
+            .profile-edit-btn,
+            .profile-secondary-btn {
+                width: 100%;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/placetrack-sidebar.css') }}">
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         LIVE BACKGROUND
+    ===================================================== -->
+
+    <div class="page-bg">
+
+        <div class="bg-grid"></div>
+
+        <canvas id="placement-bg"></canvas>
+
+    </div>
+
+
+    <!-- =====================================================
+         LAYOUT
+    ===================================================== -->
+
+    <div class="pt-layout">
+
+
+        <!-- =================================================
+             SIDEBAR
+        ================================================= -->
+
+        <aside class="pt-sidebar">
+
+
+            <!-- =================================================
+                 PLACETRACK BRAND
+                 CLICK → DASHBOARD
+            ================================================= -->
+
+            <a href="{{ url_for('dashboard') }}" class="pt-brand">
+
+
+                <div class="pt-logo-box">
+
+
+                    <!-- =================================================
+                         PLACETRACK LOGO
+
+                         Education
+                         Application
+                         Career Growth
+                    ================================================= -->
+
+                    <svg class="pt-logo-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+
+
+                        <defs>
+
+                            <linearGradient
+                                id="ptLogoGradient"
+                                x1="0"
+                                y1="0"
+                                x2="1"
+                                y2="1"
+                            >
+
+                                <stop
+                                    offset="0%"
+                                    stop-color="#4c1d95"
+                                />
+
+                                <stop
+                                    offset="52%"
+                                    stop-color="#7c3aed"
+                                />
+
+                                <stop
+                                    offset="100%"
+                                    stop-color="#c026d3"
+                                />
+
+                            </linearGradient>
+
+                        </defs>
+
+
+                        <!-- APP TILE -->
+
+                        <rect
+                            x="2"
+                            y="2"
+                            width="60"
+                            height="60"
+                            rx="16"
+                            fill="url(#ptLogoGradient)"
+                        />
+
+
+                        <!-- GRADUATION CAP -->
+
+                        <path
+                            d="
+                                M12 18.5
+                                L32 10
+                                L52 18.5
+                                L32 27
+                                L12 18.5
+                                Z
+                            "
+                            fill="#f8f7ff"
+                        />
+
+                        <path
+                            d="
+                                M18 22
+                                V27.5
+                                C22.5 31.5
+                                27.1 33.5
+                                32 33.5
+                                C36.9 33.5
+                                41.5 31.5
+                                46 27.5
+                                V22
+                                L32 27.8
+                                L18 22
+                                Z
+                            "
+                            fill="#e9d5ff"
+                        />
+
+
+                        <!-- TASSEL -->
+
+                        <path
+                            d="M49 19V29"
+                            stroke="#f8f7ff"
+                            stroke-width="3"
+                            stroke-linecap="round"
+                        />
+
+                        <circle
+                            cx="49"
+                            cy="31.5"
+                            r="2.2"
+                            fill="#f8f7ff"
+                        />
+
+
+                        <!-- RESUME / PROFILE CARD -->
+
+                        <rect
+                            x="13"
+                            y="35"
+                            width="31"
+                            height="19"
+                            rx="4"
+                            fill="#faf9ff"
+                        />
+
+
+                        <!-- PROFILE -->
+
+                        <circle
+                            cx="21"
+                            cy="42"
+                            r="3.2"
+                            fill="#c4b5fd"
+                        />
+
+
+                        <path
+                            d="
+                                M17.2 48
+                                C17.2 45.8
+                                24.8 45.8
+                                24.8 48
+                            "
+                            fill="#c4b5fd"
+                        />
+
+
+                        <!-- RESUME LINES -->
+
+                        <rect
+                            x="27"
+                            y="39.5"
+                            width="12"
+                            height="2.4"
+                            rx="1.2"
+                            fill="#8b5cf6"
+                        />
+
+                        <rect
+                            x="27"
+                            y="44"
+                            width="9"
+                            height="2.4"
+                            rx="1.2"
+                            fill="#c4b5fd"
+                        />
+
+                        <rect
+                            x="17.5"
+                            y="48"
+                            width="18.5"
+                            height="2.2"
+                            rx="1.1"
+                            fill="#ddd6fe"
+                        />
+
+
+                        <!-- CAREER GROWTH -->
+
+                        <path
+                            d="
+                                M12 53
+                                C20 53
+                                27 52
+                                32 49
+                                C39 45
+                                43 39.5
+                                50 34
+                            "
+                            fill="none"
+                            stroke="#f5eaff"
+                            stroke-width="4.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+
+
+                        <!-- ARROW -->
+
+                        <path
+                            d="
+                                M45.5 34
+                                H50
+                                V38.5
+                            "
+                            fill="none"
+                            stroke="#f5eaff"
+                            stroke-width="4.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+
+
+                    </svg>
+
+
+                </div>
+
+
+                <div class="pt-brand-name">
+
+                    Place<span>Track</span>
+
+                </div>
+
+
+            </a>
+
+
+            <!-- =================================================
+                 WORKSPACE
+            ================================================= -->
+
+            <div class="pt-nav-title">
+
+                Workspace
+
+            </div>
+
+
+            <!-- =================================================
+                 NAVIGATION
+            ================================================= -->
+
+            <nav class="pt-nav">
+
+
+                <a href="/dashboard">
+
+                    <span class="pt-nav-icon">
+                        ▦
+                    </span> Dashboard
+
+                </a>
+
+
+                <a href="/applications">
+
+                    <span class="pt-nav-icon">
+                        ◫
+                    </span> Applications
+
+                </a>
+
+
+                <a href="/opportunities">
+
+                    <span class="pt-nav-icon">
+                        ⌁
+                    </span> Opportunities
+
+                </a>
+
+
+                <a href="/analytics">
+
+                    <span class="pt-nav-icon">
+                        ◒
+                    </span> Analytics
+
+                </a>
+
+
+                <a href="/profile" class="active">
+
+                    <span class="pt-nav-icon">
+                        ◎
+                    </span> Profile
+
+                </a>
+
+
+            </nav>
+
+
+            <!-- =================================================
+                 USER
+            ================================================= -->
+
+            <div class="pt-sidebar-bottom">
+
+
+                <div class="pt-user-mini">
+
+
+                    <div class="pt-avatar">
+
+                        {{ session["user_name"][0]|upper }}
+
+                    </div>
+
+
+                    <div class="pt-user-info">
+
+
+                        <div class="pt-user-name">
+
+                            {{ session["user_name"] }}
+
+                        </div>
+
+
+                        <div class="pt-user-role">
+
+                            Placement Candidate
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+                <a href="/logout" class="pt-logout">
+
+                    ↪ Logout
+
+                </a>
+
+
+            </div>
+
+
+        </aside>
+
+
+        <!-- =================================================
+             MAIN
+        ================================================= -->
+
+        <main class="pt-main">
+
+
+            <div class="profile-page">
+
+
+                <!-- =================================================
+                     HEADER
+                ================================================= -->
+
+                <div class="profile-page-header">
+
+
+                    <div class="profile-page-label">
+
+                        Account
+
+                    </div>
+
+
+                    <h1>
+
+                        My Profile
+
+                    </h1>
+
+
+                    <p>
+
+                        Manage your PlaceTrack account information.
+
+                    </p>
+
+
+                </div>
+
+
+                <!-- =================================================
+                     CONTENT GRID
+                ================================================= -->
+
+                <div class="profile-content-grid">
+
+
+                    <!-- =================================================
+                         MAIN PROFILE CARD
+                    ================================================= -->
+
+                    <section class="profile-main-card">
+
+
+                        <!-- HERO -->
+
+                        <div class="profile-hero">
+
+
+                            <div class="profile-identity">
+
+
+                                <div class="profile-large-avatar">
+
+                                    {{ user.name[0]|upper }}
+
+                                </div>
+
+
+                                <div>
+
+
+                                    <h2>
+
+                                        {{ user.name }}
+
+                                    </h2>
+
+
+                                    <p>
+
+                                        Placement Candidate
+
+                                    </p>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+                        <!-- INFORMATION -->
+
+                        <div class="profile-info-section">
+
+
+                            <h2 class="profile-section-title">
+
+                                Personal Information
+
+                            </h2>
+
+
+                            <div class="profile-info-grid">
+
+
+                                <!-- NAME -->
+
+                                <div class="profile-info-item">
+
+
+                                    <span class="profile-info-label">
+
+                                        Full Name
+
+                                    </span>
+
+
+                                    <div class="profile-info-value">
+
+                                        {{ user.name }}
+
+                                    </div>
+
+
+                                </div>
+
+
+                                <!-- EMAIL -->
+
+                                <div class="profile-info-item">
+
+
+                                    <span class="profile-info-label">
+
+                                        Email Address
+
+                                    </span>
+
+
+                                    <div class="profile-email-row">
+
+
+                                        <div class="profile-info-value" id="userEmail">
+
+                                            {{ user.email }}
+
+                                        </div>
+
+
+                                        <button type="button" class="profile-copy-button" id="copyEmailButton">
+
+                                            Copy
+
+                                        </button>
+
+
+                                    </div>
+
+
+                                </div>
+
+
+                                <!-- COLLEGE -->
+
+                                <div class="profile-info-item">
+
+
+                                    <span class="profile-info-label">
+
+                                        College
+
+                                    </span>
+
+
+                                    <div class="profile-info-value">
+
+                                        {{ user.college or "Not added yet" }}
+
+                                    </div>
+
+
+                                </div>
+
+
+                                <!-- ROLE -->
+
+                                <div class="profile-info-item">
+
+
+                                    <span class="profile-info-label">
+
+                                        Account Type
+
+                                    </span>
+
+
+                                    <div class="profile-info-value">
+
+                                        Student / Placement Candidate
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                            <!-- ACTIONS -->
+
+                            <div class="profile-actions">
+
+
+                                <a href="/edit-profile" class="profile-edit-btn">
+
+                                    Edit Profile
+
+                                </a>
+
+
+                                <a href="/dashboard" class="profile-secondary-btn">
+
+                                    Back to Dashboard
+
+                                </a>
+
+
+                            </div>
+
+
+                        </div>
+
+
+                    </section>
+
+
+                    <!-- =================================================
+                         SIDE STACK
+                    ================================================= -->
+
+                    <div class="profile-side-stack">
+
+
+                        <!-- =================================================
+                             PROFILE COMPLETION
+                        ================================================= -->
+
+                        {% set completion = 0 %} {% if user.name %} {% set completion = completion + 33 %} {% endif %} {% if user.email %} {% set completion = completion + 33 %} {% endif %} {% if user.college %} {% set completion = completion + 34 %} {% endif %}
+
+
+                        <section class="profile-completion-card">
+
+
+                            <div class="profile-completion-top">
+
+
+                                <strong>
+
+                                    Profile Completion
+
+                                </strong>
+
+
+                                <span class="profile-completion-percent">
+
+                                    {{ completion }}%
+
+                                </span>
+
+
+                            </div>
+
+
+                            <div class="profile-completion-track">
+
+
+                                <div class="profile-completion-fill" style="width: {{ completion }}%;"></div>
+
+
+                            </div>
+
+
+                            {% if completion
+                            < 100 %} <p class="profile-completion-note">
+
+                                Add your remaining profile information to keep your account complete.
+
+                                </p>
+
+
+                                {% else %}
+
+
+                                <p class="profile-completion-note">
+
+                                    Your basic profile information is complete.
+
+                                </p>
+
+
+                                {% endif %}
+
+
+                        </section>
+
+
+                        <!-- =================================================
+                             QUICK WORKSPACE
+                        ================================================= -->
+
+                        <section class="profile-quick-card">
+
+
+                            <h2>
+
+                                Quick Workspace
+
+                            </h2>
+
+
+                            <div class="profile-quick-links">
+
+
+                                <a href="/opportunities" class="profile-quick-link">
+
+
+                                    <div class="profile-quick-icon">
+
+                                        ⌁
+
+                                    </div>
+
+
+                                    <div class="profile-quick-text">
+
+
+                                        <strong>
+
+                                            Explore Opportunities
+
+                                        </strong>
+
+
+                                        <span>
+
+                                            Find internships and roles
+
+                                        </span>
+
+
+                                    </div>
+
+
+                                </a>
+
+
+                                <a href="/applications" class="profile-quick-link">
+
+
+                                    <div class="profile-quick-icon">
+
+                                        ◫
+
+                                    </div>
+
+
+                                    <div class="profile-quick-text">
+
+
+                                        <strong>
+
+                                            View Applications
+
+                                        </strong>
+
+
+                                        <span>
+
+                                            Track your applications
+
+                                        </span>
+
+
+                                    </div>
+
+
+                                </a>
+
+
+                                <a href="/analytics" class="profile-quick-link">
+
+
+                                    <div class="profile-quick-icon">
+
+                                        ◒
+
+                                    </div>
+
+
+                                    <div class="profile-quick-text">
+
+
+                                        <strong>
+
+                                            Open Analytics
+
+                                        </strong>
+
+
+                                        <span>
+
+                                            See your placement progress
+
+                                        </span>
+
+
+                                    </div>
+
+
+                                </a>
+
+
+                            </div>
+
+
+                        </section>
+
+
+                        <!-- =================================================
+                             ACCOUNT STATUS
+                        ================================================= -->
+
+                        <section class="profile-status-card">
+
+
+                            <div class="profile-status-header">
+
+
+                                <h2>
+
+                                    Account Status
+
+                                </h2>
+
+
+                                <span class="profile-active-badge">
+
+                                    Active
+
+                                </span>
+
+
+                            </div>
+
+
+                            <p class="profile-status-note">
+
+                                Your PlaceTrack student account is ready to manage applications, opportunities and placement progress.
+
+                            </p>
+
+
+                        </section>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </main>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         COPY FEEDBACK
+    ===================================================== -->
+
+    <div class="profile-copy-feedback" id="copyFeedback">
+
+        Email copied
+
+    </div>
+
+
+    <!-- =====================================================
+         LIVE BACKGROUND
+    ===================================================== -->
+
+    <script src="{{ url_for('static', filename='js/placement-bg.js') }}"></script>
+
+
+    <!-- =====================================================
+         PROFILE INTERACTIONS
+    ===================================================== -->
+
+    <script>
+        document.addEventListener(
+            "DOMContentLoaded",
+            function() {
+
+                const copyButton =
+                    document.getElementById(
+                        "copyEmailButton"
+                    );
+
+                const emailElement =
+                    document.getElementById(
+                        "userEmail"
+                    );
+
+                const feedback =
+                    document.getElementById(
+                        "copyFeedback"
+                    );
+
+
+                if (!copyButton ||
+                    !emailElement ||
+                    !feedback
+                ) {
+
+                    return;
+
+                }
+
+
+                copyButton.addEventListener(
+                    "click",
+                    async function() {
+
+                        const email =
+                            emailElement
+                            .textContent
+                            .trim();
+
+
+                        try {
+
+                            await navigator.clipboard.writeText(
+                                email
+                            );
+
+                        } catch (error) {
+
+                            const temporaryInput =
+                                document.createElement(
+                                    "textarea"
+                                );
+
+
+                            temporaryInput.value =
+                                email;
+
+
+                            document.body.appendChild(
+                                temporaryInput
+                            );
+
+
+                            temporaryInput.select();
+
+
+                            document.execCommand(
+                                "copy"
+                            );
+
+
+                            temporaryInput.remove();
+
+                        }
+
+
+                        feedback.classList.add(
+                            "show"
+                        );
+
+
+                        setTimeout(
+                            function() {
+
+                                feedback.classList.remove(
+                                    "show"
+                                );
+
+                            },
+                            1800
+                        );
+
+                    }
+                );
+
+            }
+        );
+    </script>
+
+
+</body>
+
+</html>

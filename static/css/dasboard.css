@@ -1,0 +1,562 @@
+/* =========================
+   RESET
+========================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f7fb;
+    color: #0f172a;
+    overflow-x: hidden;
+}
+
+
+/* =========================
+   DASHBOARD LAYOUT
+========================= */
+
+.dashboard-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar {
+    width: 250px;
+    min-width: 250px;
+    background: #111827;
+    color: white;
+    min-height: 100vh;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar .logo {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 45px;
+    padding-left: 15px;
+}
+
+.sidebar .logo span {
+    color: #2563eb;
+}
+
+.sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sidebar nav a {
+    color: #cbd5e1;
+    text-decoration: none;
+    padding: 14px 15px;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: 0.2s;
+}
+
+.sidebar nav a:hover,
+.sidebar nav a.active {
+    background: #2563eb;
+    color: white;
+}
+
+.logout {
+    margin-top: auto;
+}
+
+.logout a {
+    color: #f87171 !important;
+}
+
+
+/* =========================
+   MAIN CONTENT
+========================= */
+
+.main-content {
+    flex: 1;
+    min-width: 0;
+    padding: 40px;
+}
+
+
+/* =========================
+   TOP SECTION
+========================= */
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 35px;
+}
+
+.welcome h1 {
+    font-size: 36px;
+    margin-bottom: 8px;
+}
+
+.welcome p {
+    color: #64748b;
+    font-size: 16px;
+}
+
+
+/* =========================
+   ADD APPLICATION BUTTON
+========================= */
+
+.add-btn {
+    background: #2563eb;
+    color: white;
+    text-decoration: none;
+    border: none;
+    padding: 14px 22px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 16px;
+    white-space: nowrap;
+    transition: 0.2s;
+}
+
+.add-btn:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+
+/* =========================
+   STATISTICS
+========================= */
+
+.stats {
+    display: grid;
+    /* Automatically adjusts based on available width */
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+    margin-bottom: 35px;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    min-width: 0;
+}
+
+.card h2 {
+    color: #2563eb;
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+.card p {
+    color: #64748b;
+    font-size: 15px;
+}
+
+
+/* =========================
+   RECENT APPLICATIONS
+========================= */
+
+.dashboard-section {
+    background: white;
+    padding: 30px;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    width: 100%;
+}
+
+.dashboard-section h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.dashboard-section p {
+    color: #64748b;
+    margin-bottom: 20px;
+}
+
+
+/* =========================
+   APPLICATION TABLE
+========================= */
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.application-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+}
+
+.application-table th {
+    text-align: left;
+    padding: 15px;
+    background: #f8fafc;
+    color: #475569;
+    font-size: 14px;
+}
+
+.application-table td {
+    padding: 16px 15px;
+    border-top: 1px solid #e2e8f0;
+    font-size: 14px;
+}
+
+
+/* =========================
+   STATUS
+========================= */
+
+.status {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.status-applied {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.status-interview {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-selected {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+
+/* =========================
+   ACTION BUTTONS
+========================= */
+
+.edit-btn,
+.delete-btn {
+    display: inline-block;
+    padding: 7px 12px;
+    border-radius: 7px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.edit-btn {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.delete-btn {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 1100px) {
+    .main-content {
+        padding: 30px;
+    }
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .welcome h1 {
+        font-size: 30px;
+    }
+}
+
+
+/* =========================
+   SMALL TABLET
+========================= */
+
+@media (max-width: 800px) {
+    .sidebar {
+        width: 200px;
+        min-width: 200px;
+    }
+    .main-content {
+        padding: 25px;
+    }
+    .dashboard-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+    .add-btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+    .dashboard-layout {
+        display: block;
+    }
+    .sidebar {
+        width: 100%;
+        min-width: 100%;
+        min-height: auto;
+        padding: 15px;
+        display: block;
+    }
+    .sidebar .logo {
+        text-align: center;
+        margin-bottom: 15px;
+    }
+    .sidebar nav {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+    }
+    .sidebar nav a {
+        text-align: center;
+        padding: 10px;
+        font-size: 14px;
+    }
+    .logout {
+        margin-top: 10px;
+    }
+    .main-content {
+        padding: 20px 15px;
+    }
+    .dashboard-header {
+        margin-bottom: 25px;
+    }
+    .welcome h1 {
+        font-size: 26px;
+    }
+    .welcome p {
+        font-size: 14px;
+    }
+    .stats {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    .card {
+        padding: 20px;
+    }
+    .card h2 {
+        font-size: 28px;
+    }
+    .dashboard-section {
+        padding: 20px 15px;
+    }
+    .dashboard-section h2 {
+        font-size: 20px;
+    }
+}
+
+
+/* =========================
+   VERY SMALL MOBILE
+========================= */
+
+@media (max-width: 400px) {
+    .sidebar nav {
+        grid-template-columns: 1fr;
+    }
+    .welcome h1 {
+        font-size: 23px;
+    }
+    .main-content {
+        padding: 15px 10px;
+    }
+    .dashboard-section {
+        padding: 15px 10px;
+    }
+}
+
+
+/* ============================= */
+
+
+/* RESPONSIVE DESIGN */
+
+
+/* ============================= */
+
+html,
+body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+
+/* Main dashboard layout */
+
+.dashboard {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+
+/* Make statistics responsive */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+
+/* Application section */
+
+.dashboard-section {
+    width: 100%;
+    overflow: hidden;
+}
+
+
+/* Application table */
+
+.dashboard-section table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+
+/* ============================= */
+
+
+/* TABLET */
+
+
+/* ============================= */
+
+@media (max-width: 1000px) {
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .dashboard {
+        padding: 40px 5%;
+    }
+    .welcome h1 {
+        font-size: 32px;
+    }
+}
+
+
+/* ============================= */
+
+
+/* MOBILE */
+
+
+/* ============================= */
+
+@media (max-width: 700px) {
+    /* Sidebar becomes full width */
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+    /* Dashboard content */
+    .dashboard {
+        width: 100%;
+        padding: 25px 18px;
+        margin: 0;
+    }
+    /* Welcome area */
+    .welcome {
+        margin-bottom: 25px;
+    }
+    .welcome h1 {
+        font-size: 28px;
+        line-height: 1.2;
+    }
+    .welcome p {
+        font-size: 15px;
+    }
+    /* Add application button */
+    .welcome a,
+    .welcome button {
+        width: 100%;
+        margin-top: 15px;
+    }
+    /* Stats become one column */
+    .stats {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    .card {
+        padding: 22px;
+    }
+    .card h2 {
+        font-size: 30px;
+    }
+    /* Recent applications */
+    .dashboard-section {
+        padding: 20px;
+        overflow-x: auto;
+    }
+    .dashboard-section table {
+        min-width: 650px;
+    }
+}
+
+
+/* ============================= */
+
+
+/* SMALL PHONES */
+
+
+/* ============================= */
+
+@media (max-width: 450px) {
+    .dashboard {
+        padding: 20px 14px;
+    }
+    .welcome h1 {
+        font-size: 24px;
+    }
+    .dashboard-section {
+        padding: 15px;
+    }
+    .card {
+        padding: 18px;
+    }
+}

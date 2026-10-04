@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Application | PlaceTrack</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/placetrack.css') }}">
+
+    <script src="{{ url_for('static', filename='js/placetrack.js') }}" defer></script>
+
+
+    <style>
+        .edit-application-page {
+            width: 100%;
+            max-width: 1180px;
+            margin: 0 auto;
+        }
+        
+        .pt-main {
+            padding-top: 16px !important;
+        }
+        /* =====================================================
+           HEADER
+        ===================================================== */
+        
+        .edit-page-header {
+            margin-bottom: 22px;
+        }
+        
+        .edit-page-label {
+            color: #f0abfc;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+            margin-bottom: 6px;
+        }
+        
+        .edit-page-header h1 {
+            margin: 0 0 7px;
+            color: #f4f4f5;
+            font-size: 30px;
+            font-weight: 760;
+            letter-spacing: -.8px;
+        }
+        
+        .edit-page-header p {
+            margin: 0;
+            color: #858591;
+            font-size: 13px;
+        }
+        /* =====================================================
+           GRID
+        ===================================================== */
+        
+        .edit-application-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.5fr) minmax(280px, .7fr);
+            gap: 20px;
+            align-items: start;
+        }
+        /* =====================================================
+           CARD
+        ===================================================== */
+        
+        .edit-application-card {
+            background: linear-gradient( 145deg, rgba(255, 255, 255, .055), rgba(255, 255, 255, .022));
+            border: 1px solid rgba(255, 255, 255, .075);
+            border-radius: 16px;
+            overflow: hidden;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            box-shadow: 0 18px 55px rgba(0, 0, 0, .14);
+        }
+        
+        .edit-card-header {
+            padding: 20px 23px;
+            border-bottom: 1px solid rgba(255, 255, 255, .055);
+        }
+        
+        .edit-card-header h2 {
+            margin: 0 0 4px;
+            color: #e4e4e7;
+            font-size: 15px;
+        }
+        
+        .edit-card-header span {
+            color: #555661;
+            font-size: 9px;
+        }
+        /* =====================================================
+           FORM
+        ===================================================== */
+        
+        .edit-application-form {
+            padding: 25px;
+        }
+        
+        .edit-form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 17px;
+        }
+        
+        .edit-form-group.full {
+            grid-column: 1 / -1;
+        }
+        
+        .edit-label {
+            display: block;
+            margin-bottom: 7px;
+            color: #8b8b94;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .45px;
+        }
+        
+        .edit-input,
+        .edit-select,
+        .edit-textarea {
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, .08);
+            border-radius: 9px;
+            background: rgba(255, 255, 255, .028);
+            color: #e4e4e7;
+            outline: none;
+            font-size: 13px;
+            transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
+        }
+        
+        .edit-input,
+        .edit-select {
+            height: 44px;
+            padding: 0 13px;
+        }
+        
+        .edit-textarea {
+            min-height: 135px;
+            padding: 12px 13px;
+            resize: vertical;
+            line-height: 1.65;
+        }
+        
+        .edit-input:focus,
+        .edit-select:focus,
+        .edit-textarea:focus {
+            border-color: rgba(139, 92, 246, .52);
+            background: rgba(255, 255, 255, .04);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, .07);
+        }
+        
+        .edit-input::placeholder,
+        .edit-textarea::placeholder {
+            color: #52525b;
+        }
+        
+        .edit-select option {
+            background: #18181b;
+            color: white;
+        }
+        /* =====================================================
+           STATUS GUIDE
+        ===================================================== */
+        
+        .edit-status-guide {
+            margin-top: 7px;
+            color: #52525b;
+            font-size: 9px;
+            line-height: 1.5;
+        }
+        
+        .locked-status-box {
+            min-height: 44px;
+            padding: 10px 13px;
+            box-sizing: border-box;
+            border-radius: 9px;
+            background: rgba(139, 92, 246, .055);
+            border: 1px solid rgba(139, 92, 246, .14);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .locked-status-value {
+            color: #c4b5fd;
+            font-size: 13px;
+            font-weight: 700;
+        }
+        
+        .locked-status-note {
+            margin-top: 3px;
+            color: #71717a;
+            font-size: 9px;
+        }
+        /* =====================================================
+           ACTIONS
+        ===================================================== */
+        
+        .edit-form-actions {
+            display: flex;
+            gap: 9px;
+            margin-top: 23px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, .055);
+        }
+        
+        .edit-save-btn {
+            min-height: 43px;
+            padding: 0 18px;
+            border: none;
+            border-radius: 9px;
+            background: linear-gradient( 135deg, #6366f1, #8b5cf6, #ec4899);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        
+        .edit-cancel-btn {
+            min-height: 43px;
+            padding: 0 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9px;
+            border: 1px solid rgba(255, 255, 255, .08);
+            background: rgba(255, 255, 255, .025);
+            color: #8b8b94;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .edit-cancel-btn:hover {
+            background: rgba(255, 255, 255, .05);
+            color: white;
+        }
+        /* =====================================================
+           SIDE
+        ===================================================== */
+        
+        .edit-side-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .edit-side-card {
+            padding: 20px;
+            background: rgba(255, 255, 255, .035);
+            border: 1px solid rgba(255, 255, 255, .075);
+            border-radius: 15px;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+        
+        .edit-side-card h2 {
+            margin: 0 0 13px;
+            color: #e4e4e7;
+            font-size: 14px;
+        }
+        
+        .current-status-box {
+            padding: 13px;
+            border-radius: 10px;
+            background: rgba(139, 92, 246, .07);
+            border: 1px solid rgba(139, 92, 246, .12);
+        }
+        
+        .current-status-label {
+            color: #5f606a;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+        }
+        
+        .current-status-value {
+            margin-top: 6px;
+            color: #c4b5fd;
+            font-size: 14px;
+            font-weight: 700;
+        }
+        
+        .edit-side-note {
+            margin-top: 12px;
+            color: #60616b;
+            font-size: 10px;
+            line-height: 1.6;
+        }
+        /* =====================================================
+           WARNING
+        ===================================================== */
+        
+        .unsaved-indicator {
+            display: none;
+            margin-top: 12px;
+            padding: 10px 11px;
+            border-radius: 8px;
+            background: rgba(251, 191, 36, .07);
+            border: 1px solid rgba(251, 191, 36, .11);
+            color: #fcd34d;
+            font-size: 9px;
+            line-height: 1.5;
+        }
+        
+        .unsaved-indicator.show {
+            display: block;
+        }
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+        
+        @media (max-width: 900px) {
+            .edit-application-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 650px) {
+            .pt-main {
+                padding: 16px 18px 40px !important;
+            }
+            .edit-form-grid {
+                grid-template-columns: 1fr;
+            }
+            .edit-form-group.full {
+                grid-column: auto;
+            }
+        }
+        
+        @media (max-width: 450px) {
+            .pt-main {
+                padding: 16px 15px 35px !important;
+            }
+            .edit-application-form {
+                padding: 19px;
+            }
+            .edit-form-actions {
+                flex-direction: column;
+            }
+            .edit-save-btn,
+            .edit-cancel-btn {
+                width: 100%;
+            }
+        }
+        /* =====================================================
+   PLACETRACK BRAND
+===================================================== */
+        
+        .pt-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+        }
+        
+        .pt-brand:hover {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .pt-logo-box {
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            flex: 0 0 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .pt-logo-svg {
+            width: 48px;
+            height: 48px;
+            display: block;
+        }
+        
+        .pt-brand-name {
+            display: flex;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            color: #f4f4f5;
+            font-size: 17px;
+            font-weight: 750;
+            line-height: 1;
+            white-space: nowrap;
+        }
+        
+        .pt-brand-name span {
+            color: #f4f4f5;
+        }
+    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/placetrack-sidebar.css') }}">
+</head>
+
+
+<body>
+
+
+    <!-- LIVE BACKGROUND -->
+
+    <div class="page-bg">
+
+        <div class="bg-grid"></div>
+
+        <canvas id="placement-bg"></canvas>
+
+    </div>
+
+
+    <div class="pt-layout">
+
+
+        <!-- SIDEBAR -->
+
+        <aside class="pt-sidebar">
+
+            <a href="{{ url_for('dashboard') }}" class="pt-brand">
+
+                <div class="pt-logo-box">
+
+                    <svg class="pt-logo-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+
+            <!-- Logo background -->
+            <rect
+                x="2"
+                y="2"
+                width="60"
+                height="60"
+                rx="16"
+                fill="#6366f1"
+            />
+
+            <!-- P -->
+            <path
+                d="M19 46V18H31
+                   C39 18 44 22 44 29
+                   C44 36 39 40 31 40H25"
+                fill="none"
+                stroke="#ffffff"
+                stroke-width="5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+
+            <!-- Tracking arrow -->
+            <path
+                d="M27 47L35 39L41 44L50 31"
+                fill="none"
+                stroke="#ffffff"
+                stroke-width="4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+
+            <path
+                d="M45 31H50V36"
+                fill="none"
+                stroke="#ffffff"
+                stroke-width="4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+
+        </svg>
+
+                </div>
+
+                <div class="pt-brand-name">
+                    Place<span>Track</span>
+                </div>
+
+            </a>
+
+
+            <div class="pt-nav-title">
+                Workspace
+            </div>
+
+
+            <nav class="pt-nav">
+
+                <a href="/dashboard">
+                    <span class="pt-nav-icon">▦</span> Dashboard
+                </a>
+
+                <a href="/applications" class="active">
+                    <span class="pt-nav-icon">◫</span> Applications
+                </a>
+
+                <a href="/opportunities">
+                    <span class="pt-nav-icon">⌁</span> Opportunities
+                </a>
+
+                <a href="/analytics">
+                    <span class="pt-nav-icon">◒</span> Analytics
+                </a>
+
+                <a href="/profile">
+                    <span class="pt-nav-icon">◎</span> Profile
+                </a>
+
+            </nav>
+
+
+            <div class="pt-sidebar-bottom">
+
+                <div class="pt-user-mini">
+
+                    <div class="pt-avatar">
+                        {{ session["user_name"][0]|upper }}
+                    </div>
+
+                    <div class="pt-user-info">
+
+                        <div class="pt-user-name">
+                            {{ session["user_name"] }}
+                        </div>
+
+                        <div class="pt-user-role">
+                            Placement Candidate
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <a href="/logout" class="pt-logout">
+                    ↪ Logout
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN -->
+
+        <main class="pt-main">
+
+            <div class="edit-application-page">
+
+
+                <div class="edit-page-header">
+
+                    <div class="edit-page-label">
+                        Application Management
+                    </div>
+
+                    <h1>
+                        Edit Application
+                    </h1>
+
+                    <p>
+                        Update the details and status of this placement application.
+                    </p>
+
+                </div>
+
+
+                <div class="edit-application-grid">
+
+
+                    <!-- FORM -->
+
+                    <section class="edit-application-card">
+
+
+                        <div class="edit-card-header">
+
+                            <h2>
+                                Application Details
+                            </h2>
+
+                            <span>
+                                Changes are saved directly to your application record.
+                            </span>
+
+                        </div>
+
+
+                        <form method="POST" action="/edit-application/{{ application.id }}" class="edit-application-form" id="editApplicationForm">
+
+
+                            <div class="edit-form-grid">
+
+
+                                <!-- COMPANY -->
+
+                                <div>
+
+                                    <label class="edit-label">
+                                        Company Name
+                                    </label>
+
+                                    <input type="text" name="company_name" class="edit-input" value="{{ application.company_name }}" required>
+
+                                </div>
+
+
+                                <!-- ROLE -->
+
+                                <div>
+
+                                    <label class="edit-label">
+                                        Job Role
+                                    </label>
+
+                                    <input type="text" name="job_role" class="edit-input" value="{{ application.job_role }}" required>
+
+                                </div>
+
+
+                                <!-- DATE -->
+
+                                <div>
+
+                                    <label class="edit-label">
+                                        Application Date
+                                    </label>
+
+                                    <input type="date" name="application_date" class="edit-input" value="{{ application.application_date }}" required>
+
+                                </div>
+
+
+                                <!-- STATUS -->
+
+                                <div>
+
+                                    <label class="edit-label">
+                                        Current Status
+                                    </label> {% if application.source == "manual" %}
+
+                                    <select name="status" id="editStatus" class="edit-select" required>
+
+                                            <option
+                                                value="Applied"
+                                                {% if application.status == "Applied" %}
+                                                selected
+                                                {% endif %}
+                                            >
+                                                Applied
+                                            </option>
+
+                                            <option
+                                                value="Assessment"
+                                                {% if application.status == "Assessment" %}
+                                                selected
+                                                {% endif %}
+                                            >
+                                                Assessment
+                                            </option>
+
+                                            <option
+                                                value="Interview"
+                                                {% if application.status == "Interview" %}
+                                                selected
+                                                {% endif %}
+                                            >
+                                                Interview
+                                            </option>
+
+                                            <option
+                                                value="Selected"
+                                                {% if application.status == "Selected" %}
+                                                selected
+                                                {% endif %}
+                                            >
+                                                Selected
+                                            </option>
+
+                                            <option
+                                                value="Rejected"
+                                                {% if application.status == "Rejected" %}
+                                                selected
+                                                {% endif %}
+                                            >
+                                                Rejected
+                                            </option>
+
+                                        </select>
+
+                                    <div class="edit-status-guide" id="statusGuide"></div>
+
+                                    {% else %}
+
+                                    <div class="locked-status-box">
+
+                                        <div class="locked-status-value">
+                                            {{ application.status }}
+                                        </div>
+
+                                        <div class="locked-status-note">
+                                            🔒 Status is managed by PlaceTrack admin
+                                        </div>
+
+                                    </div>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <!-- PACKAGE -->
+
+                                <div class="edit-form-group full">
+
+                                    <label class="edit-label">
+                                        Package / Stipend
+                                    </label>
+
+                                    <input type="text" name="package" class="edit-input" value="{{ application.package or '' }}" placeholder="e.g. ₹6 LPA">
+
+                                </div>
+
+
+                                <!-- NOTES -->
+
+                                <div class="edit-form-group full">
+
+                                    <label class="edit-label">
+                                        Notes
+                                    </label>
+
+                                    <textarea name="notes" class="edit-textarea" placeholder="Interview details, recruiter information, preparation notes...">{{ application.notes or '' }}</textarea>
+
+                                </div>
+
+
+                            </div>
+
+
+                            <div class="unsaved-indicator" id="unsavedIndicator">
+                                You have unsaved changes. Save the application before leaving this page.
+                            </div>
+
+
+                            <div class="edit-form-actions">
+
+                                <button type="submit" class="edit-save-btn">
+                                    Save Changes
+                                </button>
+
+                                <a href="/applications" class="edit-cancel-btn" id="editCancelButton">
+                                    Cancel
+                                </a>
+
+                            </div>
+
+
+                        </form>
+
+
+                    </section>
+
+
+                    <!-- SIDE -->
+
+                    <div class="edit-side-stack">
+
+
+                        <section class="edit-side-card">
+
+                            <h2>
+                                Current Application
+                            </h2>
+
+
+                            <div class="current-status-box">
+
+                                <div class="current-status-label">
+                                    Status
+                                </div>
+
+                                <div class="current-status-value" id="currentStatusPreview">
+                                    {{ application.status }}
+                                </div>
+
+                            </div>
+
+
+                            <p class="edit-side-note">
+
+                                {% if application.source == "manual" %} You added this application manually, so you can update its status yourself. {% else %} This application was submitted through PlaceTrack. Its status can only be updated by the admin. {% endif %}
+
+                            </p>
+
+                        </section>
+
+
+                        <section class="edit-side-card">
+
+                            <h2>
+                                Status Guide
+                            </h2>
+
+
+                            <p class="edit-side-note">
+                                <strong style="color:#a78bfa;">
+                                    Applied
+                                </strong> — application submitted.
+                            </p>
+
+                            <p class="edit-side-note">
+                                <strong style="color:#22d3ee;">
+                                    Assessment
+                                </strong> — test or screening stage.
+                            </p>
+
+                            <p class="edit-side-note">
+                                <strong style="color:#fbbf24;">
+                                    Interview
+                                </strong> — interview stage reached.
+                            </p>
+
+                            <p class="edit-side-note">
+                                <strong style="color:#34d399;">
+                                    Selected
+                                </strong> — selected by the company.
+                            </p>
+
+                            <p class="edit-side-note">
+                                <strong style="color:#f87171;">
+                                    Rejected
+                                </strong> — application closed.
+                            </p>
+
+                        </section>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <script src="{{ url_for('static', filename='js/placement-bg.js') }}"></script>
+
+
+    <script>
+        document.addEventListener(
+            "DOMContentLoaded",
+            function() {
+
+                const form =
+                    document.getElementById(
+                        "editApplicationForm"
+                    );
+
+                const status =
+                    document.getElementById(
+                        "editStatus"
+                    );
+
+                const statusPreview =
+                    document.getElementById(
+                        "currentStatusPreview"
+                    );
+
+                const statusGuide =
+                    document.getElementById(
+                        "statusGuide"
+                    );
+
+                const unsavedIndicator =
+                    document.getElementById(
+                        "unsavedIndicator"
+                    );
+
+
+                const originalData =
+                    new FormData(form);
+
+
+                function updateStatusGuide() {
+
+                    const value =
+                        status.value;
+
+
+                    const guides = {
+
+                        Applied: "Application has been submitted and is awaiting the next step.",
+
+                        Assessment: "You are currently at an assessment or screening stage.",
+
+                        Interview: "The company has progressed your application to an interview stage.",
+
+                        Selected: "This application has reached a selected status.",
+
+                        Rejected: "This application is currently marked as rejected."
+
+                    };
+
+
+                    statusGuide.textContent =
+                        guides[value] || "";
+
+                    statusPreview.textContent =
+                        value;
+
+                }
+
+
+                function checkChanges() {
+
+                    let changed = false;
+
+                    const currentData =
+                        new FormData(form);
+
+
+                    for (
+                        const [key, value] of originalData.entries()
+                    ) {
+
+                        if (
+                            currentData.get(key) !== value
+                        ) {
+
+                            changed = true;
+                            break;
+
+                        }
+
+                    }
+
+
+                    unsavedIndicator.classList.toggle(
+                        "show",
+                        changed
+                    );
+
+                }
+
+
+                form.addEventListener(
+                    "input",
+                    checkChanges
+                );
+
+                form.addEventListener(
+                    "change",
+                    checkChanges
+                );
+
+                if (status) {
+                    status.addEventListener(
+                        "change",
+                        updateStatusGuide
+                    );
+                }
+
+
+                form.addEventListener(
+                    "submit",
+                    function() {
+
+                        unsavedIndicator.classList.remove(
+                            "show"
+                        );
+
+                    }
+                );
+
+
+                window.addEventListener(
+                    "beforeunload",
+                    function(event) {
+
+                        if (
+                            unsavedIndicator.classList.contains(
+                                "show"
+                            )
+                        ) {
+
+                            event.preventDefault();
+
+                            event.returnValue = "";
+
+                        }
+
+                    }
+                );
+
+
+                if (status) {
+                    updateStatusGuide();
+                }
+
+            }
+        );
+    </script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Login | PlaceTrack</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/placement-bg.css') }}">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        html,
+        body {
+            margin: 0;
+            width: 100%;
+            min-height: 100%;
+        }
+        
+        body {
+            min-height: 100vh;
+            min-height: 100dvh;
+            background: #09090b;
+            color: #f4f4f5;
+            font-family: Inter, Arial, Helvetica, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        /* =====================================================
+           LIVE BACKGROUND
+           ===================================================== */
+        
+        .page-bg {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        #placementCanvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .bg-grid {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+        /* =====================================================
+           LOGIN WRAPPER
+           ===================================================== */
+        
+        .admin-login-page {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 20px;
+        }
+        /* =====================================================
+           LOGIN CARD
+           ===================================================== */
+        
+        .admin-login-card {
+            width: 100%;
+            max-width: 410px;
+            padding: 32px;
+            background: linear-gradient( 180deg, rgba(23, 23, 27, 0.90), rgba(15, 15, 18, 0.88));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35), 0 0 50px rgba(99, 102, 241, 0.05);
+        }
+        /* =====================================================
+           BACK HOME
+           ===================================================== */
+        
+        .back-home-link {
+            display: inline-flex;
+            align-items: center;
+            margin: 0 0 26px 0;
+            color: #71717a;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+        
+        .back-home-link:hover {
+            color: #a5a7ff;
+            transform: translateX(-2px);
+        }
+        /* =====================================================
+           LOGO
+           ===================================================== */
+        
+        .admin-logo {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 18px;
+            border-radius: 12px;
+            background: linear-gradient( 135deg, #6366f1, #8b5cf6);
+            color: #ffffff;
+            font-size: 19px;
+            font-weight: 800;
+            box-shadow: 0 8px 28px rgba(99, 102, 241, 0.22);
+        }
+        /* =====================================================
+           HEADER
+           ===================================================== */
+        
+        .admin-title {
+            margin: 0;
+            color: #f4f4f5;
+            font-size: 26px;
+            font-weight: 750;
+            line-height: 1.2;
+            letter-spacing: -0.7px;
+        }
+        
+        .admin-subtitle {
+            margin: 9px 0 28px;
+            color: #71717a;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        /* =====================================================
+           ERROR
+           ===================================================== */
+        
+        .admin-error {
+            width: 100%;
+            margin-bottom: 18px;
+            padding: 11px 13px;
+            border-radius: 9px;
+            background: rgba(248, 113, 113, 0.07);
+            border: 1px solid rgba(248, 113, 113, 0.14);
+            color: #fca5a5;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        /* =====================================================
+           FORM
+           ===================================================== */
+        
+        .admin-form {
+            width: 100%;
+        }
+        
+        .admin-form-group {
+            width: 100%;
+            margin-bottom: 19px;
+        }
+        
+        .admin-label {
+            display: block;
+            margin: 0 0 8px;
+            color: #a1a1aa;
+            font-size: 10px;
+            font-weight: 750;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+        }
+        
+        .admin-input {
+            display: block;
+            width: 100%;
+            height: 46px;
+            padding: 0 13px;
+            background: rgba(9, 9, 11, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 9px;
+            outline: none;
+            color: #f4f4f5;
+            font-family: inherit;
+            font-size: 13px;
+            transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .admin-input::placeholder {
+            color: #52525b;
+        }
+        
+        .admin-input:focus {
+            background: rgba(255, 255, 255, 0.035);
+            border-color: rgba(99, 102, 241, 0.52);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
+        }
+        /* =====================================================
+           LOGIN BUTTON
+           ===================================================== */
+        
+        .admin-login-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 46px;
+            margin-top: 4px;
+            padding: 0 16px;
+            border: 1px solid rgba(124, 58, 237, 0.28);
+            border-radius: 9px;
+            background: linear-gradient( 135deg, #6366f1, #7c3aed);
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 28px rgba(99, 102, 241, 0.15);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .admin-login-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 14px 34px rgba(99, 102, 241, 0.24);
+        }
+        
+        .admin-login-button:active {
+            transform: translateY(0);
+        }
+        /* =====================================================
+           FOOTER
+           ===================================================== */
+        
+        .admin-footer {
+            width: 100%;
+            margin-top: 18px;
+            text-align: center;
+            color: #3f3f46;
+            font-size: 10px;
+            line-height: 1.5;
+        }
+        /* =====================================================
+           MOBILE
+           ===================================================== */
+        
+        @media (max-width: 500px) {
+            .admin-login-page {
+                padding: 20px 16px;
+            }
+            .admin-login-card {
+                max-width: 100%;
+                padding: 27px 22px;
+            }
+            .admin-title {
+                font-size: 23px;
+            }
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+    <!-- =====================================================
+         LIVE BACKGROUND
+         ===================================================== -->
+
+    <div class="page-bg">
+
+        <div class="bg-grid"></div>
+
+        <canvas id="placementCanvas"></canvas>
+
+    </div>
+
+
+    <!-- =====================================================
+         ADMIN LOGIN
+         ===================================================== -->
+
+    <div class="admin-login-page">
+
+        <div class="admin-login-card">
+
+            <!-- BACK HOME -->
+
+            <a href="{{ url_for('home') }}" class="back-home-link">
+                ← Back to Home
+            </a>
+
+
+            <!-- LOGO -->
+
+            <div class="admin-logo">
+                P
+            </div>
+
+
+            <!-- TITLE -->
+
+            <h1 class="admin-title">
+                PlaceTrack Admin
+            </h1>
+
+            <p class="admin-subtitle">
+                Sign in to manage opportunities and student applications.
+            </p>
+
+
+            <!-- ERROR -->
+
+            {% if error %}
+
+            <div class="admin-error">
+                {{ error }}
+            </div>
+
+            {% endif %}
+
+
+            <!-- LOGIN FORM -->
+
+            <form method="POST" action="{{ url_for('admin_login') }}" class="admin-form">
+
+                <!-- EMAIL -->
+
+                <div class="admin-form-group">
+
+                    <label for="email" class="admin-label">
+                        Email
+                    </label>
+
+                    <input id="email" type="email" name="email" class="admin-input" placeholder="admin@placetrack.com" autocomplete="username" required>
+
+                </div>
+
+
+                <!-- PASSWORD -->
+
+                <div class="admin-form-group">
+
+                    <label for="password" class="admin-label">
+                        Password
+                    </label>
+
+                    <input id="password" type="password" name="password" class="admin-input" placeholder="Enter your password" autocomplete="current-password" required>
+
+                </div>
+
+
+                <!-- LOGIN BUTTON -->
+
+                <button type="submit" class="admin-login-button">
+                    Login to Admin Panel
+                </button>
+
+            </form>
+
+
+            <!-- FOOTER -->
+
+            <div class="admin-footer">
+                PlaceTrack Placement Management System
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         LIVE BACKGROUND SCRIPT
+         ===================================================== -->
+
+    <script src="{{ url_for('static', filename='js/placement-bg.js') }}"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login | PlaceTrack</title>
+
+    <style>
+        /* =========================
+           RESET
+        ========================= */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+         :root {
+            --bg: #09090b;
+            --card: rgba(255, 255, 255, 0.055);
+            --border: rgba(255, 255, 255, 0.10);
+            --text: #f4f4f5;
+            --muted: #a1a1aa;
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --input-bg: rgba(255, 255, 255, 0.045);
+        }
+        /* =========================
+           BODY
+        ========================= */
+        
+        body {
+            min-height: 100vh;
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #09090b;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 25px;
+            overflow: hidden;
+            position: relative;
+        }
+        /* =========================
+           AMBIENT BACKGROUND
+        ========================= */
+        
+        body::before {
+            content: "";
+            position: fixed;
+            width: 750px;
+            height: 750px;
+            top: -390px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: radial-gradient( circle, rgba(99, 102, 241, 0.18), transparent 68%);
+            pointer-events: none;
+        }
+        
+        body::after {
+            content: "";
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            right: -300px;
+            bottom: -300px;
+            background: radial-gradient( circle, rgba(56, 189, 248, 0.08), transparent 70%);
+            pointer-events: none;
+        }
+        /* subtle grid */
+        
+        .grid-bg {
+            position: fixed;
+            inset: 0;
+            background-image: linear-gradient( rgba(255, 255, 255, 0.025) 1px, transparent 1px), linear-gradient( 90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+            background-size: 42px 42px;
+            mask-image: radial-gradient( ellipse at center, black 15%, transparent 75%);
+            pointer-events: none;
+        }
+        /* =========================
+           CURSOR SPOTLIGHT
+        ========================= */
+        
+        .cursor-glow {
+            position: fixed;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            background: radial-gradient( circle, rgba(99, 102, 241, 0.09), transparent 70%);
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        /* =========================
+           CANVAS
+        ========================= */
+        
+        #cursorCanvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+        /* =========================
+           CONTENT
+        ========================= */
+        
+        .auth-wrapper {
+            width: 100%;
+            max-width: 430px;
+            position: relative;
+            z-index: 5;
+        }
+        /* =========================
+           BRAND
+        ========================= */
+        
+        .brand {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        
+        .brand-icon {
+            width: 46px;
+            height: 46px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 13px;
+            background: linear-gradient( 135deg, #6366f1, #8b5cf6);
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.35);
+            color: white;
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 11px;
+        }
+        
+        .brand-name {
+            font-size: 25px;
+            font-weight: 750;
+            letter-spacing: -0.7px;
+        }
+        
+        .brand-name span {
+            color: var(--primary-light);
+        }
+        /* =========================
+           CARD
+        ========================= */
+        
+        .auth-card {
+            position: relative;
+            background: linear-gradient( 145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.035));
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            border-radius: 20px;
+            padding: 36px;
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+            overflow: hidden;
+        }
+        /* animated glow around card */
+        
+        .auth-card::before {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: 20px;
+            padding: 1px;
+            background: linear-gradient( 120deg, transparent 15%, rgba(99, 102, 241, 0.45), transparent 45%, rgba(56, 189, 248, 0.25), transparent 75%);
+            mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            mask-composite: exclude;
+            pointer-events: none;
+            animation: borderMove 6s linear infinite;
+        }
+        
+        @keyframes borderMove {
+            0% {
+                transform: translateX(-15%);
+            }
+            50% {
+                transform: translateX(15%);
+            }
+            100% {
+                transform: translateX(-15%);
+            }
+        }
+        
+        .card-content {
+            position: relative;
+            z-index: 3;
+        }
+        
+        .auth-card h1 {
+            font-size: 27px;
+            letter-spacing: -0.7px;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+        /* =========================
+           FORM
+        ========================= */
+        
+        .form-group {
+            margin-bottom: 18px;
+        }
+        
+        label {
+            display: block;
+            color: #d4d4d8;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 13px 14px;
+            background: var(--input-bg);
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            outline: none;
+            transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+        }
+        
+        input::placeholder {
+            color: #71717a;
+        }
+        
+        input:hover {
+            border-color: rgba(255, 255, 255, 0.18);
+        }
+        
+        input:focus {
+            background: rgba(255, 255, 255, 0.065);
+            border-color: rgba(99, 102, 241, 0.75);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.10);
+        }
+        /* =========================
+           BUTTON
+        ========================= */
+        
+        .submit-btn {
+            width: 100%;
+            padding: 13px;
+            margin-top: 7px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient( 135deg, #6366f1, #7c3aed);
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.20);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.32);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        /* =========================
+           BOTTOM LINKS
+        ========================= */
+        
+        .bottom-text {
+            text-align: center;
+            margin-top: 23px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+        
+        .bottom-text a {
+            color: var(--primary-light);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .bottom-text a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+        
+        .home-link {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            color: #71717a;
+            text-decoration: none;
+            font-size: 12px;
+        }
+        
+        .home-link:hover {
+            color: white;
+        }
+        /* =========================
+           MOBILE
+        ========================= */
+        
+        @media (max-width: 500px) {
+            body {
+                padding: 16px;
+                overflow-y: auto;
+            }
+            .auth-card {
+                padding: 27px 21px;
+            }
+            .auth-card h1 {
+                font-size: 24px;
+            }
+            .cursor-glow,
+            #cursorCanvas {
+                display: none;
+            }
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div class="grid-bg"></div>
+
+    <div class="cursor-glow" id="cursorGlow"></div>
+
+    <canvas id="cursorCanvas"></canvas>
+
+
+    <div class="auth-wrapper">
+
+
+        <!-- BRAND -->
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                P
+            </div>
+
+            <div class="brand-name">
+                Place<span>Track</span>
+            </div>
+
+        </div>
+
+
+        <!-- CARD -->
+
+        <div class="auth-card">
+
+            <div class="card-content">
+
+                <h1>
+                    Login
+                </h1>
+
+                <p class="subtitle">
+                    Log in to continue managing your placement journey.
+                </p>
+
+
+                <form method="POST" action="/login">
+
+
+                    <div class="form-group">
+
+                        <label for="email">
+                            EMAIL ADDRESS
+                        </label>
+
+                        <input type="email" id="email" name="email" placeholder="you@example.com" required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="password">
+                            PASSWORD
+                        </label>
+
+                        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+
+                    </div>
+
+
+                    <button type="submit" class="submit-btn">
+
+                        Sign In
+
+                    </button>
+
+
+                </form>
+
+
+                <p class="bottom-text">
+
+                    Don't have an account?
+
+                    <a href="/register">
+                        Create one
+                    </a>
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <a href="/" class="home-link">
+
+            ← Back to PlaceTrack
+
+        </a>
+
+
+    </div>
+
+
+    <!-- =========================
+         CURSOR TRAIL
+    ========================= -->
+
+    <script>
+        const canvas =
+            document.getElementById("cursorCanvas");
+
+        const ctx =
+            canvas.getContext("2d");
+
+        const glow =
+            document.getElementById("cursorGlow");
+
+
+        let mouse = {
+            x: window.innerWidth / 2,
+            y: window.innerHeight / 2
+        };
+
+
+        let points = [];
+
+
+        function resizeCanvas() {
+
+            const dpr =
+                window.devicePixelRatio || 1;
+
+            canvas.width =
+                window.innerWidth * dpr;
+
+            canvas.height =
+                window.innerHeight * dpr;
+
+            canvas.style.width =
+                window.innerWidth + "px";
+
+            canvas.style.height =
+                window.innerHeight + "px";
+
+            ctx.scale(dpr, dpr);
+        }
+
+
+        resizeCanvas();
+
+
+        window.addEventListener(
+            "resize",
+            resizeCanvas
+        );
+
+
+        window.addEventListener(
+            "mousemove",
+            (event) => {
+
+                mouse.x = event.clientX;
+
+                mouse.y = event.clientY;
+
+                glow.style.left =
+                    mouse.x + "px";
+
+                glow.style.top =
+                    mouse.y + "px";
+
+                glow.style.opacity = "1";
+
+
+                points.push({
+                    x: mouse.x,
+                    y: mouse.y,
+                    life: 1
+                });
+
+
+                if (points.length > 35) {
+                    points.shift();
+                }
+
+            }
+        );
+
+
+        window.addEventListener(
+            "mouseleave",
+            () => {
+
+                glow.style.opacity = "0";
+
+            }
+        );
+
+
+        function animateTrail() {
+
+            ctx.clearRect(
+                0,
+                0,
+                window.innerWidth,
+                window.innerHeight
+            );
+
+
+            for (
+                let i = 0; i < points.length; i++
+            ) {
+
+                points[i].life *= 0.92;
+
+            }
+
+
+            points =
+                points.filter(
+                    point => point.life > 0.03
+                );
+
+
+            if (points.length > 1) {
+
+                ctx.beginPath();
+
+
+                for (
+                    let i = 0; i < points.length - 1; i++
+                ) {
+
+                    const current =
+                        points[i];
+
+                    const next =
+                        points[i + 1];
+
+
+                    const alpha =
+                        current.life * 0.75;
+
+
+                    ctx.strokeStyle =
+                        `rgba(129, 140, 248, ${alpha})`;
+
+                    ctx.lineWidth =
+                        2.2 * current.life;
+
+
+                    ctx.lineCap =
+                        "round";
+
+                    ctx.lineJoin =
+                        "round";
+
+
+                    ctx.moveTo(
+                        current.x,
+                        current.y
+                    );
+
+                    ctx.lineTo(
+                        next.x,
+                        next.y
+                    );
+
+                    ctx.stroke();
+
+                }
+
+            }
+
+
+            requestAnimationFrame(
+                animateTrail
+            );
+        }
+
+
+        animateTrail();
+    </script>
+
+
+</body>
+
+</html>

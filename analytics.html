@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Analytics | PlaceTrack</title>
+
+
+    <!-- =====================================================
+         GLOBAL DESIGN
+    ===================================================== -->
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/placetrack.css') }}">
+
+
+    <!-- =====================================================
+         PLACETrack MAIN JS
+    ===================================================== -->
+
+    <script src="{{ url_for('static', filename='js/placetrack.js') }}" defer></script>
+
+
+    <style>
+        /* =====================================================
+           ANALYTICS PAGE
+        ===================================================== */
+        
+        .analytics-page {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        /* =====================================================
+           MAIN TOP SPACING
+        ===================================================== */
+        
+        .pt-main {
+            padding-top: 16px !important;
+        }
+        /* =====================================================
+           HEADER
+        ===================================================== */
+        
+        .analytics-intro {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 24px;
+        }
+        
+        .analytics-intro-icon {
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            background: linear-gradient( 135deg, #6366f1, #8b5cf6, #ec4899);
+            color: white;
+            font-size: 21px;
+            font-weight: 700;
+            box-shadow: 0 10px 28px rgba(139, 92, 246, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+        }
+        
+        .analytics-intro-text h1 {
+            margin: 0 0 6px 0;
+            color: #f4f4f5;
+            font-size: 30px;
+            font-weight: 760;
+            letter-spacing: -0.8px;
+            line-height: 1.15;
+        }
+        
+        .analytics-intro-text p {
+            margin: 0;
+            color: #858591;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        /* =====================================================
+           STAT CARDS
+        ===================================================== */
+        
+        .analytics-stats {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .analytics-stat-card {
+            position: relative;
+            overflow: hidden;
+            padding: 21px;
+            background: linear-gradient( 145deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+        
+        .analytics-stat-card::after {
+            content: "";
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            right: -45px;
+            bottom: -55px;
+            border-radius: 50%;
+            background: radial-gradient( circle, rgba(168, 85, 247, 0.14), transparent 70%);
+            filter: blur(18px);
+            pointer-events: none;
+        }
+        
+        .analytics-stat-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(167, 139, 250, 0.24);
+            box-shadow: 0 14px 35px rgba(0, 0, 0, 0.16);
+        }
+        
+        .analytics-stat-label {
+            color: #6f707a;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 13px;
+        }
+        
+        .analytics-stat-number {
+            font-size: 30px;
+            font-weight: 700;
+            line-height: 1;
+        }
+        
+        .stat-blue {
+            color: #a78bfa;
+        }
+        
+        .stat-yellow {
+            color: #fbbf24;
+        }
+        
+        .stat-green {
+            color: #34d399;
+        }
+        
+        .stat-red {
+            color: #f87171;
+        }
+        /* =====================================================
+           MAIN GRID
+        ===================================================== */
+        
+        .analytics-main-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        /* =====================================================
+           ANALYTICS CARD
+        ===================================================== */
+        
+        .analytics-box {
+            background: linear-gradient( 145deg, rgba(255, 255, 255, 0.050), rgba(255, 255, 255, 0.022));
+            border: 1px solid rgba(255, 255, 255, 0.075);
+            border-radius: 15px;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            box-shadow: 0 18px 55px rgba(0, 0, 0, 0.14);
+            overflow: hidden;
+        }
+        
+        .analytics-box-header {
+            padding: 21px 23px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        
+        .analytics-box-header h2 {
+            margin: 0 0 5px 0;
+            color: #e4e4e7;
+            font-size: 15px;
+            font-weight: 700;
+        }
+        
+        .analytics-box-header p {
+            margin: 0;
+            color: #62626b;
+            font-size: 11px;
+        }
+        
+        .analytics-box-body {
+            padding: 24px;
+        }
+        /* =====================================================
+           STATUS BARS
+        ===================================================== */
+        
+        .status-row {
+            margin-bottom: 23px;
+        }
+        
+        .status-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .status-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 9px;
+        }
+        
+        .status-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #d4d4d8;
+            font-size: 13px;
+        }
+        
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            min-width: 7px;
+            border-radius: 50%;
+        }
+        
+        .status-number {
+            color: #f4f4f5;
+            font-size: 13px;
+            font-weight: 700;
+        }
+        
+        .status-track {
+            width: 100%;
+            height: 8px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.055);
+            border-radius: 20px;
+        }
+        
+        .status-fill {
+            height: 100%;
+            border-radius: 20px;
+            transition: width 0.8s cubic-bezier(.22, .61, .36, 1);
+        }
+        
+        .status-applied {
+            background: linear-gradient( 90deg, #6366f1, #8b5cf6);
+        }
+        
+        .status-interview {
+            background: linear-gradient( 90deg, #d97706, #fbbf24);
+        }
+        
+        .status-selected {
+            background: linear-gradient( 90deg, #10b981, #34d399);
+        }
+        
+        .status-rejected {
+            background: linear-gradient( 90deg, #ef4444, #f87171);
+        }
+        /* =====================================================
+           PERFORMANCE
+        ===================================================== */
+        
+        .performance-item {
+            padding: 17px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.065);
+        }
+        
+        .performance-item:first-child {
+            padding-top: 0;
+        }
+        
+        .performance-item:last-child {
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .performance-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .performance-label {
+            color: #a1a1aa;
+            font-size: 13px;
+        }
+        
+        .performance-value {
+            color: #f4f4f5;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .performance-track {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.055);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        
+        .performance-fill {
+            height: 100%;
+            border-radius: 20px;
+            background: linear-gradient( 90deg, #6366f1, #8b5cf6);
+        }
+        
+        .performance-fill-green {
+            background: linear-gradient( 90deg, #10b981, #34d399);
+        }
+        
+        .performance-fill-yellow {
+            background: linear-gradient( 90deg, #d97706, #fbbf24);
+        }
+        /* =====================================================
+           PLACEMENT SUMMARY
+        ===================================================== */
+        
+        .summary-panel {
+            padding: 24px;
+            background: linear-gradient( 145deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.018));
+            border: 1px solid rgba(255, 255, 255, 0.075);
+            border-radius: 15px;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            box-shadow: 0 18px 55px rgba(0, 0, 0, 0.12);
+        }
+        
+        .summary-title {
+            margin: 0 0 20px 0;
+            color: #e4e4e7;
+            font-size: 15px;
+            font-weight: 700;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+        
+        .summary-card {
+            padding: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.065);
+            border-radius: 11px;
+            background: rgba(255, 255, 255, 0.025);
+            transition: background 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+        }
+        
+        .summary-card:hover {
+            background: rgba(255, 255, 255, 0.045);
+            border-color: rgba(255, 255, 255, 0.10);
+            transform: translateY(-2px);
+        }
+        
+        .summary-card-label {
+            color: #64656f;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 10px;
+        }
+        
+        .summary-card-value {
+            font-size: 23px;
+            font-weight: 700;
+        }
+        
+        .summary-card-text {
+            color: #62626b;
+            font-size: 11px;
+            margin-top: 5px;
+            line-height: 1.5;
+        }
+        /* =====================================================
+           EMPTY
+        ===================================================== */
+        
+        .analytics-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: #858591;
+        }
+        
+        .analytics-empty-icon {
+            font-size: 28px;
+            margin-bottom: 10px;
+            opacity: 0.55;
+        }
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+        
+        @media (max-width: 1100px) {
+            .pt-main {
+                padding-top: 16px !important;
+            }
+            .analytics-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .analytics-main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 700px) {
+            .pt-main {
+                padding: 16px 18px 40px !important;
+            }
+            .analytics-intro {
+                align-items: flex-start;
+                gap: 12px;
+                margin-bottom: 20px;
+            }
+            .analytics-intro-icon {
+                width: 42px;
+                height: 42px;
+                min-width: 42px;
+                border-radius: 12px;
+                font-size: 18px;
+            }
+            .analytics-intro-text h1 {
+                font-size: 25px;
+            }
+            .analytics-intro-text p {
+                font-size: 12px;
+            }
+            .analytics-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            .analytics-stat-card {
+                padding: 17px;
+            }
+            .analytics-stat-number {
+                font-size: 26px;
+            }
+            .analytics-box-body {
+                padding: 20px;
+            }
+            .summary-panel {
+                padding: 20px;
+            }
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 470px) {
+            .pt-main {
+                padding: 16px 15px 35px !important;
+            }
+            .analytics-stats {
+                grid-template-columns: 1fr;
+            }
+            .analytics-intro-text h1 {
+                font-size: 23px;
+            }
+            .analytics-box-header {
+                padding: 18px 19px;
+            }
+            .analytics-box-body {
+                padding: 19px;
+            }
+        }
+        /* =====================================================
+           PLACETRACK BRAND
+        ===================================================== */
+        
+        .pt-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+        }
+        
+        .pt-brand:hover {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .pt-logo-box {
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            flex: 0 0 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .pt-logo-svg {
+            width: 48px;
+            height: 48px;
+            display: block;
+        }
+        
+        .pt-brand-name {
+            display: flex;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            color: #f4f4f5;
+            font-size: 17px;
+            font-weight: 750;
+            line-height: 1;
+            white-space: nowrap;
+        }
+        
+        .pt-brand-name span {
+            color: #f4f4f5;
+        }
+        /* =====================================================
+           PLACETRACK BRAND — SHARED ACROSS ALL STUDENT PAGES
+        ===================================================== */
+        
+        .pt-sidebar {
+            padding: 24px 16px !important;
+        }
+        
+        .pt-brand {
+            display: flex !important;
+            align-items: center !important;
+            gap: 11px !important;
+            width: 100%;
+            padding: 8px 10px !important;
+            margin: 0 0 32px 0 !important;
+            text-decoration: none !important;
+            color: inherit !important;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+        
+        .pt-brand:hover {
+            text-decoration: none !important;
+            color: inherit !important;
+        }
+        
+        .pt-logo-box {
+            width: 40px !important;
+            height: 40px !important;
+            min-width: 40px !important;
+            min-height: 40px !important;
+            flex: 0 0 40px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        .pt-logo-svg {
+            width: 40px !important;
+            height: 40px !important;
+            display: block !important;
+        }
+        
+        .pt-brand-name {
+            display: flex !important;
+            align-items: center !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            color: #f4f4f5 !important;
+            font-size: 19px !important;
+            font-weight: 750 !important;
+            line-height: 1 !important;
+            letter-spacing: -0.45px;
+            white-space: nowrap;
+        }
+        
+        .pt-brand-name span {
+            color: #a78bfa !important;
+        }
+        
+        .pt-nav-title {
+            margin: 0 0 10px 0 !important;
+            padding: 0 12px !important;
+        }
+        
+        .pt-nav {
+            gap: 5px !important;
+        }
+        
+        .pt-nav a {
+            min-height: 43px !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            padding: 0 13px !important;
+        }
+        /* Keep the dashboard's existing visual spacing while using the shared brand. */
+        
+        .dashboard-brand {
+            align-items: center !important;
+            gap: 11px !important;
+            padding: 8px 10px !important;
+            margin-bottom: 32px !important;
+        }
+    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/placetrack-sidebar.css') }}">
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         LIVE BACKGROUND
+    ===================================================== -->
+
+    <div class="page-bg">
+
+        <div class="bg-grid"></div>
+
+        <!-- IMPORTANT:
+             Must match placement-bg.js -->
+        <canvas id="placement-bg"></canvas>
+
+    </div>
+
+
+    <!-- =====================================================
+         MAIN LAYOUT
+    ===================================================== -->
+
+    <div class="pt-layout">
+
+
+        <!-- =================================================
+             SIDEBAR
+        ================================================= -->
+
+        <aside class="pt-sidebar">
+
+
+            <!-- BRAND -->
+
+            <a href="{{ url_for('dashboard') }}" class="pt-brand">
+
+                <div class="pt-logo-box">
+
+                    <svg class="pt-logo-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    
+                        <defs>
+                            <linearGradient id="ptLogoGradient" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#4c1d95"/>
+                                <stop offset="52%" stop-color="#7c3aed"/>
+                                <stop offset="100%" stop-color="#c026d3"/>
+                            </linearGradient>
+                        </defs>
+                    
+                        <!-- App tile -->
+                        <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#ptLogoGradient)"/>
+                    
+                        <!-- Graduation cap -->
+                        <path d="M12 18.5L32 10L52 18.5L32 27L12 18.5Z" fill="#f8f7ff"/>
+                        <path d="M18 22V27.5C22.5 31.5 27.1 33.5 32 33.5C36.9 33.5 41.5 31.5 46 27.5V22L32 27.8L18 22Z" fill="#e9d5ff"/>
+                        <path d="M49 19V29" stroke="#f8f7ff" stroke-width="3" stroke-linecap="round"/>
+                        <circle cx="49" cy="31.5" r="2.2" fill="#f8f7ff"/>
+                    
+                        <!-- Resume / profile card -->
+                        <rect x="13" y="35" width="31" height="19" rx="4" fill="#faf9ff"/>
+                        <circle cx="21" cy="42" r="3.2" fill="#c4b5fd"/>
+                        <rect x="27" y="39.5" width="12" height="2.4" rx="1.2" fill="#8b5cf6"/>
+                        <rect x="27" y="44" width="9" height="2.4" rx="1.2" fill="#c4b5fd"/>
+                        <rect x="17.5" y="48" width="18.5" height="2.2" rx="1.1" fill="#ddd6fe"/>
+                    
+                        <!-- Career growth arrow -->
+                        <path d="M12 53C20 53 27 52 32 49C39 45 43 39.5 50 34" fill="none" stroke="#f5eaff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M45.5 34H50V38.5" fill="none" stroke="#f5eaff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    
+                    </svg>
+
+                </div>
+
+                <div class="pt-brand-name">
+                    Place<span>Track</span>
+                </div>
+
+            </a>
+
+
+            <!-- NAV TITLE -->
+
+            <div class="pt-nav-title">
+
+                Workspace
+
+            </div>
+
+
+            <!-- NAVIGATION -->
+
+            <nav class="pt-nav">
+
+
+                <!-- DASHBOARD -->
+
+                <a href="/dashboard">
+
+                    <span class="pt-nav-icon">
+                        ▦
+                    </span> Dashboard
+
+                </a>
+
+
+                <!-- APPLICATIONS -->
+
+                <a href="/applications">
+
+                    <span class="pt-nav-icon">
+                        ◫
+                    </span> Applications
+
+                </a>
+
+
+                <!-- OPPORTUNITIES -->
+
+                <a href="/opportunities">
+
+                    <span class="pt-nav-icon">
+                        ⌁
+                    </span> Opportunities
+
+                </a>
+
+
+                <!-- ANALYTICS -->
+
+                <a href="/analytics" class="active">
+
+                    <span class="pt-nav-icon">
+                        ◒
+                    </span> Analytics
+
+                </a>
+
+
+                <!-- PROFILE -->
+
+                <a href="/profile">
+
+                    <span class="pt-nav-icon">
+                        ◎
+                    </span> Profile
+
+                </a>
+
+
+            </nav>
+
+
+            <!-- =================================================
+                 USER
+            ================================================= -->
+
+            <div class="pt-sidebar-bottom">
+
+
+                <div class="pt-user-mini">
+
+
+                    <div class="pt-avatar">
+
+                        {{ session["user_name"][0]|upper }}
+
+                    </div>
+
+
+                    <div class="pt-user-info">
+
+
+                        <div class="pt-user-name">
+
+                            {{ session["user_name"] }}
+
+                        </div>
+
+
+                        <div class="pt-user-role">
+
+                            Placement Candidate
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- LOGOUT -->
+
+                <a href="/logout" class="pt-logout">
+
+                    ↪ Logout
+
+                </a>
+
+
+            </div>
+
+
+        </aside>
+
+
+        <!-- =================================================
+             MAIN
+        ================================================= -->
+
+        <main class="pt-main">
+
+
+            <div class="analytics-page">
+
+
+                <!-- =================================================
+                     ANALYTICS INTRO
+                ================================================= -->
+
+                <div class="analytics-intro">
+
+
+                    <div class="analytics-intro-icon">
+
+                        ◒
+
+                    </div>
+
+
+                    <div class="analytics-intro-text">
+
+                        <h1>
+                            Analytics
+                        </h1>
+
+                        <p>
+                            Understand your placement progress and application performance.
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- =================================================
+                     STATISTICS
+                ================================================= -->
+
+                <div class="analytics-stats">
+
+
+                    <!-- TOTAL -->
+
+                    <div class="analytics-stat-card">
+
+                        <div class="analytics-stat-label">
+                            Total Applications
+                        </div>
+
+                        <div class="analytics-stat-number stat-blue">
+                            {{ total }}
+                        </div>
+
+                    </div>
+
+
+                    <!-- INTERVIEWS -->
+
+                    <div class="analytics-stat-card">
+
+                        <div class="analytics-stat-label">
+                            Interviews
+                        </div>
+
+                        <div class="analytics-stat-number stat-yellow">
+                            {{ interviews }}
+                        </div>
+
+                    </div>
+
+
+                    <!-- SELECTED -->
+
+                    <div class="analytics-stat-card">
+
+                        <div class="analytics-stat-label">
+                            Selected
+                        </div>
+
+                        <div class="analytics-stat-number stat-green">
+                            {{ selected }}
+                        </div>
+
+                    </div>
+
+
+                    <!-- REJECTED -->
+
+                    <div class="analytics-stat-card">
+
+                        <div class="analytics-stat-label">
+                            Rejected
+                        </div>
+
+                        <div class="analytics-stat-number stat-red">
+                            {{ rejected }}
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- =================================================
+                     MAIN ANALYTICS GRID
+                ================================================= -->
+
+                <div class="analytics-main-grid">
+
+
+                    <!-- =================================================
+                         APPLICATION STATUS
+                    ================================================= -->
+
+                    <section class="analytics-box">
+
+
+                        <div class="analytics-box-header">
+
+                            <h2>
+                                Application Status
+                            </h2>
+
+                            <p>
+                                Distribution of your current applications
+                            </p>
+
+                        </div>
+
+
+                        <div class="analytics-box-body">
+
+
+                            {% if total > 0 %}
+
+
+                            <!-- APPLIED -->
+
+                            <div class="status-row">
+
+
+                                <div class="status-top">
+
+
+                                    <div class="status-name">
+
+                                        <span class="status-dot" style="background:#8b5cf6;"></span> Applied
+
+                                    </div>
+
+
+                                    <div class="status-number">
+
+                                        {{ applied }}
+
+                                    </div>
+
+
+                                </div>
+
+
+                                <div class="status-track">
+
+
+                                    <div class="status-fill status-applied" style="
+                                            width:
+                                            {{ (applied / total * 100)|round(1) }}%;
+                                        "></div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                            <!-- INTERVIEW -->
+
+                            <div class="status-row">
+
+
+                                <div class="status-top">
+
+
+                                    <div class="status-name">
+
+                                        <span class="status-dot" style="background:#f59e0b;"></span> Interview
+
+                                    </div>
+
+
+                                    <div class="status-number">
+
+                                        {{ interviews }}
+
+                                    </div>
+
+
+                                </div>
+
+
+                                <div class="status-track">
+
+
+                                    <div class="status-fill status-interview" style="
+                                            width:
+                                            {{ (interviews / total * 100)|round(1) }}%;
+                                        "></div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                            <!-- SELECTED -->
+
+                            <div class="status-row">
+
+
+                                <div class="status-top">
+
+
+                                    <div class="status-name">
+
+                                        <span class="status-dot" style="background:#34d399;"></span> Selected
+
+                                    </div>
+
+
+                                    <div class="status-number">
+
+                                        {{ selected }}
+
+                                    </div>
+
+
+                                </div>
+
+
+                                <div class="status-track">
+
+
+                                    <div class="status-fill status-selected" style="
+                                            width:
+                                            {{ (selected / total * 100)|round(1) }}%;
+                                        "></div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                            <!-- REJECTED -->
+
+                            <div class="status-row">
+
+
+                                <div class="status-top">
+
+
+                                    <div class="status-name">
+
+                                        <span class="status-dot" style="background:#f87171;"></span> Rejected
+
+                                    </div>
+
+
+                                    <div class="status-number">
+
+                                        {{ rejected }}
+
+                                    </div>
+
+
+                                </div>
+
+
+                                <div class="status-track">
+
+
+                                    <div class="status-fill status-rejected" style="
+                                            width:
+                                            {{ (rejected / total * 100)|round(1) }}%;
+                                        "></div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                            {% else %}
+
+
+                            <!-- NO DATA -->
+
+                            <div class="analytics-empty">
+
+                                <div class="analytics-empty-icon">
+                                    ◒
+                                </div>
+
+                                <p>
+                                    No application data available yet.
+                                </p>
+
+                            </div>
+
+
+                            {% endif %}
+
+
+                        </div>
+
+
+                    </section>
+
+
+                    <!-- =================================================
+                         PERFORMANCE
+                    ================================================= -->
+
+                    <section class="analytics-box">
+
+
+                        <div class="analytics-box-header">
+
+                            <h2>
+                                Placement Performance
+                            </h2>
+
+                            <p>
+                                Key metrics from your application activity
+                            </p>
+
+                        </div>
+
+
+                        <div class="analytics-box-body">
+
+
+                            <!-- TOTAL APPLICATIONS -->
+
+                            <div class="performance-item">
+
+
+                                <div class="performance-top">
+
+                                    <span class="performance-label">
+                                        Total Applications
+                                    </span>
+
+                                    <span class="performance-value">
+                                        {{ total }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="performance-track">
+
+                                    <div class="performance-fill" style="width:100%;"></div>
+
+                                </div>
+
+
+                            </div>
+
+
+                            <!-- INTERVIEW RATE -->
+
+                            <div class="performance-item">
+
+
+                                <div class="performance-top">
+
+                                    <span class="performance-label">
+                                        Interview Rate
+                                    </span>
+
+                                    <span class="performance-value" style="color:#fbbf24;">
+                                        {{ interview_rate }}%
+                                    </span>
+
+                                </div>
+
+
+                                <div class="performance-track">
+
+                                    <div class="performance-fill performance-fill-yellow" style="
+                                            width:
+                                            {{ interview_rate }}%;
+                                        "></div>
+
+                                </div>
+
+
+                            </div>
+
+
+                            <!-- SELECTION RATE -->
+
+                            <div class="performance-item">
+
+
+                                <div class="performance-top">
+
+                                    <span class="performance-label">
+                                        Selection Rate
+                                    </span>
+
+                                    <span class="performance-value" style="color:#34d399;">
+                                        {{ selection_rate }}%
+                                    </span>
+
+                                </div>
+
+
+                                <div class="performance-track">
+
+                                    <div class="performance-fill performance-fill-green" style="
+                                            width:
+                                            {{ selection_rate }}%;
+                                        "></div>
+
+                                </div>
+
+
+                            </div>
+
+
+                            <!-- ACTIVE APPLICATIONS -->
+
+                            <div class="performance-item">
+
+
+                                <div class="performance-top">
+
+                                    <span class="performance-label">
+                                        Active Applications
+                                    </span>
+
+                                    <span class="performance-value" style="color:#a78bfa;">
+                                        {{ applied + interviews }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="performance-track">
+
+                                    <div class="performance-fill" style="
+                                            width:
+                                            {% if total > 0 %}
+                                                {{
+                                                    ((applied + interviews)
+                                                    / total * 100)
+                                                    |round(1)
+                                                }}%
+                                            {% else %}
+                                                0%
+                                            {% endif %}
+                                        "></div>
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+                    </section>
+
+
+                </div>
+
+
+                <!-- =================================================
+                     PLACEMENT SUMMARY
+                ================================================= -->
+
+                <section class="summary-panel">
+
+
+                    <h2 class="summary-title">
+                        Placement Summary
+                    </h2>
+
+
+                    <div class="summary-grid">
+
+
+                        <!-- APPLICATION PIPELINE -->
+
+                        <div class="summary-card">
+
+                            <div class="summary-card-label">
+                                Application Pipeline
+                            </div>
+
+                            <div class="summary-card-value stat-blue">
+                                {{ applied + interviews }}
+                            </div>
+
+                            <div class="summary-card-text">
+                                Currently active applications
+                            </div>
+
+                        </div>
+
+
+                        <!-- INTERVIEW -->
+
+                        <div class="summary-card">
+
+                            <div class="summary-card-label">
+                                Interview Progress
+                            </div>
+
+                            <div class="summary-card-value stat-yellow">
+                                {{ interview_rate }}%
+                            </div>
+
+                            <div class="summary-card-text">
+                                Applications reaching interview stage
+                            </div>
+
+                        </div>
+
+
+                        <!-- SELECTION -->
+
+                        <div class="summary-card">
+
+                            <div class="summary-card-label">
+                                Selection Progress
+                            </div>
+
+                            <div class="summary-card-value stat-green">
+                                {{ selection_rate }}%
+                            </div>
+
+                            <div class="summary-card-text">
+                                Applications resulting in selection
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+                </section>
+
+
+            </div>
+
+
+        </main>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         LIVE BACKGROUND SCRIPT
+    ===================================================== -->
+
+    <script src="{{ url_for('static', filename='js/placement-bg.js') }}"></script>
+
+
+</body>
+
+</html>

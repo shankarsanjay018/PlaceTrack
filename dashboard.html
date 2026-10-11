@@ -1,0 +1,2811 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard | PlaceTrack</title>
+
+    <!-- PlaceTrack Global Design -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/placetrack.css') }}">
+
+    <!-- Main PlaceTrack JavaScript -->
+    <script src="{{ url_for('static', filename='js/placetrack.js') }}" defer></script>
+
+
+    <style>
+        /* =====================================================
+           DASHBOARD
+        ===================================================== */
+        
+        .dashboard-page {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        /* =====================================================
+           SIDEBAR
+        ===================================================== */
+        
+        .dashboard-sidebar {
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            padding: 24px 16px;
+            background: rgba(8, 8, 12, 0.88);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            border-right: 1px solid rgba(255, 255, 255, 0.07);
+            z-index: 20;
+            transition: width 0.25s ease, padding 0.25s ease;
+        }
+        /* =====================================================
+           BRAND
+        ===================================================== */
+        
+        .dashboard-brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 8px 10px;
+            margin-bottom: 32px;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .pt-logo-box {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .pt-logo-svg {
+            width: 40px;
+            height: 40px;
+            display: block;
+        }
+        
+        .dashboard-brand-name {
+            font-size: 19px;
+            font-weight: 750;
+            letter-spacing: -0.45px;
+            color: #f4f4f5;
+            white-space: nowrap;
+        }
+        
+        .dashboard-brand-name span {
+            color: #a78bfa;
+        }
+        /* =====================================================
+           NAVIGATION
+        ===================================================== */
+        
+        .dashboard-nav-title {
+            color: #52525b;
+            font-size: 10px;
+            font-weight: 750;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 0 12px;
+            margin-bottom: 10px;
+        }
+        
+        .dashboard-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .dashboard-nav a {
+            min-height: 43px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 13px;
+            color: #8b8b94;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 13px;
+            transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+        }
+        
+        .dashboard-nav a:hover {
+            color: #e4e4e7;
+            background: rgba(255, 255, 255, 0.035);
+            transform: translateX(2px);
+        }
+        
+        .dashboard-nav a.active {
+            color: #ffffff;
+            background: linear-gradient( 90deg, rgba(139, 92, 246, 0.20), rgba(236, 72, 153, 0.07));
+            border: 1px solid rgba(139, 92, 246, 0.20);
+        }
+        
+        .dashboard-nav-icon,
+        .pt-nav-icon {
+            width: 22px;
+            min-width: 22px;
+            text-align: center;
+            font-size: 16px;
+            color: #71717a;
+        }
+        
+        .dashboard-nav a.active .dashboard-nav-icon,
+        .dashboard-nav a.active .pt-nav-icon {
+            color: #c4b5fd;
+        }
+        /* =====================================================
+           SIDEBAR BOTTOM
+        ===================================================== */
+        
+        .dashboard-sidebar-bottom {
+            position: absolute;
+            left: 16px;
+            right: 16px;
+            bottom: 20px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        
+        .dashboard-user-mini {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.055);
+            background: rgba(255, 255, 255, 0.025);
+            border-radius: 11px;
+            margin-bottom: 10px;
+        }
+        
+        .dashboard-avatar {
+            width: 34px;
+            height: 34px;
+            min-width: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: linear-gradient( 135deg, #8b5cf6, #ec4899);
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+        }
+        
+        .dashboard-user-info {
+            min-width: 0;
+        }
+        
+        .dashboard-user-name {
+            color: #e4e4e7;
+            font-size: 12px;
+            font-weight: 650;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .dashboard-user-role {
+            margin-top: 3px;
+            color: #52525b;
+            font-size: 10px;
+        }
+        
+        .dashboard-logout {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px;
+            border-radius: 9px;
+            color: #71717a;
+            text-decoration: none;
+            font-size: 12px;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+        
+        .dashboard-logout:hover {
+            color: #fca5a5;
+            background: rgba(248, 113, 113, 0.05);
+        }
+        /* =====================================================
+           MAIN AREA
+           SMALL TOP GAP = 16PX
+        ===================================================== */
+        
+        .dashboard-main {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            min-height: 100vh;
+            padding: 16px 42px 50px;
+            position: relative;
+            z-index: 2;
+            transition: margin-left 0.25s ease, width 0.25s ease, padding 0.25s ease;
+        }
+        /* =====================================================
+           TOPBAR
+        ===================================================== */
+        
+        .dashboard-topbar {
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 25px;
+            margin: 0 0 24px 0;
+            padding: 0;
+        }
+        
+        .dashboard-topbar>div:first-child {
+            margin: 0;
+            padding: 0;
+        }
+        
+        .greeting-label {
+            color: #c084fc;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            margin: 0 0 7px 0;
+        }
+        
+        .dashboard-topbar h1 {
+            margin: 0 0 7px 0;
+            color: #f4f4f5;
+            font-size: 31px;
+            font-weight: 760;
+            line-height: 1.15;
+            letter-spacing: -1px;
+        }
+        
+        .dashboard-topbar p {
+            margin: 0;
+            color: #858591;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        /* =====================================================
+           TOP ACTIONS
+        ===================================================== */
+        
+        .dashboard-top-actions {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        /* =====================================================
+           ADD APPLICATION
+        ===================================================== */
+        
+        .dashboard-add-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 44px;
+            padding: 0 18px;
+            border-radius: 10px;
+            background: linear-gradient( 135deg, #6366f1, #8b5cf6, #a855f7);
+            border: 1px solid rgba(139, 92, 246, 0.25);
+            color: white;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.18);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .dashboard-add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(139, 92, 246, 0.28);
+        }
+        
+        .dashboard-plus {
+            font-size: 18px;
+            line-height: 1;
+        }
+        /* =====================================================
+           NOTIFICATION BUTTON
+        ===================================================== */
+        
+        .dashboard-notification-button {
+            position: relative;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 11px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.04);
+            color: #d8d9e1;
+            cursor: pointer;
+            outline: none;
+            transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .dashboard-notification-button:hover {
+            transform: translateY(-2px);
+            background: rgba(139, 92, 246, 0.10);
+            border-color: rgba(167, 139, 250, 0.22);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+        }
+        
+        .dashboard-notification-icon {
+            font-size: 17px;
+            line-height: 1;
+        }
+        /* =====================================================
+           NOTIFICATION BADGE
+        ===================================================== */
+        
+        .dashboard-notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            min-width: 19px;
+            height: 19px;
+            padding: 0 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            background: linear-gradient( 135deg, #8b5cf6, #ec4899);
+            border: 2px solid #08090d;
+            color: #ffffff;
+            font-size: 9px;
+            font-weight: 800;
+            box-shadow: 0 5px 14px rgba(139, 92, 246, 0.35);
+        }
+        /* =====================================================
+           NOTIFICATION POPUP
+        ===================================================== */
+        
+        .dashboard-notification-popup {
+            position: absolute;
+            top: calc(100% + 12px);
+            right: 0;
+            width: 390px;
+            z-index: 1000;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            background: rgba(10, 9, 15, 0.96);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.42);
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: translateY(-8px) scale(0.97);
+            transform-origin: top right;
+            transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+        }
+        
+        .dashboard-notification-popup.show {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: translateY(0) scale(1);
+        }
+        /* =====================================================
+           POPUP HEADER
+        ===================================================== */
+        
+        .dashboard-notification-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 17px 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        
+        .dashboard-notification-header strong {
+            display: block;
+            color: #f1f2f5;
+            font-size: 14px;
+        }
+        
+        .dashboard-notification-header span {
+            display: block;
+            margin-top: 3px;
+            color: #666975;
+            font-size: 10px;
+        }
+        
+        .dashboard-notification-header-count {
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 7px;
+            background: rgba(139, 92, 246, 0.12);
+            border: 1px solid rgba(167, 139, 250, 0.15);
+            color: #c4b5fd !important;
+            font-size: 9px !important;
+            font-weight: 800;
+        }
+        /* =====================================================
+           NOTIFICATION LIST
+        ===================================================== */
+        
+        .dashboard-notification-list {
+            max-height: 370px;
+            overflow-y: auto;
+        }
+        
+        .dashboard-notification-list::-webkit-scrollbar {
+            width: 5px;
+        }
+        
+        .dashboard-notification-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.10);
+            border-radius: 10px;
+        }
+        /* =====================================================
+           NOTIFICATION ITEM
+        ===================================================== */
+        
+        .dashboard-notification-item {
+            display: flex;
+            gap: 11px;
+            padding: 15px 17px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.045);
+            cursor: pointer;
+            color: inherit;
+            text-decoration: none;
+            transition: background 0.2s ease;
+        }
+        
+        .dashboard-notification-item:hover {
+            background: rgba(255, 255, 255, 0.035);
+        }
+        
+        .dashboard-notification-item.unread {
+            background: rgba(139, 92, 246, 0.035);
+        }
+        
+        .dashboard-notification-item-icon {
+            width: 25px;
+            height: 25px;
+            min-width: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+            border-radius: 7px;
+            background: rgba(139, 92, 246, 0.10);
+            color: #a78bfa;
+            font-size: 8px;
+            font-weight: 800;
+        }
+        
+        .dashboard-notification-item-content {
+            min-width: 0;
+            flex: 1;
+        }
+        
+        .dashboard-notification-item-content strong {
+            display: block;
+            color: #e6e7ec;
+            font-size: 11px;
+            line-height: 1.4;
+        }
+        
+        .dashboard-notification-item-content p {
+            margin-top: 4px;
+            color: #858793;
+            font-size: 10px;
+            line-height: 1.65;
+        }
+        
+        .dashboard-notification-item-content span {
+            display: block;
+            margin-top: 6px;
+            color: #555864;
+            font-size: 8px;
+        }
+        /* =====================================================
+           EMPTY NOTIFICATIONS
+        ===================================================== */
+        
+        .dashboard-no-notifications {
+            padding: 38px 20px;
+            text-align: center;
+        }
+        
+        .dashboard-no-notifications-icon {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 11px;
+            background: rgba(52, 211, 153, 0.08);
+            color: #55dcae;
+            font-size: 15px;
+        }
+        
+        .dashboard-no-notifications strong {
+            display: block;
+            color: #dfe0e5;
+            font-size: 12px;
+        }
+        
+        .dashboard-no-notifications span {
+            display: block;
+            margin-top: 4px;
+            color: #686b76;
+            font-size: 10px;
+        }
+        /* =====================================================
+           NOTIFICATION FOOTER
+        ===================================================== */
+        
+        .dashboard-notification-footer {
+            padding: 12px 17px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+        }
+        
+        .dashboard-notification-footer a {
+            color: #c4b5fd;
+            text-decoration: none;
+            font-size: 10px;
+            font-weight: 700;
+        }
+        
+        .dashboard-notification-footer a:hover {
+            color: #f0abfc;
+        }
+        /* =====================================================
+           STATISTICS
+        ===================================================== */
+        
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 22px;
+        }
+        
+        .dashboard-stat {
+            position: relative;
+            overflow: hidden;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.045);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+        }
+        
+        .dashboard-stat::after {
+            content: "";
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            right: -60px;
+            bottom: -60px;
+            background: radial-gradient( circle, rgba(168, 85, 247, 0.14), transparent 70%);
+            pointer-events: none;
+        }
+        
+        .dashboard-stat:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.065);
+            border-color: rgba(255, 255, 255, 0.14);
+        }
+        
+        .dashboard-stat-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+        
+        .dashboard-stat-title {
+            color: #8b8b94;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.25px;
+        }
+        
+        .dashboard-stat-icon {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .dashboard-icon-blue {
+            color: #a78bfa;
+            background: rgba(139, 92, 246, 0.13);
+        }
+        
+        .dashboard-icon-purple {
+            color: #f0abfc;
+            background: rgba(236, 72, 153, 0.10);
+        }
+        
+        .dashboard-icon-yellow {
+            color: #fbbf24;
+            background: rgba(251, 191, 36, 0.10);
+        }
+        
+        .dashboard-icon-green {
+            color: #34d399;
+            background: rgba(52, 211, 153, 0.10);
+        }
+        
+        .dashboard-stat-number {
+            font-size: 30px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+        /* =====================================================
+           CONTENT GRID
+        ===================================================== */
+        
+        .dashboard-content-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.65fr) minmax(280px, 0.75fr);
+            gap: 20px;
+        }
+        /* =====================================================
+           PANELS
+        ===================================================== */
+        
+        .dashboard-panel {
+            background: linear-gradient( 180deg, rgba(20, 18, 28, 0.73), rgba(15, 14, 21, 0.69));
+            border: 1px solid rgba(255, 255, 255, 0.075);
+            border-radius: 15px;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            overflow: hidden;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.14);
+        }
+        
+        .dashboard-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 22px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+        }
+        
+        .dashboard-panel-header h2 {
+            color: #e4e4e7;
+            font-size: 15px;
+        }
+        
+        .dashboard-panel-header a {
+            color: #a78bfa;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        
+        .dashboard-panel-header a:hover {
+            color: #f0abfc;
+        }
+        /* =====================================================
+           APPLICATION TABLE
+        ===================================================== */
+        
+        .dashboard-table-wrap {
+            overflow-x: auto;
+        }
+        
+        .dashboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+        
+        .dashboard-table th {
+            text-align: left;
+            padding: 13px 22px;
+            color: #52525b;
+            font-size: 10px;
+            font-weight: 750;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            background: rgba(255, 255, 255, 0.018);
+        }
+        
+        .dashboard-table td {
+            padding: 16px 22px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 12px;
+            color: #9b9ba4;
+        }
+        
+        .dashboard-table tbody tr {
+            transition: background 0.18s ease;
+        }
+        
+        .dashboard-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.018);
+        }
+        
+        .dashboard-company {
+            color: #ffffff;
+            font-weight: 600;
+        }
+        
+        .dashboard-role {
+            color: #858591;
+        }
+        /* =====================================================
+           STATUS
+        ===================================================== */
+        
+        .dashboard-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 9px;
+            border-radius: 7px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+        
+        .dashboard-status::before {
+            content: "";
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+        
+        .dashboard-status.applied {
+            color: #a78bfa;
+            background: rgba(139, 92, 246, 0.11);
+        }
+        
+        .dashboard-status.assessment {
+            color: #22d3ee;
+            background: rgba(34, 211, 238, 0.10);
+        }
+        
+        .dashboard-status.interview {
+            color: #fbbf24;
+            background: rgba(251, 191, 36, 0.10);
+        }
+        
+        .dashboard-status.selected {
+            color: #34d399;
+            background: rgba(52, 211, 153, 0.10);
+        }
+        
+        .dashboard-status.rejected {
+            color: #f87171;
+            background: rgba(248, 113, 113, 0.10);
+        }
+        /* =====================================================
+           EMPTY
+        ===================================================== */
+        
+        .dashboard-empty {
+            padding: 55px 20px;
+            text-align: center;
+            color: #858591;
+            font-size: 13px;
+        }
+        
+        .dashboard-empty-icon {
+            font-size: 28px;
+            margin-bottom: 12px;
+            opacity: 0.65;
+        }
+        
+        .dashboard-empty a {
+            display: inline-block;
+            margin-top: 14px;
+            color: #a78bfa;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        /* =====================================================
+           QUICK ACTIONS
+        ===================================================== */
+        
+        .dashboard-quick-title {
+            padding: 20px 22px;
+            color: #e4e4e7;
+            font-size: 15px;
+            font-weight: 700;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+        }
+        
+        .dashboard-quick-actions {
+            padding: 10px;
+        }
+        
+        .dashboard-quick-action {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #d4d4d8;
+            transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+        }
+        
+        .dashboard-quick-action:hover {
+            background: rgba(255, 255, 255, 0.045);
+            color: white;
+            transform: translateX(2px);
+        }
+        
+        .dashboard-quick-icon {
+            width: 35px;
+            height: 35px;
+            min-width: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9px;
+            background: rgba(139, 92, 246, 0.11);
+            color: #a78bfa;
+            font-size: 15px;
+        }
+        
+        .dashboard-quick-text strong {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 3px;
+        }
+        
+        .dashboard-quick-text span {
+            color: #52525b;
+            font-size: 11px;
+        }
+        /* =====================================================
+           PROGRESS
+        ===================================================== */
+        
+        .dashboard-progress {
+            padding: 22px;
+            border-top: 1px solid rgba(255, 255, 255, 0.055);
+        }
+        
+        .dashboard-progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        
+        .dashboard-progress-header strong {
+            font-size: 13px;
+        }
+        
+        .dashboard-progress-header span {
+            color: #c084fc;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        
+        .dashboard-progress-bar {
+            width: 100%;
+            height: 7px;
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .dashboard-progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient( 90deg, #8b5cf6, #ec4899, #f97316);
+            transition: width 0.5s ease;
+        }
+        
+        .dashboard-progress-note {
+            color: #52525b;
+            font-size: 11px;
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+        /* =====================================================
+           COLLAPSED SIDEBAR
+        ===================================================== */
+        
+        .dashboard-sidebar,
+        .dashboard-main {
+            transition: width 0.25s ease, margin-left 0.25s ease, padding 0.25s ease;
+        }
+        
+        .dashboard-sidebar {
+            overflow-x: hidden;
+        }
+        
+        #sidebarToggle {
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .dashboard-brand-name,
+        .dashboard-nav-title,
+        .nav-label,
+        .dashboard-user-info,
+        .dashboard-logout-label {
+            transition: opacity 0.15s ease, width 0.2s ease;
+        }
+        
+        .dashboard-layout.sidebar-collapsed .dashboard-sidebar {
+            width: 78px;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        
+        .dashboard-layout.sidebar-collapsed .dashboard-main {
+            margin-left: 78px;
+            width: calc(100% - 78px);
+        }
+        
+        .dashboard-layout.sidebar-collapsed .dashboard-brand {
+            justify-content: center;
+            padding-left: 0;
+            padding-right: 0;
+        }
+        
+        .dashboard-layout.sidebar-collapsed .dashboard-brand-name,
+        .dashboard-layout.sidebar-collapsed .dashboard-nav-title,
+        .dashboard-layout.sidebar-collapsed .nav-label,
+        .dashboard-layout.sidebar-collapsed .dashboard-user-info,
+        .dashboard-layout.sidebar-collapsed .dashboard-logout-label {
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        
+        .dashboard-layout.sidebar-collapsed .dashboard-nav a {
+            justify-content: center;
+            gap: 0;
+            padding-left: 0;
+            padding-right: 0;
+        }
+        
+        .dashboard-layout.sidebar-collapsed .dashboard-user-mini {
+            justify-content: center;
+            padding: 10px 0;
+        }
+        
+        .dashboard-layout.sidebar-collapsed .dashboard-sidebar-bottom {
+            left: 10px;
+            right: 10px;
+        }
+        
+        .dashboard-layout.sidebar-collapsed .dashboard-logout {
+            justify-content: center;
+            gap: 0;
+        }
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+        
+        @media (max-width: 1100px) {
+            .dashboard-sidebar {
+                width: 220px;
+            }
+            .dashboard-main {
+                margin-left: 220px;
+                width: calc(100% - 220px);
+                padding: 16px 28px 40px !important;
+            }
+            .dashboard-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .dashboard-content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 700px) {
+            .dashboard-layout {
+                display: block;
+            }
+            .dashboard-sidebar {
+                position: relative;
+                width: 100%;
+                min-height: auto;
+                padding: 18px;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+            }
+            .dashboard-sidebar-bottom {
+                position: static;
+                margin-top: 22px;
+            }
+            .dashboard-brand {
+                margin-bottom: 22px;
+            }
+            .dashboard-nav {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 6px;
+            }
+            .dashboard-main {
+                margin-left: 0;
+                width: 100%;
+                padding: 16px 16px 40px !important;
+            }
+            .dashboard-topbar {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 18px;
+                margin-bottom: 20px;
+            }
+            .dashboard-top-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            .dashboard-add-btn {
+                flex: 1;
+            }
+            .dashboard-stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            .dashboard-notification-popup {
+                position: fixed;
+                top: 76px;
+                left: 15px;
+                right: 15px;
+                width: auto;
+                max-width: none;
+            }
+            .dashboard-layout.sidebar-collapsed .dashboard-sidebar {
+                width: 100%;
+            }
+            .dashboard-layout.sidebar-collapsed .dashboard-main {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 430px) {
+            .dashboard-nav {
+                grid-template-columns: 1fr;
+            }
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+            }
+            .dashboard-topbar h1 {
+                font-size: 25px;
+            }
+            .dashboard-notification-button {
+                width: 42px;
+                height: 42px;
+            }
+        }
+        /* =====================================================
+   PLACETRACK BRAND
+===================================================== */
+        
+        .pt-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+        }
+        
+        .pt-brand:hover {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .pt-logo-box {
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            flex: 0 0 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .pt-logo-svg {
+            width: 48px;
+            height: 48px;
+            display: block;
+        }
+        
+        .pt-brand-name {
+            display: flex;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            color: #f4f4f5;
+            font-size: 17px;
+            font-weight: 750;
+            line-height: 1;
+            white-space: nowrap;
+        }
+        
+        .pt-brand-name span {
+            color: #f4f4f5;
+        }
+        /* =====================================================
+           PLACETRACK BRAND — SHARED ACROSS ALL STUDENT PAGES
+        ===================================================== */
+        
+        .pt-sidebar {
+            padding: 24px 16px !important;
+        }
+        
+        .pt-brand {
+            display: flex !important;
+            align-items: center !important;
+            gap: 11px !important;
+            width: 100%;
+            padding: 8px 10px !important;
+            margin: 0 0 32px 0 !important;
+            text-decoration: none !important;
+            color: inherit !important;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+        
+        .pt-brand:hover {
+            text-decoration: none !important;
+            color: inherit !important;
+        }
+        
+        .pt-logo-box {
+            width: 40px !important;
+            height: 40px !important;
+            min-width: 40px !important;
+            min-height: 40px !important;
+            flex: 0 0 40px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        .pt-logo-svg {
+            width: 40px !important;
+            height: 40px !important;
+            display: block !important;
+        }
+        
+        .pt-brand-name {
+            display: flex !important;
+            align-items: center !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            color: #f4f4f5 !important;
+            font-size: 19px !important;
+            font-weight: 750 !important;
+            line-height: 1 !important;
+            letter-spacing: -0.45px;
+            white-space: nowrap;
+        }
+        
+        .pt-brand-name span {
+            color: #a78bfa !important;
+        }
+        
+        .pt-nav-title {
+            margin: 0 0 10px 0 !important;
+            padding: 0 12px !important;
+        }
+        
+        .pt-nav {
+            gap: 5px !important;
+        }
+        
+        .pt-nav a {
+            min-height: 43px !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            padding: 0 13px !important;
+        }
+        /* Keep the dashboard's existing visual spacing while using the shared brand. */
+        
+        .dashboard-brand {
+            align-items: center !important;
+            gap: 11px !important;
+            padding: 8px 10px !important;
+            margin-bottom: 32px !important;
+        }
+        /* =====================================================
+           PROFESSIONAL DASHBOARD V2
+        ===================================================== */
+        
+         :root {
+            --pd-bg: #07070b;
+            --pd-surface: rgba(16, 14, 23, 0.78);
+            --pd-surface-2: rgba(22, 19, 31, 0.72);
+            --pd-border: rgba(255, 255, 255, 0.085);
+            --pd-border-strong: rgba(167, 139, 250, 0.22);
+            --pd-text: #f5f5f7;
+            --pd-muted: #8f8d99;
+            --pd-dim: #5f5d68;
+            --pd-purple: #8b5cf6;
+            --pd-violet: #a78bfa;
+            --pd-pink: #ec4899;
+            --pd-cyan: #22d3ee;
+            --pd-green: #34d399;
+            --pd-yellow: #fbbf24;
+            --pd-red: #f87171;
+        }
+        
+        .dashboard-page {
+            max-width: 1500px;
+        }
+        /* -----------------------------
+           SIDEBAR
+        ----------------------------- */
+        
+        .dashboard-sidebar {
+            width: 254px;
+            padding: 22px 15px;
+            background: linear-gradient(180deg, rgba(10, 8, 15, 0.95), rgba(7, 7, 11, 0.90));
+            border-right: 1px solid rgba(255, 255, 255, 0.07);
+            box-shadow: 18px 0 70px rgba(0, 0, 0, 0.18);
+        }
+        
+        .dashboard-sidebar::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2px;
+            height: 170px;
+            background: linear-gradient(180deg, #8b5cf6, #ec4899, transparent);
+            opacity: 0.9;
+        }
+        
+        .dashboard-brand {
+            padding: 9px 10px;
+            margin-bottom: 30px;
+            border-radius: 14px;
+            transition: background .2s ease, transform .2s ease;
+        }
+        
+        .dashboard-brand:hover {
+            background: rgba(255, 255, 255, 0.025);
+            transform: translateY(-1px);
+        }
+        
+        .dashboard-brand .pt-logo-box {
+            filter: drop-shadow(0 8px 18px rgba(139, 92, 246, 0.20));
+        }
+        
+        .dashboard-brand-name,
+        .pt-brand-name {
+            font-size: 19px !important;
+            letter-spacing: -0.55px;
+        }
+        
+        .dashboard-nav-title {
+            color: #66636f;
+            font-size: 9px;
+            letter-spacing: 1.1px;
+        }
+        
+        .dashboard-nav {
+            gap: 6px;
+        }
+        
+        .dashboard-nav a {
+            position: relative;
+            min-height: 45px;
+            border: 1px solid transparent;
+            border-radius: 12px;
+            color: #85838f;
+        }
+        
+        .dashboard-nav a::after {
+            content: "";
+            position: absolute;
+            right: 10px;
+            width: 0;
+            height: 4px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #8b5cf6, #ec4899);
+            transition: width .2s ease;
+        }
+        
+        .dashboard-nav a:hover {
+            background: rgba(255, 255, 255, 0.035);
+            border-color: rgba(255, 255, 255, 0.05);
+            transform: translateX(2px);
+        }
+        
+        .dashboard-nav a.active {
+            background: linear-gradient(90deg, rgba(139, 92, 246, 0.17), rgba(236, 72, 153, 0.055));
+            border-color: rgba(139, 92, 246, 0.17);
+            box-shadow: inset 0 0 20px rgba(139, 92, 246, 0.035);
+        }
+        
+        .dashboard-nav a.active::after {
+            width: 14px;
+        }
+        
+        .dashboard-nav-icon,
+        .pt-nav-icon {
+            color: #777481;
+            font-size: 15px;
+        }
+        
+        .dashboard-nav a.active .dashboard-nav-icon,
+        .dashboard-nav a.active .pt-nav-icon {
+            color: #d8cbff;
+        }
+        
+        .dashboard-sidebar-bottom {
+            left: 15px;
+            right: 15px;
+            bottom: 16px;
+            padding-top: 14px;
+        }
+        
+        .dashboard-user-mini {
+            padding: 10px;
+            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.022));
+            border-color: rgba(255, 255, 255, 0.07);
+        }
+        
+        .dashboard-avatar {
+            width: 36px;
+            height: 36px;
+            min-width: 36px;
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.18);
+        }
+        
+        .dashboard-user-role {
+            color: #696672;
+        }
+        
+        .dashboard-logout {
+            margin-top: 4px;
+            border: 1px solid transparent;
+        }
+        
+        .dashboard-logout:hover {
+            border-color: rgba(248, 113, 113, 0.08);
+        }
+        /* -----------------------------
+           MAIN + HERO
+        ----------------------------- */
+        
+        .dashboard-main {
+            margin-left: 254px;
+            width: calc(100% - 254px);
+            padding: 26px 44px 54px;
+        }
+        
+        .dashboard-topbar {
+            margin-bottom: 24px;
+            padding: 28px 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: radial-gradient(circle at 85% 20%, rgba(139, 92, 246, 0.15), transparent 34%), radial-gradient(circle at 15% 100%, rgba(236, 72, 153, 0.08), transparent 34%), linear-gradient(135deg, rgba(18, 15, 27, 0.88), rgba(11, 10, 16, 0.72));
+            box-shadow: 0 28px 70px rgba(0, 0, 0, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.025);
+            overflow: visible;
+        }
+        
+        .dashboard-topbar::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            background: linear-gradient(120deg, rgba(255, 255, 255, 0.03), transparent 35%, rgba(167, 139, 250, 0.03));
+        }
+        
+        .greeting-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            margin-bottom: 12px;
+            border-radius: 999px;
+            background: rgba(139, 92, 246, 0.08);
+            border: 1px solid rgba(167, 139, 250, 0.13);
+            color: #c4b5fd;
+            font-size: 9px;
+            letter-spacing: 1.05px;
+        }
+        
+        .greeting-label::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #a78bfa, #ec4899);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.08);
+        }
+        
+        .dashboard-topbar h1 {
+            font-size: clamp(28px, 3vw, 38px);
+            font-weight: 760;
+            letter-spacing: -1.25px;
+            margin-bottom: 8px;
+        }
+        
+        .dashboard-topbar p {
+            color: #8d8a96;
+            font-size: 13px;
+            max-width: 600px;
+        }
+        
+        .dashboard-top-actions {
+            gap: 9px;
+            align-self: center;
+        }
+        
+        .dashboard-notification-button,
+        .dashboard-add-btn {
+            height: 46px;
+            min-height: 46px;
+            border-radius: 12px;
+        }
+        
+        .dashboard-notification-button {
+            width: 46px;
+            background: rgba(255, 255, 255, 0.045);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+        
+        .dashboard-add-btn {
+            padding: 0 19px;
+            background: linear-gradient(135deg, #6d4df7, #8b5cf6 55%, #c026d3);
+            box-shadow: 0 12px 30px rgba(139, 92, 246, 0.22);
+        }
+        /* -----------------------------
+           STATS
+        ----------------------------- */
+        
+        .dashboard-stats {
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+        
+        .dashboard-stat {
+            min-height: 136px;
+            padding: 20px 20px 18px;
+            border-radius: 16px;
+            background: linear-gradient(180deg, rgba(20, 18, 27, 0.79), rgba(12, 11, 17, 0.72));
+            border-color: rgba(255, 255, 255, 0.075);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.13), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+            animation: dashboardRise .55s ease both;
+        }
+        
+        .dashboard-stat:nth-child(1) {
+            animation-delay: .03s;
+        }
+        
+        .dashboard-stat:nth-child(2) {
+            animation-delay: .07s;
+        }
+        
+        .dashboard-stat:nth-child(3) {
+            animation-delay: .11s;
+        }
+        
+        .dashboard-stat:nth-child(4) {
+            animation-delay: .15s;
+        }
+        
+        .dashboard-stat::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(139, 92, 246, 0), rgba(139, 92, 246, 0.9), rgba(236, 72, 153, 0));
+            opacity: .5;
+        }
+        
+        .dashboard-stat::after {
+            width: 150px;
+            height: 150px;
+            right: -72px;
+            bottom: -72px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.13), transparent 70%);
+        }
+        
+        .dashboard-stat:hover {
+            transform: translateY(-4px);
+            border-color: rgba(167, 139, 250, 0.18);
+            box-shadow: 0 20px 48px rgba(0, 0, 0, 0.19), 0 0 0 1px rgba(139, 92, 246, 0.035) inset;
+        }
+        
+        .dashboard-stat-top {
+            margin-bottom: 16px;
+        }
+        
+        .dashboard-stat-title {
+            color: #777481;
+            font-size: 9px;
+            letter-spacing: .75px;
+        }
+        
+        .dashboard-stat-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            font-size: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .dashboard-stat-number {
+            font-size: 34px;
+            letter-spacing: -1.3px;
+            line-height: 1;
+        }
+        /* -----------------------------
+           CONTENT
+        ----------------------------- */
+        
+        .dashboard-content-grid {
+            gap: 18px;
+            grid-template-columns: minmax(0, 1.72fr) minmax(300px, 0.78fr);
+        }
+        
+        .dashboard-panel {
+            border-radius: 18px;
+            border-color: rgba(255, 255, 255, 0.075);
+            background: linear-gradient(180deg, rgba(18, 16, 24, 0.83), rgba(10, 10, 15, 0.75));
+            box-shadow: 0 22px 60px rgba(0, 0, 0, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.018);
+        }
+        
+        .dashboard-panel-header,
+        .dashboard-quick-title {
+            padding: 19px 22px;
+        }
+        
+        .dashboard-panel-header h2,
+        .dashboard-quick-title {
+            font-size: 14px;
+            font-weight: 720;
+            letter-spacing: -.15px;
+        }
+        
+        .dashboard-panel-header a {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 10px;
+            border-radius: 8px;
+            background: rgba(139, 92, 246, 0.06);
+            border: 1px solid rgba(167, 139, 250, 0.08);
+            transition: background .2s ease, border-color .2s ease, transform .2s ease;
+        }
+        
+        .dashboard-panel-header a:hover {
+            transform: translateY(-1px);
+            background: rgba(139, 92, 246, 0.10);
+            border-color: rgba(167, 139, 250, 0.15);
+        }
+        /* -----------------------------
+           TABLE
+        ----------------------------- */
+        
+        .dashboard-table {
+            min-width: 720px;
+        }
+        
+        .dashboard-table th {
+            padding: 12px 22px;
+            background: rgba(255, 255, 255, 0.012);
+            color: #5c5965;
+            font-size: 9px;
+            letter-spacing: .9px;
+        }
+        
+        .dashboard-table td {
+            padding: 16px 22px;
+            border-top-color: rgba(255, 255, 255, 0.045);
+            font-size: 11px;
+        }
+        
+        .dashboard-table tbody tr {
+            position: relative;
+        }
+        
+        .dashboard-table tbody tr:hover {
+            background: linear-gradient(90deg, rgba(139, 92, 246, 0.035), rgba(255, 255, 255, 0.015));
+        }
+        
+        .dashboard-company {
+            color: #f4f4f5;
+            font-weight: 680;
+        }
+        
+        .dashboard-role {
+            color: #91909a;
+        }
+        
+        .dashboard-status {
+            padding: 6px 9px;
+            border-radius: 999px;
+            font-size: 9px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        
+        .dashboard-status::before {
+            width: 5px;
+            height: 5px;
+        }
+        /* -----------------------------
+           QUICK ACTIONS
+        ----------------------------- */
+        
+        .dashboard-quick-actions {
+            padding: 9px;
+        }
+        
+        .dashboard-quick-action {
+            position: relative;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid transparent;
+        }
+        
+        .dashboard-quick-action:hover {
+            background: linear-gradient(90deg, rgba(139, 92, 246, 0.07), rgba(255, 255, 255, 0.02));
+            border-color: rgba(167, 139, 250, 0.09);
+            transform: translateX(3px);
+        }
+        
+        .dashboard-quick-icon {
+            width: 38px;
+            height: 38px;
+            min-width: 38px;
+            border-radius: 10px;
+            background: linear-gradient(180deg, rgba(139, 92, 246, 0.13), rgba(139, 92, 246, 0.07));
+            border: 1px solid rgba(167, 139, 250, 0.08);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+        }
+        
+        .dashboard-quick-text strong {
+            font-size: 12px;
+        }
+        
+        .dashboard-quick-text span {
+            color: #64616d;
+            font-size: 10px;
+        }
+        /* -----------------------------
+           PROGRESS
+        ----------------------------- */
+        
+        .dashboard-progress {
+            padding: 21px 22px 22px;
+            background: linear-gradient(180deg, rgba(139, 92, 246, 0.035), transparent);
+        }
+        
+        .dashboard-progress-header strong {
+            font-size: 12px;
+        }
+        
+        .dashboard-progress-header span {
+            padding: 5px 8px;
+            border-radius: 999px;
+            background: rgba(139, 92, 246, 0.08);
+            border: 1px solid rgba(167, 139, 250, 0.09);
+            font-size: 10px;
+        }
+        
+        .dashboard-progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        
+        .dashboard-progress-fill {
+            position: relative;
+            background: linear-gradient(90deg, #7c3aed, #a855f7, #ec4899);
+            box-shadow: 0 0 18px rgba(168, 85, 247, 0.20);
+        }
+        
+        .dashboard-progress-note {
+            color: #63616c;
+            font-size: 10px;
+        }
+        /* -----------------------------
+           NOTIFICATION POPUP
+        ----------------------------- */
+        
+        .dashboard-notification-popup {
+            width: 410px;
+            border-radius: 17px;
+            background: rgba(9, 8, 13, 0.97);
+            border-color: rgba(255, 255, 255, 0.10);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(139, 92, 246, 0.03) inset;
+        }
+        
+        .dashboard-notification-item {
+            padding: 15px 17px;
+        }
+        
+        .dashboard-notification-item.unread {
+            background: linear-gradient(90deg, rgba(139, 92, 246, 0.055), transparent);
+        }
+        
+        .dashboard-notification-item:hover {
+            background: rgba(255, 255, 255, 0.028);
+        }
+        /* -----------------------------
+           RESPONSIVE
+        ----------------------------- */
+        
+        @media (max-width: 1180px) {
+            .dashboard-main {
+                padding-left: 28px;
+                padding-right: 28px;
+            }
+            .dashboard-content-grid {
+                grid-template-columns: minmax(0, 1.45fr) minmax(280px, .85fr);
+            }
+        }
+        
+        @media (max-width: 980px) {
+            .dashboard-sidebar {
+                width: 82px;
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+            .dashboard-main {
+                margin-left: 82px;
+                width: calc(100% - 82px);
+            }
+            .dashboard-layout:not(.sidebar-collapsed) .dashboard-brand-name,
+            .dashboard-layout:not(.sidebar-collapsed) .dashboard-nav-title,
+            .dashboard-layout:not(.sidebar-collapsed) .nav-label,
+            .dashboard-layout:not(.sidebar-collapsed) .dashboard-user-info,
+            .dashboard-layout:not(.sidebar-collapsed) .dashboard-logout-label {
+                opacity: 0;
+                width: 0;
+                overflow: hidden;
+                white-space: nowrap;
+            }
+            .dashboard-layout:not(.sidebar-collapsed) .dashboard-brand {
+                justify-content: center;
+            }
+            .dashboard-layout:not(.sidebar-collapsed) .dashboard-nav a {
+                justify-content: center;
+                gap: 0;
+                padding-left: 0;
+                padding-right: 0;
+            }
+            .dashboard-layout:not(.sidebar-collapsed) .dashboard-user-mini {
+                justify-content: center;
+                padding-left: 0;
+                padding-right: 0;
+            }
+            .dashboard-content-grid {
+                grid-template-columns: 1fr;
+            }
+            .dashboard-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 700px) {
+            .dashboard-main {
+                padding: 16px 16px 35px;
+            }
+            .dashboard-topbar {
+                padding: 21px 20px;
+                border-radius: 17px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .dashboard-topbar h1 {
+                font-size: 27px;
+                letter-spacing: -0.9px;
+            }
+            .dashboard-top-actions {
+                align-self: stretch;
+                justify-content: flex-end;
+            }
+            .dashboard-stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            .dashboard-stat {
+                min-height: 118px;
+                padding: 16px;
+            }
+            .dashboard-stat-number {
+                font-size: 28px;
+            }
+            .dashboard-notification-popup {
+                position: fixed;
+                top: 78px;
+                left: 14px;
+                right: 14px;
+                width: auto;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .dashboard-sidebar {
+                width: 72px;
+            }
+            .dashboard-main {
+                margin-left: 72px;
+                width: calc(100% - 72px);
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+            .dashboard-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+            .dashboard-top-actions {
+                justify-content: space-between;
+            }
+            .dashboard-add-btn {
+                flex: 1;
+            }
+        }
+        
+        @keyframes dashboardRise {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/placetrack-sidebar.css') }}">
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         LIVE BACKGROUND
+    ===================================================== -->
+
+    <div class="page-bg">
+
+        <div class="bg-grid"></div>
+
+        <!-- IMPORTANT:
+             This ID must match placement-bg.js -->
+        <canvas id="placement-bg"></canvas>
+
+    </div>
+
+
+    <!-- =====================================================
+         MAIN LAYOUT
+    ===================================================== -->
+
+    <div class="layout dashboard-layout">
+
+
+        <!-- =================================================
+             SIDEBAR
+        ================================================= -->
+
+        <aside class="sidebar dashboard-sidebar">
+
+
+            <!-- BRAND -->
+
+            <a href="{{ url_for('dashboard') }}" class="pt-brand dashboard-brand">
+
+                <div class="pt-logo-box">
+
+                    <svg class="pt-logo-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    
+                        <defs>
+                            <linearGradient id="ptLogoGradient" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#4c1d95"/>
+                                <stop offset="52%" stop-color="#7c3aed"/>
+                                <stop offset="100%" stop-color="#c026d3"/>
+                            </linearGradient>
+                        </defs>
+                    
+                        <!-- App tile -->
+                        <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#ptLogoGradient)"/>
+                    
+                        <!-- Graduation cap -->
+                        <path d="M12 18.5L32 10L52 18.5L32 27L12 18.5Z" fill="#f8f7ff"/>
+                        <path d="M18 22V27.5C22.5 31.5 27.1 33.5 32 33.5C36.9 33.5 41.5 31.5 46 27.5V22L32 27.8L18 22Z" fill="#e9d5ff"/>
+                        <path d="M49 19V29" stroke="#f8f7ff" stroke-width="3" stroke-linecap="round"/>
+                        <circle cx="49" cy="31.5" r="2.2" fill="#f8f7ff"/>
+                    
+                        <!-- Resume / profile card -->
+                        <rect x="13" y="35" width="31" height="19" rx="4" fill="#faf9ff"/>
+                        <circle cx="21" cy="42" r="3.2" fill="#c4b5fd"/>
+                        <rect x="27" y="39.5" width="12" height="2.4" rx="1.2" fill="#8b5cf6"/>
+                        <rect x="27" y="44" width="9" height="2.4" rx="1.2" fill="#c4b5fd"/>
+                        <rect x="17.5" y="48" width="18.5" height="2.2" rx="1.1" fill="#ddd6fe"/>
+                    
+                        <!-- Career growth arrow -->
+                        <path d="M12 53C20 53 27 52 32 49C39 45 43 39.5 50 34" fill="none" stroke="#f5eaff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M45.5 34H50V38.5" fill="none" stroke="#f5eaff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    
+                    </svg>
+
+                </div>
+
+                <div class="pt-brand-name">
+                    Place<span>Track</span>
+                </div>
+
+            </a>
+
+            <!-- NAV TITLE -->
+
+            <div class="nav-title dashboard-nav-title">
+                Workspace
+            </div>
+
+
+            <!-- NAVIGATION -->
+
+            <nav class="nav dashboard-nav">
+
+
+                <!-- DASHBOARD -->
+
+                <a href="/dashboard" class="active">
+
+                    <span class="nav-icon dashboard-nav-icon">
+                        ▦
+                    </span>
+
+                    <span class="nav-label">
+                        Dashboard
+                    </span>
+
+                </a>
+
+
+                <!-- APPLICATIONS -->
+
+                <a href="/applications">
+
+                    <span class="nav-icon dashboard-nav-icon">
+                        ◫
+                    </span>
+
+                    <span class="nav-label">
+                        Applications
+                    </span>
+
+                </a>
+
+
+                <!-- OPPORTUNITIES -->
+
+                <a href="/opportunities">
+
+                    <span class="pt-nav-icon">
+                        ⌁
+                    </span>
+
+                    <span class="nav-label">
+                        Opportunities
+                    </span>
+
+                </a>
+
+
+                <!-- ANALYTICS -->
+
+                <a href="/analytics">
+
+                    <span class="nav-icon dashboard-nav-icon">
+                        ◒
+                    </span>
+
+                    <span class="nav-label">
+                        Analytics
+                    </span>
+
+                </a>
+
+
+                <!-- PROFILE -->
+
+                <a href="/profile">
+
+                    <span class="nav-icon dashboard-nav-icon">
+                        ◎
+                    </span>
+
+                    <span class="nav-label">
+                        Profile
+                    </span>
+
+                </a>
+
+            </nav>
+
+
+            <!-- =================================================
+                 USER AREA
+            ================================================= -->
+
+            <div class="sidebar-bottom dashboard-sidebar-bottom">
+
+
+                <div class="user-mini dashboard-user-mini">
+
+                    <div class="avatar-small dashboard-avatar">
+                        {{ user.name[0]|upper }}
+                    </div>
+
+
+                    <div class="user-mini-info dashboard-user-info">
+
+                        <div class="user-mini-name dashboard-user-name">
+                            {{ user.name }}
+                        </div>
+
+                        <div class="user-mini-role dashboard-user-role">
+                            Placement Candidate
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <a href="/logout" class="logout dashboard-logout">
+
+                    <span class="dashboard-logout-icon">
+                        ↪
+                    </span>
+
+                    <span class="dashboard-logout-label">
+                        Logout
+                    </span>
+
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =================================================
+             MAIN
+        ================================================= -->
+
+        <main class="main dashboard-main">
+
+            <div class="dashboard-page">
+
+
+                <!-- =================================================
+                     TOPBAR
+                ================================================= -->
+
+                <div class="topbar dashboard-topbar">
+
+
+                    <!-- GREETING -->
+
+                    <div>
+
+                        <div class="greeting-label">
+                            PLACEMENT DASHBOARD
+                        </div>
+
+                        <h1>
+                            Welcome back, {{ user.name }} 👋
+                        </h1>
+
+                        <p>
+                            Here's an overview of your placement journey.
+                        </p>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         TOP ACTIONS
+                    ================================================= -->
+
+                    <div class="dashboard-top-actions">
+
+
+                        <!-- NOTIFICATIONS -->
+
+                        <button type="button" class="dashboard-notification-button" id="notificationButton" aria-label="Notifications" aria-expanded="false">
+
+                            <span class="dashboard-notification-icon">
+                                🔔
+                            </span>
+
+
+                            {% if unread_notifications_count > 0 %}
+
+                            <span class="dashboard-notification-badge">
+                                {{ unread_notifications_count }}
+                            </span>
+
+                            {% endif %}
+
+                        </button>
+
+
+                        <!-- ADD APPLICATION -->
+
+                        <a href="/add-application" class="add-btn dashboard-add-btn">
+
+                            <span class="plus dashboard-plus">
+                                +
+                            </span> Add Application
+
+                        </a>
+
+
+                        <!-- =================================================
+                             NOTIFICATION POPUP
+                        ================================================= -->
+
+                        <div class="dashboard-notification-popup" id="notificationPopup">
+
+
+                            <!-- POPUP HEADER -->
+
+                            <div class="dashboard-notification-header">
+
+                                <div>
+
+                                    <strong>
+                                        Notifications
+                                    </strong>
+
+                                    <span>
+                                        Recent updates
+                                    </span>
+
+                                </div>
+
+
+                                {% if unread_notifications_count > 0 %}
+
+                                <div class="dashboard-notification-header-count">
+                                    {{ unread_notifications_count }}
+                                </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- NOTIFICATION LIST -->
+
+                            <div class="dashboard-notification-list">
+
+                                {% if dashboard_notifications %} {% for notification in dashboard_notifications %}
+
+                                <a href="{{ url_for('open_notification', id=notification.id) }}" class="dashboard-notification-item {% if not notification.is_read %}unread{% endif %}">
+
+                                    <div class="dashboard-notification-item-icon">
+
+                                        {% if not notification.is_read %} ● {% else %} ✓ {% endif %}
+
+                                    </div>
+
+
+                                    <div class="dashboard-notification-item-content">
+
+                                        <strong>
+                                                {{ notification.title }}
+                                            </strong>
+
+                                        <p>
+                                            {{ notification.message }}
+                                        </p>
+
+                                        <span>
+                                                {{ notification.created_at }}
+                                            </span>
+
+                                    </div>
+
+                                </a>
+
+                                {% endfor %} {% else %}
+
+
+                                <!-- EMPTY -->
+
+                                <div class="dashboard-no-notifications">
+
+                                    <div class="dashboard-no-notifications-icon">
+                                        ✓
+                                    </div>
+
+                                    <strong>
+                                            You're all caught up
+                                        </strong>
+
+                                    <span>
+                                            No new placement updates yet.
+                                        </span>
+
+                                </div>
+
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- FOOTER -->
+
+                            <div class="dashboard-notification-footer">
+
+                                <a href="/notifications">
+                                    View all notifications →
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     STATISTICS
+                ================================================= -->
+
+                <div class="cards dashboard-stats">
+
+
+                    <!-- TOTAL -->
+
+                    <div class="stat-card dashboard-stat">
+
+                        <div class="stat-top dashboard-stat-top">
+
+                            <span class="stat-title dashboard-stat-title">
+                                TOTAL APPLICATIONS
+                            </span>
+
+                            <span class="stat-icon dashboard-stat-icon dashboard-icon-blue">
+                                ◫
+                            </span>
+
+                        </div>
+
+
+                        <div class="stat-number dashboard-stat-number">
+                            {{ total_applications }}
+                        </div>
+
+                    </div>
+
+
+                    <!-- APPLIED -->
+
+                    <div class="stat-card dashboard-stat">
+
+                        <div class="stat-top dashboard-stat-top">
+
+                            <span class="stat-title dashboard-stat-title">
+                                APPLIED
+                            </span>
+
+                            <span class="stat-icon dashboard-stat-icon dashboard-icon-purple">
+                                ↗
+                            </span>
+
+                        </div>
+
+
+                        <div class="stat-number dashboard-stat-number">
+                            {{ applied }}
+                        </div>
+
+                    </div>
+
+
+                    <!-- INTERVIEWS -->
+
+                    <div class="stat-card dashboard-stat">
+
+                        <div class="stat-top dashboard-stat-top">
+
+                            <span class="stat-title dashboard-stat-title">
+                                INTERVIEWS
+                            </span>
+
+                            <span class="stat-icon dashboard-stat-icon dashboard-icon-yellow">
+                                ◉
+                            </span>
+
+                        </div>
+
+
+                        <div class="stat-number dashboard-stat-number">
+                            {{ interviews }}
+                        </div>
+
+                    </div>
+
+
+                    <!-- SELECTED -->
+
+                    <div class="stat-card dashboard-stat">
+
+                        <div class="stat-top dashboard-stat-top">
+
+                            <span class="stat-title dashboard-stat-title">
+                                SELECTED
+                            </span>
+
+                            <span class="stat-icon dashboard-stat-icon dashboard-icon-green">
+                                ✓
+                            </span>
+
+                        </div>
+
+
+                        <div class="stat-number dashboard-stat-number">
+                            {{ selected }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     CONTENT
+                ================================================= -->
+
+                <div class="content-grid dashboard-content-grid">
+
+
+                    <!-- =================================================
+                         RECENT APPLICATIONS
+                    ================================================= -->
+
+                    <section class="panel dashboard-panel">
+
+
+                        <div class="panel-header dashboard-panel-header">
+
+                            <h2>
+                                Recent Applications
+                            </h2>
+
+                            <a href="/applications">
+                                View all →
+                            </a>
+
+                        </div>
+
+
+                        {% if applications %}
+
+
+                        <div class="table-wrapper dashboard-table-wrap">
+
+                            <table class="dashboard-table">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>
+                                            Company
+                                        </th>
+
+                                        <th>
+                                            Role
+                                        </th>
+
+                                        <th>
+                                            Date
+                                        </th>
+
+                                        <th>
+                                            Status
+                                        </th>
+
+                                        <th>
+                                            Package
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody>
+
+                                    {% for application in applications[:5] %}
+
+                                    <tr>
+
+                                        <td class="company dashboard-company">
+                                            {{ application.company_name }}
+                                        </td>
+
+                                        <td class="role dashboard-role">
+                                            {{ application.job_role }}
+                                        </td>
+
+                                        <td>
+                                            {{ application.application_date }}
+                                        </td>
+
+                                        <td>
+
+                                            <span class="status dashboard-status {{ application.status|lower }}">
+                                                {{ application.status }}
+                                            </span>
+
+                                        </td>
+
+                                        <td>
+                                            {{ application.package or "-" }}
+                                        </td>
+
+                                    </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+
+                        {% else %}
+
+
+                        <!-- EMPTY APPLICATIONS -->
+
+                        <div class="empty dashboard-empty">
+
+                            <div class="empty-icon dashboard-empty-icon">
+                                ◫
+                            </div>
+
+                            <p>
+                                You haven't added any applications yet.
+                            </p>
+
+                            <a href="/opportunities">
+                                Add your first application →
+                            </a>
+
+                        </div>
+
+
+                        {% endif %}
+
+                    </section>
+
+
+                    <!-- =================================================
+                         RIGHT PANEL
+                    ================================================= -->
+
+                    <section class="panel dashboard-panel">
+
+
+                        <!-- QUICK ACTIONS TITLE -->
+
+                        <div class="quick-title dashboard-quick-title">
+                            Quick Actions
+                        </div>
+
+
+                        <div class="quick-actions dashboard-quick-actions">
+
+
+                            <!-- ADD APPLICATION -->
+
+                            <a href="/add-application" class="quick-action dashboard-quick-action">
+
+                                <div class="quick-icon dashboard-quick-icon">
+                                    +
+                                </div>
+
+                                <div class="quick-text dashboard-quick-text">
+
+                                    <strong>
+                                        Add Application
+                                    </strong>
+
+                                    <span>
+                                        Track a new opportunity
+                                    </span>
+
+                                </div>
+
+                            </a>
+
+
+                            <!-- APPLICATIONS -->
+
+                            <a href="/applications" class="quick-action dashboard-quick-action">
+
+                                <div class="quick-icon dashboard-quick-icon">
+                                    ◫
+                                </div>
+
+                                <div class="quick-text dashboard-quick-text">
+
+                                    <strong>
+                                        View Applications
+                                    </strong>
+
+                                    <span>
+                                        Manage your applications
+                                    </span>
+
+                                </div>
+
+                            </a>
+
+
+                            <!-- ANALYTICS -->
+
+                            <a href="/analytics" class="quick-action dashboard-quick-action">
+
+                                <div class="quick-icon dashboard-quick-icon">
+                                    ◒
+                                </div>
+
+                                <div class="quick-text dashboard-quick-text">
+
+                                    <strong>
+                                        View Analytics
+                                    </strong>
+
+                                    <span>
+                                        Check your progress
+                                    </span>
+
+                                </div>
+
+                            </a>
+
+
+                            <!-- PROFILE -->
+
+                            <a href="/profile" class="quick-action dashboard-quick-action">
+
+                                <div class="quick-icon dashboard-quick-icon">
+                                    ◎
+                                </div>
+
+                                <div class="quick-text dashboard-quick-text">
+
+                                    <strong>
+                                        My Profile
+                                    </strong>
+
+                                    <span>
+                                        Manage your account
+                                    </span>
+
+                                </div>
+
+                            </a>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             PLACEMENT PROGRESS
+                        ================================================= -->
+
+                        <div class="progress-section dashboard-progress">
+
+
+                            <div class="progress-header dashboard-progress-header">
+
+                                <strong>
+                                    Placement Progress
+                                </strong>
+
+
+                                <span>
+
+                                    {% if total_applications > 0 %}
+
+                                        {{
+                                            ((selected / total_applications) * 100)
+                                            |round
+                                            |int
+                                        }}%
+
+                                    {% else %}
+
+                                        0%
+
+                                    {% endif %}
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="progress-bar dashboard-progress-bar">
+
+                                <div class="progress-fill dashboard-progress-fill" style="width:
+                                    {% if total_applications > 0 %}
+                                        {{
+                                            (selected / total_applications * 100)
+                                            |round
+                                            |int
+                                        }}
+                                    {% else %}
+                                        0
+                                    {% endif %}%"></div>
+
+                            </div>
+
+
+                            <p class="progress-note dashboard-progress-note">
+                                Keep tracking your applications and stay consistent with your placement preparation.
+                            </p>
+
+                        </div>
+
+
+                    </section>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <!-- =====================================================
+         LIVE BACKGROUND SCRIPT
+    ===================================================== -->
+
+    <script src="{{ url_for('static', filename='js/placement-bg.js') }}"></script>
+
+
+    <!-- =====================================================
+         NOTIFICATION POPUP SCRIPT
+    ===================================================== -->
+
+    <script>
+        document.addEventListener(
+            "DOMContentLoaded",
+            function() {
+
+                const button =
+                    document.getElementById(
+                        "notificationButton"
+                    );
+
+                const popup =
+                    document.getElementById(
+                        "notificationPopup"
+                    );
+
+
+                if (!button || !popup) {
+                    return;
+                }
+
+
+                /* =============================================
+                   OPEN / CLOSE
+                ============================================= */
+
+                button.addEventListener(
+                    "click",
+                    function(event) {
+
+                        event.stopPropagation();
+
+                        const isOpen =
+                            popup.classList.toggle("show");
+
+                        button.setAttribute(
+                            "aria-expanded",
+                            isOpen ? "true" : "false"
+                        );
+
+                    }
+                );
+
+
+                /* =============================================
+                   CLOSE WHEN CLICKING OUTSIDE
+                ============================================= */
+
+                document.addEventListener(
+                    "click",
+                    function(event) {
+
+                        if (!popup.contains(event.target) &&
+                            !button.contains(event.target)
+                        ) {
+
+                            popup.classList.remove("show");
+
+                            button.setAttribute(
+                                "aria-expanded",
+                                "false"
+                            );
+
+                        }
+
+                    }
+                );
+
+
+                /* =============================================
+                   CLOSE WITH ESCAPE
+                ============================================= */
+
+                document.addEventListener(
+                    "keydown",
+                    function(event) {
+
+                        if (event.key === "Escape") {
+
+                            popup.classList.remove("show");
+
+                            button.setAttribute(
+                                "aria-expanded",
+                                "false"
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+    </script>
+
+</body>
+
+</html>
